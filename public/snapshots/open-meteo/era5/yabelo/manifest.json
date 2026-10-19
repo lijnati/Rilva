@@ -1,0 +1,116 @@
+{
+  "schema": "rilva.snapshot-manifest.v1",
+  "provider": "open-meteo",
+  "model": "era5",
+  "variable": "precipitation_sum",
+  "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "documents": [
+    {
+      "id": "1991-01-01_2000-12-31",
+      "file": "1991-01-01_2000-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "1991-01-01",
+        "end": "2000-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:29.075Z",
+      "bytes": 66254,
+      "sha256": "0x30003c7f5b326e35af308341cc6811d5a036cffc6816ee89307e8e6383346353"
+    },
+    {
+      "id": "2001-01-01_2010-12-31",
+      "file": "2001-01-01_2010-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2001-01-01",
+        "end": "2010-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:29.995Z",
+      "bytes": 66251,
+      "sha256": "0x8083767db6101cee2a1045190d6a65c751866f1962032ba1c9c380b6da31aadc"
+    },
+    {
+      "id": "2011-01-01_2020-12-31",
+      "file": "2011-01-01_2020-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2011-01-01&end_date=2020-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2011-01-01",
+        "end": "2020-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:30.849Z",
+      "bytes": 66331,
+      "sha256": "0x6122c90fed0130309389cd885710d5c032e83988f4084d192e4bd2241132b729"
+    },
+    {
+      "id": "2021-10-01_2021-12-31",
+      "file": "2021-10-01_2021-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2021-10-01&end_date=2021-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2021-10-01",
+        "end": "2021-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:30.995Z",
+      "bytes": 1940,
+      "sha256": "0x2e8710eb6c6ff0636d473eca934cb25880bd818e5677b2de336f82352de83828"
+    },
+    {
+      "id": "2022-10-01_2022-12-31",
+      "file": "2022-10-01_2022-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2022-10-01&end_date=2022-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2022-10-01",
+        "end": "2022-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:31.116Z",
+      "bytes": 1938,
+      "sha256": "0x35dfa66c3a2b35b0cb1eb37cc4cd5e691b64b65871d345ef24c179e1b5a3b677"
+    },
+    {
+      "id": "2023-10-01_2023-12-31",
+      "file": "2023-10-01_2023-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2023-10-01&end_date=2023-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2023-10-01",
+        "end": "2023-12-31"
+      },
+      "retrievedAt": "2026-10-19T08:14:31.242Z",
+      "bytes": 1957,
+      "sha256": "0x018c8998301f83af84006f69e953f7e3163c03e72721e3a9ba2333700ce7cab3"
+    },
+    {
+      "id": "2021-03-01_2021-05-31",
+      "file": "2021-03-01_2021-05-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2021-03-01&end_date=2021-05-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+      "request": {
+        "latitude": 4.88,
+        "longitude": 38.08,
+        "timezone": "Africa/Addis_Ababa",
+        "start": "2021-03-01",
+        "end": "2021-05-31"
+      },
+      "retrievedAt": "2026-10-19T08:29:53.517Z",
+      "bytes": 1944,
+      "sha256": "0xcbf9dc012e2bd0104aeba4ee800add83df8214986a2a8595142ae9d837d189fb"
+    }
+  ]
+}

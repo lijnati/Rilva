@@ -1,0 +1,253 @@
+{
+  "schema": "rilva.evidence-file.v1",
+  "scenario": "yabelo-ond-2022",
+  "title": "OND 2022 — fallback replay",
+  "notice": "Retrospective replay of a past season, not a live drought alert. ERA5 reanalysis estimate for one ~28 km grid cell; it does not measure drought impact or financial loss. The 60 % threshold is an illustrative hackathon rule.",
+  "artifact": {
+    "core": {
+      "schema": "rilva.evidence.v1",
+      "algorithm": "SRPN-v1",
+      "specHash": "0xc0e5bbe7d891446cba89feac98153b22c322d499f34a8eb10e7a8ea1d26dfe9f",
+      "spec": {
+        "schema": "rilva.spec.v1",
+        "method": "SRPN-v1",
+        "replay": true,
+        "location": {
+          "label": "Yabelo, Borena, Oromia, Ethiopia",
+          "latitude": 4.88,
+          "longitude": 38.08
+        },
+        "source": {
+          "provider": "open-meteo",
+          "model": "era5",
+          "variable": "precipitation_sum",
+          "timezone": "Africa/Addis_Ababa"
+        },
+        "period": {
+          "start": "2022-10-01",
+          "end": "2022-12-31"
+        },
+        "baseline": {
+          "startYear": 1991,
+          "endYear": 2020
+        },
+        "thresholdBps": 6000
+      },
+      "source": {
+        "provider": "open-meteo",
+        "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+        "model": "era5",
+        "variable": "precipitation_sum",
+        "unit": "mm",
+        "normalizedUnit": "dmm",
+        "timezone": "Africa/Addis_Ababa"
+      },
+      "location": {
+        "requested": {
+          "latitude": 4.88,
+          "longitude": 38.08
+        },
+        "resolved": {
+          "latitude": 5,
+          "longitude": 38,
+          "elevation": 1891,
+          "utcOffsetSeconds": 10800
+        }
+      },
+      "periods": {
+        "observed": {
+          "start": "2022-10-01",
+          "end": "2022-12-31",
+          "days": 92
+        },
+        "baseline": {
+          "startYear": 1991,
+          "endYear": 2020,
+          "years": 30,
+          "daysPerSeason": 92
+        }
+      },
+      "data": {
+        "seriesDigest": "0xe7607a7de24703ca4cb699d01a4c617f2849eec81d1cf5c913000a448c3009e5",
+        "observedDailyDmm": [
+          0,
+          1,
+          2,
+          7,
+          6,
+          31,
+          18,
+          69,
+          13,
+          0,
+          1,
+          3,
+          1,
+          1,
+          4,
+          2,
+          57,
+          152,
+          39,
+          21,
+          7,
+          90,
+          60,
+          5,
+          27,
+          12,
+          35,
+          53,
+          2,
+          93,
+          45,
+          0,
+          5,
+          4,
+          2,
+          10,
+          8,
+          5,
+          11,
+          3,
+          43,
+          5,
+          1,
+          2,
+          41,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          7,
+          1,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          11,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          3,
+          2,
+          1,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        "baselineSeasonTotalsDmm": [
+          1570,
+          1768,
+          928,
+          1935,
+          2253,
+          1292,
+          4421,
+          786,
+          1666,
+          2582,
+          1837,
+          2461,
+          1338,
+          2685,
+          1642,
+          3252,
+          935,
+          3238,
+          1959,
+          1088,
+          5259,
+          1917,
+          2447,
+          2961,
+          3346,
+          1494,
+          3754,
+          1304,
+          4677,
+          3398
+        ]
+      },
+      "result": {
+        "observedTotalDmm": 1044,
+        "baselineSumDmm": 70193,
+        "baselineYears": 30,
+        "indexBps": 4461,
+        "deficitBps": 5539,
+        "thresholdBps": 6000,
+        "triggered": true
+      }
+    },
+    "evidenceDigest": "0x8f4751b9ad2039b4b3544dafc8d29d2d45c3f29aba898a37994c11911599d19a"
+  },
+  "provenance": {
+    "mode": "snapshot",
+    "fellBackFromLive": false,
+    "documents": [
+      {
+        "id": "1991-01-01_2000-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+        "retrievedAt": "2026-10-19T08:14:29.075Z",
+        "sha256": "0x30003c7f5b326e35af308341cc6811d5a036cffc6816ee89307e8e6383346353",
+        "bytes": 66254
+      },
+      {
+        "id": "2001-01-01_2010-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+        "retrievedAt": "2026-10-19T08:14:29.995Z",
+        "sha256": "0x8083767db6101cee2a1045190d6a65c751866f1962032ba1c9c380b6da31aadc",
+        "bytes": 66251
+      },
+      {
+        "id": "2011-01-01_2020-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2011-01-01&end_date=2020-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+        "retrievedAt": "2026-10-19T08:14:30.849Z",
+        "sha256": "0x6122c90fed0130309389cd885710d5c032e83988f4084d192e4bd2241132b729",
+        "bytes": 66331
+      },
+      {
+        "id": "2022-10-01_2022-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=4.88&longitude=38.08&start_date=2022-10-01&end_date=2022-12-31&daily=precipitation_sum&timezone=Africa%2FAddis_Ababa&models=era5",
+        "retrievedAt": "2026-10-19T08:14:31.116Z",
+        "sha256": "0x35dfa66c3a2b35b0cb1eb37cc4cd5e691b64b65871d345ef24c179e1b5a3b677",
+        "bytes": 1938
+      }
+    ],
+    "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information."
+  },
+  "presentation": {
+    "observedTotalMm": "104.4",
+    "baselineMeanMm": "234.0",
+    "percentOfNormal": "44.61",
+    "thresholdPercent": "60.00",
+    "zScoreInformational": -1.12
+  }
+}
