@@ -1,0 +1,4 @@
+# Raw upstream snapshots are hashed byte-for-byte (SHA-256 in manifest.json).
+# Never let git normalise their line endings or content.
+public/snapshots/** -text
+public/evidence/** -text

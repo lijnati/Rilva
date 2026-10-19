@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# next.js / build output
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# tests
+coverage/
+
+# secrets — never commit keys or mnemonics
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vercel
+
+# hardhat
+artifacts/
+cache/
+types/
+ignition/deployments/chain-31337/
