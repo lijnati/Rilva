@@ -1,0 +1,160 @@
+# ARCHITECTURE.md — Rilva system architecture
+
+> Phase 0 design. Unless marked Verified, statements are **Decisions**. Related: [CONTRACTS.md](CONTRACTS.md) (on-chain), [CLIMATE_DATA.md](CLIMATE_DATA.md) (indicator and evidence), [DESIGN.md](DESIGN.md) (UI).
+
+## 1. Principles
+
+1. **Nothing off-chain is trusted by default.**
+   - The browser recomputes evidence from the public source.
+   - The server is a convenience cache and holds no keys.
+2. **One deterministic climate module, used everywhere.** The same `lib/climate` code runs in the explorer, the attestor flow, the verifier and the tests.
+3. **No database in the MVP.**
+   - Campaign state lives on-chain.
+   - Evidence is reproducible from `spec` + public data.
+   - Demo evidence JSON is also committed as static files.
+4. **AI is not in the decision path.** If added later, it is limited to labeled, grounded summaries of already-computed evidence.
+5. **Minimal dependencies, one repo, one deployable app.** Contracts live in the same repo under Hardhat 3 (Phase 2 switched from Foundry).
+
+## 2. System diagram
+
+```
+                         ┌──────────────────────────── Browser (untrusted UI, trusted computation by the user) ─────────────────────────┐
+                         │                                                                                                              │
+ Funder wallet ─────────►│  /campaigns/new ──createCampaign(spec,…){value}──────────────────────────────┐                               │
+                         │                                                                               │                               │
+ Attestor wallet ───────►│  /campaigns/[id] ─► lib/climate: fetch → SRPN-v1 → evidence.core → keccak     │                               │
+                         │                     check spec ↔ on-chain params ↔ recomputed hash            │                               │
+                         │                     eth_signTypedData_v4(Attestation) ─► settle(id,a,sig) ────┤                               │
+                         │                                                                               ▼                               │
+ Anyone / judge ────────►│  /verify/[id] ─► read events + campaign ─► re-fetch → recompute → compare ◄── Base Sepolia: RilvaEscrow      │
+                         │  /explore     ─► lib/climate + Recharts (real ERA5 & CHIRPS numbers)          (events = audit trail)          │
+                         └─────────────┬────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                       │ GET (optional proxy + cache; fallback to direct CORS fetch, then saved snapshots)
+                                       ▼
+                    Next.js route handler /api/rainfall  ───────►  archive-api.open-meteo.com (ERA5, models=era5)
+                    (no keys, no writes, cache-only)              /public/snapshots/.../*.json (committed raw responses)
+```
+
+## 3. Components
+
+| Component | Responsibility | Trust |
+|---|---|---|
+| `contracts/` (Hardhat 3, solc 0.8.37) | `RilvaEscrow` escrow, EIP-712 verification, state machine, events (CONTRACTS.md) | Security-critical |
+| `lib/contracts/` | Generated ABI, the single EIP-712 type definition, spec→terms mapping, read/write-prep helpers, event parsing, error text, Base Sepolia config | Security-relevant; parity-tested with Solidity |
+| `lib/climate/` (pure TS, no I/O in core) | Parse Open-Meteo responses, validate completeness, compute SRPN-v1 with BigInt, build `evidence.core`, JCS + keccak256 | Correctness-critical; must be unit-tested against golden values |
+| `lib/climate/source.ts` | Fetch with retry, chunking by decade, and fallback order **proxy → direct → saved snapshot**, always labelled | Untrusted I/O |
+| `lib/chain/` | viem/wagmi config for Base Sepolia, ABI, typed-data builder shared with tests, error decoding | Security-relevant (typed data must match Solidity) |
+| `app/` (Next.js App Router) | Pages in [DESIGN.md](DESIGN.md) §5 | UI |
+| `app/api/rainfall/route.ts` | GET-only proxy that whitelists params (lat/lon/date/model fixed to `era5`/`precipitation_sum`) and caches responses | Untrusted; never signs; no secrets |
+| `public/snapshots/open-meteo/era5/yabelo/` | Committed raw Open-Meteo responses (baseline decades and observed seasons) | Byte-exact. SHA-256 recorded in `manifest.json`; `.gitattributes -text` |
+| `public/evidence/` | Precomputed evidence JSON for demo campaigns, named by `evidenceHash` | Convenience only; the verifier recomputes regardless |
+| `ignition/modules/RilvaEscrow.ts` | Hardhat Ignition deployment of the single contract | Deployer key only from the Hardhat keystore or a shell env; never in the repo |
+| `scripts/` | Climate snapshot/evidence/verify commands; `contracts/export-abi.ts` | No keys |
+
+## 4. Data flows
+
+### 4.1 Create and fund (Funder)
+1. The funder picks the location (fixed: Yabelo in the MVP), season and year, threshold (default 6000 bps), beneficiary, attestor and amount. Replay seasons must be labelled.
+2. The UI builds the canonical `spec` (RFC 8785) and shows it.
+3. The funder calls `createCampaign(…, spec)` with `value = amount`.
+4. The `CampaignCreated` event is the record.
+
+### 4.2 Evidence and attestation (Attestor)
+1. The attestor opens `/campaigns/[id]`. The UI reads the campaign and the spec from the event.
+2. It checks `keccak256(spec) == specHash` and that the spec agrees with the numeric on-chain fields.
+3. `lib/climate` fetches the target season and the baseline, validates (see CLIMATE_DATA.md §4), and computes `indexBps`. It then builds `core` and `evidenceHash`.
+4. The UI shows `indexBps`, the threshold, the predicted outcome, and the hash. The attestor's wallet signs `Attestation{…, expiresAt = now + 1h}`.
+5. Anyone, normally the attestor, submits `settle(id, a, sig)`.
+6. The result is a `Settled` event, plus `Released` when triggered.
+
+### 4.3 Public verification (anyone, no wallet)
+`/verify/[id]` reads the campaign and its events, then shows a checklist where each item passes or fails visibly:
+- Spec hash matches.
+- Spec is consistent with on-chain fields.
+- Recomputed `indexBps` equals the attested one.
+- Recomputed `evidenceHash` equals the on-chain one.
+- The attestation signer equals the campaign attestor. Recover from the `settle` tx calldata with viem.
+- The outcome follows the rule.
+- Funds moved to the right address.
+
+It links every tx to Basescan.
+
+### 4.4 Rejection demonstrations
+The campaign page has a "Try to break it" panel that runs `simulateContract`, with no gas and no state change. `settle` checks `status` first, so the first two attempts must run while the campaign is still **Funded**, after the attestor has signed and before the genuine `settle`. The demo flow uses campaign B (OND 2023):
+- **Unauthorized:** the same struct signed by a non-attestor demo key generated in-browser and discarded → `InvalidSigner`.
+- **Altered:** the attestor's valid signature, but with `indexBps` changed from 21322 to 3363 to fake a trigger → `InvalidSigner`.
+- Then the genuine attestation is submitted → `Refunded` (reason `NotTriggered`), and the funder is repaid in the same transaction.
+- **Duplicate:** resubmit the original valid attestation → `CampaignNotActive`. This also works on settled campaign A.
+
+All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one real reverting tx is broadcast by script so it appears on Basescan.
+
+## 5. APIs
+
+- `GET /api/rainfall?lat=4.88&lon=38.08&start=YYYY-MM-DD&end=YYYY-MM-DD`
+  - The server forces `daily=precipitation_sum&models=era5&timezone=Africa/Addis_Ababa`.
+  - It returns the upstream JSON verbatim with an `x-rilva-source: upstream|cache` header.
+  - It rejects ranges longer than 11 years (chunking happens in the client), and dates outside 1940..today−7d.
+- No other server API. Chain reads go through the public RPC `https://sepolia.base.org` via viem. A dedicated RPC URL (e.g. Alchemy/QuickNode) is optional if rate-limited (UNVERIFIED whether that is needed).
+
+## 6. Persistence decision
+
+- **No Neon or Drizzle.**
+- On-chain state plus events cover campaigns and the audit trail. `campaignCount` plus `campaigns(i)` reads list campaigns without log indexing.
+- Evidence is deterministic from public inputs, and committed snapshots and demo evidence JSON cover availability.
+- **Revisit only if** user-generated off-chain content becomes a requirement, which is not planned.
+
+## 7. Technology choices (latest versions observed on npm 2026-10-19; pin exact in Phase 1)
+
+| Layer | Choice | Observed latest | Notes |
+|---|---|---|---|
+| Framework | Next.js App Router | next 16.4.2, react 19.3.1 | Deploy on Vercel (Node runtime) |
+| Language | TypeScript | typescript 7.0.2 | **UNVERIFIED** whether Next 16.4 tooling supports TS 7. Use the version `create-next-app` pins. |
+| Styling | Tailwind CSS + shadcn/ui | tailwindcss 4.3.3, shadcn 4.22.1 | Use only the components we need |
+| Fonts | Geist (`geist` package / `next/font`) | geist 1.8.1 | |
+| Chain | viem + wagmi + TanStack Query | viem 2.57.7, wagmi 3.7.7, @tanstack/react-query 5.104.4 | Injected wallet connector only (MetaMask / Rabby / Coinbase) |
+| Charts | Recharts | recharts 3.10.1 | Or a hand-built SVG if simpler for the one bar chart |
+| Map | **Static SVG locator** (Natural Earth admin-0, public domain) **instead of MapLibre** | maplibre-gl 6.15.0 | **Proposed simplification:** one point and two grid cells don't justify a tile-server dependency. MapLibre is a stretch goal. |
+| Canonical JSON | `canonicalize` (RFC 8785) | canonicalize 5.1.0 | Or a 30-line audited implementation with tests |
+| Hashing | viem `keccak256` | — | |
+| Tests (TS) | Vitest | vitest 5.0.5 | Golden values, typed-data parity |
+| Contracts | Hardhat 3.19.0 + OpenZeppelin 5.6.1 + Ignition | see CONTRACTS.md §1 | Foundry not used |
+
+## 8. Repository layout (as of Phase 2)
+
+```
+/app                 Next.js routes (see DESIGN.md §5)
+/components          UI components
+/lib/climate         SRPN-v1, evidence, canonicalization (pure) + source.ts (I/O)
+/lib/contracts       generated ABI, EIP-712 typed data, spec→terms, read/write helpers, config
+/contracts           RilvaEscrow.sol (+ contracts/test/ receivers used only by tests)
+/ignition/modules    Hardhat Ignition deployment module
+/public/snapshots    raw Open-Meteo responses + manifest.json (Yabelo, era5)
+/public/evidence     demo evidence JSON by hash
+/tests/climate, /tests/lib   Vitest (pnpm test)
+/tests/contracts     Hardhat node:test suites (pnpm contracts:test), incl. real-evidence integration
+hardhat.config.ts    solc 0.8.37, optimizer off, baseSepolia network
+PRODUCT.md CLIMATE_DATA.md ARCHITECTURE.md CONTRACTS.md DESIGN.md ROADMAP.md CLAUDE.md README.md
+```
+
+## 9. Threat model (system level)
+
+The contract-level table is in CONTRACTS.md §8. Additional system boundaries:
+
+| Boundary | Threat | Control |
+|---|---|---|
+| Browser ↔ Open-Meteo | MITM / spoofed data | HTTPS. The verifier can cross-check saved snapshots and CHIRPS. Any deviation shows as a hash mismatch. |
+| Browser ↔ `/api/rainfall` | A compromised server serves altered data | The attestor client recomputes with a **direct** fetch before signing (a "direct" toggle defaults on for the attestor). The hash exposes divergence. |
+| Proxy abuse | Open-proxy or rate-limit exhaustion | Param whitelist, fixed model and variable, cache, no arbitrary URL |
+| UI ↔ wallet | Blind signing | EIP-712 with named fields. The UI repeats the fields and hash in readable form. |
+| Repo / secrets | Key leakage | `.env*` in `.gitignore`. No keys on the server. Pre-commit grep for `PRIVATE_KEY=0x` (CLAUDE.md). |
+| Dependencies | Malicious update | Exact version pins and a committed lockfile. No postinstall scripts from unknown packages. |
+| Presentation | Misleading claims | Mandatory replay banner, limitation copy, and "illustrative threshold" labels (DESIGN.md §7) |
+
+## 10. Deployment
+
+- Contracts: `pnpm contracts:deploy:base-sepolia` (Hardhat Ignition with `--verify`). The deployer key comes from the Hardhat keystore. See DEPLOYMENT.md. **Status: pending credentials and approval.**
+- App: Vercel (needs the human's account). Public env vars only: `NEXT_PUBLIC_ESCROW_ADDRESS`, `NEXT_PUBLIC_DEPLOY_BLOCK`, optional `NEXT_PUBLIC_RPC_URL`.
+- Demo campaigns:
+  - A: OND 2021, triggers.
+  - B: OND 2023, does not trigger.
+  - Both are created on testnet before recording, and kept in `public/evidence`.
