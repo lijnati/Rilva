@@ -8,34 +8,43 @@ importers:
 
   .:
     dependencies:
+      '@tanstack/react-query':
+        specifier: 5.104.4
+        version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
       geist:
         specifier: 1.8.1
-        version: 1.8.1(next@16.4.2(@babel/core@7.29.7)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
+        version: 1.8.1(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       next:
         specifier: 16.4.2
-        version: 16.4.2(@babel/core@7.29.7)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
         specifier: 19.3.1
         version: 19.3.1
       react-dom:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
+      recharts:
+        specifier: 3.10.1
+        version: 3.10.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react-is@19.3.1)(react@19.3.1)(redux@5.0.1)
       tailwind-merge:
         specifier: 3.7.0
         version: 3.7.0
       viem:
         specifier: 2.57.7
-        version: 2.57.7(typescript@5.9.3)(zod@4.6.7)
+        version: 2.57.7(typescript@5.9.3)(zod@3.25.76)
+      wagmi:
+        specifier: 3.7.7
+        version: 3.7.7(@tanstack/query-core@5.104.4)(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
     devDependencies:
       '@nomicfoundation/hardhat-ignition':
         specifier: 3.1.9
         version: 3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0)
       '@nomicfoundation/hardhat-ignition-viem':
         specifier: 3.1.6
-        version: 3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+        version: 3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/hardhat-keystore':
         specifier: 3.1.2
         version: 3.1.2(hardhat@3.19.0)
@@ -47,22 +56,25 @@ importers:
         version: 3.1.1(hardhat@3.19.0)
       '@nomicfoundation/hardhat-toolbox-viem':
         specifier: 5.0.7
-        version: 5.0.7(270ce5f28ee081898c3c962263f14f0e)
+        version: 5.0.7(8c0642c3bdc3706f449e6cc73da06344)
       '@nomicfoundation/hardhat-verify':
         specifier: 3.1.3
         version: 3.1.3(hardhat@3.19.0)
       '@nomicfoundation/hardhat-viem':
         specifier: 3.0.10
-        version: 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+        version: 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/hardhat-viem-assertions':
         specifier: 3.1.4
-        version: 3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+        version: 3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/ignition-core':
         specifier: 3.1.8
         version: 3.1.8
       '@openzeppelin/contracts':
         specifier: 5.6.1
         version: 5.6.1
+      '@playwright/test':
+        specifier: 1.64.1
+        version: 1.64.1
       '@tailwindcss/postcss':
         specifier: 4.3.3
         version: 4.3.3
@@ -938,6 +950,22 @@ packages:
   '@oxc-project/types@0.154.0':
     resolution: {integrity: sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==}
 
+  '@playwright/test@1.64.1':
+    resolution: {integrity: sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  '@reduxjs/toolkit@2.13.0':
+    resolution: {integrity: sha512-f6jwVRfwW30+tnllz4YcsHHpPYYOE7abcHkyUCovD+P7DyhdAI5prz2Fh/8TLhakjpN+7aIEion1s5L/tvlYlA==}
+    peerDependencies:
+      react: ^16.9.0 || ^17.0.0 || ^18 || ^19
+      react-redux: ^7.2.1 || ^8.1.3 || ^9.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-redux:
+        optional: true
+
   '@rolldown/binding-android-arm-eabi@1.2.14':
     resolution: {integrity: sha512-aWR+XKH9+rW7m5fWq/5360J3mHycrx/o6xZM2DQFdJnTMdyP7/WzxPjhtLbVWdKo2y612/4U1bWqb3HQhiF7vg==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1062,6 +1090,9 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
   '@streamparser/json-node@0.0.26':
     resolution: {integrity: sha512-9OxH3oyILbxiHxNfhvfVpyWgaiLDxreWLk6t6xdSZxJlzKciXReMN6w446+lu+cgdpJxJlwNoyfBLPtTrCUJgA==}
 
@@ -1163,11 +1194,50 @@ packages:
   '@tailwindcss/postcss@4.3.3':
     resolution: {integrity: sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg==}
 
+  '@tanstack/query-core@5.104.4':
+    resolution: {integrity: sha512-nU4Yrb8Sjn0DeVb7PKG9uiepNavys3yoxy1FX0hViY4/P6Ng/mBje2SMl7i9812rtyHKtHyqiaC/td6GkI8StA==}
+
+  '@tanstack/react-query@5.104.4':
+    resolution: {integrity: sha512-YD5QkvUNy8Ey3LbOy2vwL97JjoYycwDv++cWAibTe+9BLYvl3c09XpYp5dZ2VcxcguwoDhGF+utYJYb79RB36w==}
+    peerDependencies:
+      '@types/react': ^18 || ^19
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
+
+  '@types/d3-array@3.2.2':
+    resolution: {integrity: sha512-hOLWVbm7uRza0BYXpIIW5pxfrKe0W+D5lrFiAEYR+pb6w3N2SwSMaJbXdUfSEv+dT4MfHBLtn5js0LAWaO6otw==}
+
+  '@types/d3-color@3.1.3':
+    resolution: {integrity: sha512-iO90scth9WAbmgv7ogoq57O9YpKmFBbmoEoCHDB2xMBY0+/KVrqAaCDyCE16dUspeOvIxFFRI+0sEtqDqy2b4A==}
+
+  '@types/d3-ease@3.0.2':
+    resolution: {integrity: sha512-NcV1JjO5oDzoK26oMzbILE6HW7uVXOHLQvHshBUW4UMdZGfiY6v5BeQwh9a9tCzv+CeefZQHJt5SRgK154RtiA==}
+
+  '@types/d3-interpolate@3.0.4':
+    resolution: {integrity: sha512-mgLPETlrpVV1YRJIglr4Ez47g7Yxjl1lj7YKsiMCb27VJH9W8NVM6Bb9d8kkpG/uAQS5AmbA48q2IAolKKo1MA==}
+
+  '@types/d3-path@3.1.1':
+    resolution: {integrity: sha512-VMZBYyQvbGmWyWVea0EHs/BwLgxc+MKi1zLDCONksozI4YJMcTt8ZEuIR4Sb1MMTE8MMW49v0IwI5+b7RmfWlg==}
+
+  '@types/d3-scale@4.0.9':
+    resolution: {integrity: sha512-dLmtwB8zkAeO/juAMfnV+sItKjlsw2lKdZVVy6LRr0cBmegxSABiLEpGVmSJJ8O08i4+sGR6qQtb6WtuwJdvVw==}
+
+  '@types/d3-shape@3.2.0':
+    resolution: {integrity: sha512-kVd74ta9eof3eJOvbNd1vGKS/XERRyQbT26Og63hIsvDO84cjD5gEOhsXf26w3FSoNlPVz84DOFcKv/oou+fMw==}
+
+  '@types/d3-time@3.0.4':
+    resolution: {integrity: sha512-yuzZug1nkAAaBlBBikKZTgzCeA+k1uy4ZFwWANOfKw5z5LRhV0gNA7gNkKm7HoK+HRN0wX3EkxGk0fpbWhmB7g==}
+
+  '@types/d3-timer@3.0.2':
+    resolution: {integrity: sha512-Ps3T8E8dZDam6fUyNiMkekK3XUsaUEik+idO9/YjPtfj2qruF8tFBXS7XhtE4iIXBLxhmLjP3SXpLhVf21I9Lw==}
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
@@ -1197,6 +1267,9 @@ packages:
 
   '@types/react@19.3.0':
     resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
+
+  '@types/use-sync-external-store@0.0.6':
+    resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
 
   '@typescript-eslint/eslint-plugin@8.71.2':
     resolution: {integrity: sha512-K72/pvT7qpm8q3k8G5u93NCSN1RcLxX5h7Gw0bQpbMXviBHeY6Nx1WEwmk9wP+eKTSQ8ecxvcgt/ZX/rB938xQ==}
@@ -1406,6 +1479,52 @@ packages:
   '@vitest/utils@4.1.12':
     resolution: {integrity: sha512-Q3awXrwOfEV+qc3WmO5ONyE0yO7Q1gQ9/oyHxGLZ/pl7N3NO/ZztqQwKLuwMkV+CA1JYSIeO3gkHnRDIo4AVaA==}
 
+  '@wagmi/connectors@8.2.0':
+    resolution: {integrity: sha512-hPwdmePYjQqSWlw9JmzrzVgmw2PJ+NJsUQ/BuPBYbzBS8+cW5vWdqiaKLB4qTF9m+yr+zSp7u91KBgvOWz50og==}
+    peerDependencies:
+      '@base-org/account': ^2.5.1
+      '@coinbase/wallet-sdk': ^4.3.6
+      '@metamask/connect-evm': ^2.1.0
+      '@safe-global/safe-apps-provider': ~0.18.6
+      '@safe-global/safe-apps-sdk': ^9.1.0
+      '@wagmi/core': 3.6.5
+      '@walletconnect/ethereum-provider': ^2.21.1
+      accounts: ~0.18
+      typescript: '>=5.9.3'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@base-org/account':
+        optional: true
+      '@coinbase/wallet-sdk':
+        optional: true
+      '@metamask/connect-evm':
+        optional: true
+      '@safe-global/safe-apps-provider':
+        optional: true
+      '@safe-global/safe-apps-sdk':
+        optional: true
+      '@walletconnect/ethereum-provider':
+        optional: true
+      accounts:
+        optional: true
+      typescript:
+        optional: true
+
+  '@wagmi/core@3.6.5':
+    resolution: {integrity: sha512-zfKvLNT1V1+/RgrrUcRvteKx+V+Iv9ZHPWseIVKFA9mX5WE0H8J6zWZGWXSQCKbz5xGSUoatNFCkNFSzqQp+AA==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      accounts: ~0.18
+      typescript: '>=5.9.3'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
+      accounts:
+        optional: true
+      typescript:
+        optional: true
+
   abitype@1.2.3:
     resolution: {integrity: sha512-Ofer5QUnuUdTFsBRwARMoWKOH1ND5ehwYhJ3OJ/BQO+StkwQjHw0XyVh4vDttzHB7QOFhPHa/o413PJ82gU/Tg==}
     peerDependencies:
@@ -1608,6 +1727,50 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
+  d3-array@3.2.4:
+    resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
+    engines: {node: '>=12'}
+
+  d3-color@3.1.0:
+    resolution: {integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==}
+    engines: {node: '>=12'}
+
+  d3-ease@3.0.1:
+    resolution: {integrity: sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==}
+    engines: {node: '>=12'}
+
+  d3-format@3.1.2:
+    resolution: {integrity: sha512-AJDdYOdnyRDV5b6ArilzCPPwc1ejkHcoyFarqlPqT7zRYjhavcT3uSrqcMvsgh2CgoPbK3RCwyHaVyxYcP2Arg==}
+    engines: {node: '>=12'}
+
+  d3-interpolate@3.0.1:
+    resolution: {integrity: sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==}
+    engines: {node: '>=12'}
+
+  d3-path@3.1.0:
+    resolution: {integrity: sha512-p3KP5HCf/bvjBSSKuXid6Zqijx7wIfNW+J/maPs+iwR35at5JCbLUT0LzF1cnjbCHWhqzQTIN2Jpe8pRebIEFQ==}
+    engines: {node: '>=12'}
+
+  d3-scale@4.0.2:
+    resolution: {integrity: sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ==}
+    engines: {node: '>=12'}
+
+  d3-shape@3.2.0:
+    resolution: {integrity: sha512-SaLBuwGm3MOViRq2ABk3eLoxwZELpH6zhl3FbAoJ7Vm1gofKx6El1Ib5z23NUEhF9AsGl7y+dzLe5Cw2AArGTA==}
+    engines: {node: '>=12'}
+
+  d3-time-format@4.1.0:
+    resolution: {integrity: sha512-dJxPBlzC7NugB2PDLwo9Q8JiTR3M3e4/XANkreKSUxF8vvXKqm1Yfq4Q5dl8budlunRVlUUaDUgFt7eA8D6NLg==}
+    engines: {node: '>=12'}
+
+  d3-time@3.1.0:
+    resolution: {integrity: sha512-VqKjzBLejbSMT4IgbmVgDjpkYrNWUYJnbCGo874u7MMKIWsILRX+OpX/gTk8MqjpT1A/c6HY2dCA77ZN0lkQ2Q==}
+    engines: {node: '>=12'}
+
+  d3-timer@3.0.1:
+    resolution: {integrity: sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==}
+    engines: {node: '>=12'}
+
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
@@ -1639,6 +1802,9 @@ packages:
     peerDependenciesMeta:
       supports-color:
         optional: true
+
+  decimal.js-light@2.5.1:
+    resolution: {integrity: sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==}
 
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -1719,6 +1885,9 @@ packages:
   es-to-primitive@1.3.4:
     resolution: {integrity: sha512-yPDz7wqpg1/mmHLmS3tcfTfbw5f1eryXvyghYBffGdERwe+mV7ZcWzTR8LR17Kvqt3qfPurjlonmnq3MKXIOXw==}
     engines: {node: '>= 0.4'}
+
+  es-toolkit@1.52.0:
+    resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
 
   esbuild@0.28.2:
     resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
@@ -2041,6 +2210,9 @@ packages:
   immer@10.0.2:
     resolution: {integrity: sha512-Rx3CqeqQ19sxUtYV9CU911Vhy8/721wRFnJv3REVGWUmoAcIwzifTsdmJte/MV+0/XpM35LZdQMBGkRIoLPwQA==}
 
+  immer@11.2.3:
+    resolution: {integrity: sha512-FbR9W6jf7+tvOCuDmOLJy3yStLCvoRDODRARzfeaWmn75+1fW4hFbMv5X5cWgEkxgWcC/eC5Nva00ZV1iv+0EA==}
+
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
@@ -2051,6 +2223,10 @@ packages:
   internal-slot@1.1.0:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
+
+  internmap@2.0.3:
+    resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
+    engines: {node: '>=12'}
 
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
@@ -2436,6 +2612,14 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
+  mipd@0.0.7:
+    resolution: {integrity: sha512-aAPZPNDQ3uMTdKbuO2YmAw2TxLHO0moa4YKAyETM/DTj5FloZo+a+8tU+iv4GmW+sOxKLSRwcSFuczk+Cpt6fg==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -2575,6 +2759,16 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
+  playwright-core@1.64.1:
+    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.64.1:
+    resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -2627,6 +2821,18 @@ packages:
   react-is@19.3.1:
     resolution: {integrity: sha512-RRieF6IyxQBkcK6pP8xOHprLTPW6QjRkbGdImtqNme+/hYVwCZkLQLdlZGOhUqXwkS9IEynaGvPJtv6XB/cz0Q==}
 
+  react-redux@9.3.0:
+    resolution: {integrity: sha512-KQopgqFo/p/fgmAs5qz6p5RWaNAzq40WAu7fJIXnQpYxFPbJYtsJPWvGeF2rOBaY/kEuV77AVsX8TsQzKm+A/g==}
+    peerDependencies:
+      '@types/react': ^18.2.25 || ^19
+      react: ^18.0 || ^19
+      redux: ^5.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      redux:
+        optional: true
+
   react@19.3.1:
     resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
@@ -2639,6 +2845,22 @@ packages:
     resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
 
+  recharts@3.10.1:
+    resolution: {integrity: sha512-QXFrvt6IVcw7eeZCoyXTwkIJAX3Dv1nyVhMicXJ47GsGDDpcN8z6o644DibE9XjpBTThtsomLKnTV6lc+cVFUA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-is: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  redux-thunk@3.1.0:
+    resolution: {integrity: sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw==}
+    peerDependencies:
+      redux: ^5.0.0
+
+  redux@5.0.1:
+    resolution: {integrity: sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==}
+
   reflect.getprototypeof@1.0.10:
     resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
@@ -2646,6 +2868,9 @@ packages:
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
+
+  reselect@5.2.0:
+    resolution: {integrity: sha512-AgZ3UOZm3YndfrJ4OYjgrT7bmCm/1iqkjvEfH/oYjzh6PD2qw4QuT3jjnXIrpdt4MTpMXclMT3lXbmRY+XRakw==}
 
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
@@ -2840,6 +3065,9 @@ packages:
   through2@4.0.2:
     resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
 
+  tiny-invariant@1.3.3:
+    resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
+
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -2945,8 +3173,21 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
+  use-sync-external-store@1.4.0:
+    resolution: {integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  use-sync-external-store@1.7.0:
+    resolution: {integrity: sha512-6L+EeigHMQhdaIPNIFUKwfWJSwWFQ8gJbJ2DLOs5sDIegTwR9fRxvnM3uciHKjIZhFz+KAv2emhWMRvDmMcY8A==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  victory-vendor@37.3.6:
+    resolution: {integrity: sha512-SbPDPdDBYp+5MJHhBCAyI7wKM3d5ivekigc2Dk2s7pgbZ9wIgIBYGVw4zGHBml/qTFbexrofXW6Gu4noGxrOwQ==}
 
   viem@2.57.7:
     resolution: {integrity: sha512-x3UqqrcQuESaRVK6a0BvNmoNP0SVhu913uxEAxYLJx1lNYnj6ylTntfUdakCUKjk1+T+63gkdwFGJQ2O5C/nRw==}
@@ -3040,6 +3281,17 @@ packages:
       jsdom:
         optional: true
 
+  wagmi@3.7.7:
+    resolution: {integrity: sha512-J9YTRKwOVt+L135nMiitwGALrJqpXFhLX8AZzbECWeAQ1aI9Uz8Pz0GGMqtbKe7xJtmOx838OChT7YkMs9k8OA==}
+    peerDependencies:
+      '@tanstack/react-query': '>=5.0.0'
+      react: '>=18'
+      typescript: '>=5.9.3'
+      viem: 2.x
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
     engines: {node: '>= 0.4'}
@@ -3112,6 +3364,24 @@ packages:
 
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
+
+  zustand@5.0.0:
+    resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
 
 snapshots:
 
@@ -3690,15 +3960,15 @@ snapshots:
     dependencies:
       '@nomicfoundation/hardhat-utils': 5.0.0
 
-  '@nomicfoundation/hardhat-ignition-viem@3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))':
+  '@nomicfoundation/hardhat-ignition-viem@3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.1.3
       '@nomicfoundation/hardhat-ignition': 3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0)
       '@nomicfoundation/hardhat-verify': 3.1.3(hardhat@3.19.0)
-      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/ignition-core': 3.1.8
       hardhat: 3.19.0
-      viem: 2.57.7(typescript@5.9.3)(zod@4.6.7)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
 
   '@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0)':
     dependencies:
@@ -3745,19 +4015,19 @@ snapshots:
       tsx: 4.23.15
       zod: 3.25.76
 
-  '@nomicfoundation/hardhat-toolbox-viem@5.0.7(270ce5f28ee081898c3c962263f14f0e)':
+  '@nomicfoundation/hardhat-toolbox-viem@5.0.7(8c0642c3bdc3706f449e6cc73da06344)':
     dependencies:
       '@nomicfoundation/hardhat-ignition': 3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0)
-      '@nomicfoundation/hardhat-ignition-viem': 3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+      '@nomicfoundation/hardhat-ignition-viem': 3.1.6(@nomicfoundation/hardhat-ignition@3.1.9(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(hardhat@3.19.0))(@nomicfoundation/hardhat-verify@3.1.3(hardhat@3.19.0))(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(@nomicfoundation/ignition-core@3.1.8)(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/hardhat-keystore': 3.1.2(hardhat@3.19.0)
       '@nomicfoundation/hardhat-network-helpers': 3.0.12(hardhat@3.19.0)
       '@nomicfoundation/hardhat-node-test-runner': 3.1.1(hardhat@3.19.0)
       '@nomicfoundation/hardhat-verify': 3.1.3(hardhat@3.19.0)
-      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
-      '@nomicfoundation/hardhat-viem-assertions': 3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
+      '@nomicfoundation/hardhat-viem-assertions': 3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       '@nomicfoundation/ignition-core': 3.1.8
       hardhat: 3.19.0
-      viem: 2.57.7(typescript@5.9.3)(zod@4.6.7)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
 
   '@nomicfoundation/hardhat-utils@4.4.0':
     dependencies:
@@ -3792,20 +4062,20 @@ snapshots:
       hardhat: 3.19.0
       zod: 3.25.76
 
-  '@nomicfoundation/hardhat-viem-assertions@3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))':
+  '@nomicfoundation/hardhat-viem-assertions@3.1.4(@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.1.3
       '@nomicfoundation/hardhat-utils': 5.0.0
-      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))
+      '@nomicfoundation/hardhat-viem': 3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
       hardhat: 3.19.0
-      viem: 2.57.7(typescript@5.9.3)(zod@4.6.7)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
 
-  '@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@4.6.7))':
+  '@nomicfoundation/hardhat-viem@3.0.10(hardhat@3.19.0)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.1.3
       '@nomicfoundation/hardhat-utils': 5.0.0
       hardhat: 3.19.0
-      viem: 2.57.7(typescript@5.9.3)(zod@4.6.7)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
 
   '@nomicfoundation/hardhat-zod-utils@3.0.8(zod@3.25.76)':
     dependencies:
@@ -3864,6 +4134,22 @@ snapshots:
   '@openzeppelin/contracts@5.6.1': {}
 
   '@oxc-project/types@0.154.0': {}
+
+  '@playwright/test@1.64.1':
+    dependencies:
+      playwright: 1.64.1
+
+  '@reduxjs/toolkit@2.13.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1))(react@19.3.1)':
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      '@standard-schema/utils': 0.3.0
+      immer: 11.2.3
+      redux: 5.0.1
+      redux-thunk: 3.1.0(redux@5.0.1)
+      reselect: 5.2.0
+    optionalDependencies:
+      react: 19.3.1
+      react-redux: 9.3.0(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1)
 
   '@rolldown/binding-android-arm-eabi@1.2.14':
     optional: true
@@ -3934,6 +4220,8 @@ snapshots:
   '@sinclair/typebox@0.34.52': {}
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@streamparser/json-node@0.0.26':
     dependencies:
@@ -4014,6 +4302,15 @@ snapshots:
       postcss: 8.5.30
       tailwindcss: 4.3.3
 
+  '@tanstack/query-core@5.104.4': {}
+
+  '@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.104.4
+      react: 19.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
+
   '@tybys/wasm-util@0.10.4':
     dependencies:
       tslib: 2.8.1
@@ -4023,6 +4320,30 @@ snapshots:
     dependencies:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
+
+  '@types/d3-array@3.2.2': {}
+
+  '@types/d3-color@3.1.3': {}
+
+  '@types/d3-ease@3.0.2': {}
+
+  '@types/d3-interpolate@3.0.4':
+    dependencies:
+      '@types/d3-color': 3.1.3
+
+  '@types/d3-path@3.1.1': {}
+
+  '@types/d3-scale@4.0.9':
+    dependencies:
+      '@types/d3-time': 3.0.4
+
+  '@types/d3-shape@3.2.0':
+    dependencies:
+      '@types/d3-path': 3.1.1
+
+  '@types/d3-time@3.0.4': {}
+
+  '@types/d3-timer@3.0.2': {}
 
   '@types/deep-eql@4.0.2': {}
 
@@ -4049,6 +4370,8 @@ snapshots:
   '@types/react@19.3.0':
     dependencies:
       csstype: 3.2.3
+
+  '@types/use-sync-external-store@0.0.6': {}
 
   '@typescript-eslint/eslint-plugin@8.71.2(@typescript-eslint/parser@8.71.2(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.12.0(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
@@ -4252,10 +4575,32 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.2.0
 
-  abitype@1.2.3(typescript@5.9.3)(zod@4.6.7):
+  '@wagmi/connectors@8.2.0(@wagmi/core@3.6.5(@tanstack/query-core@5.104.4)(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.1))(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(typescript@5.9.3)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))':
+    dependencies:
+      '@wagmi/core': 3.6.5(@tanstack/query-core@5.104.4)(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.1))(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
     optionalDependencies:
       typescript: 5.9.3
-      zod: 4.6.7
+
+  '@wagmi/core@3.6.5(@tanstack/query-core@5.104.4)(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.1))(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))':
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.7(typescript@5.9.3)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
+      zustand: 5.0.0(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(use-sync-external-store@1.4.0(react@19.3.1))
+    optionalDependencies:
+      '@tanstack/query-core': 5.104.4
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - immer
+      - react
+      - use-sync-external-store
+
+  abitype@1.2.3(typescript@5.9.3)(zod@3.25.76):
+    optionalDependencies:
+      typescript: 5.9.3
+      zod: 3.25.76
 
   acorn-jsx@5.3.2(acorn@8.19.0):
     dependencies:
@@ -4462,6 +4807,44 @@ snapshots:
 
   csstype@3.2.3: {}
 
+  d3-array@3.2.4:
+    dependencies:
+      internmap: 2.0.3
+
+  d3-color@3.1.0: {}
+
+  d3-ease@3.0.1: {}
+
+  d3-format@3.1.2: {}
+
+  d3-interpolate@3.0.1:
+    dependencies:
+      d3-color: 3.1.0
+
+  d3-path@3.1.0: {}
+
+  d3-scale@4.0.2:
+    dependencies:
+      d3-array: 3.2.4
+      d3-format: 3.1.2
+      d3-interpolate: 3.0.1
+      d3-time: 3.1.0
+      d3-time-format: 4.1.0
+
+  d3-shape@3.2.0:
+    dependencies:
+      d3-path: 3.1.0
+
+  d3-time-format@4.1.0:
+    dependencies:
+      d3-time: 3.1.0
+
+  d3-time@3.1.0:
+    dependencies:
+      d3-array: 3.2.4
+
+  d3-timer@3.0.1: {}
+
   damerau-levenshtein@1.0.8: {}
 
   data-view-buffer@1.0.2:
@@ -4489,6 +4872,8 @@ snapshots:
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
+
+  decimal.js-light@2.5.1: {}
 
   deep-is@0.1.4: {}
 
@@ -4646,6 +5031,8 @@ snapshots:
       is-callable: 1.2.7
       is-date-object: 1.1.0
       is-symbol: 1.1.1
+
+  es-toolkit@1.52.0: {}
 
   esbuild@0.28.2:
     optionalDependencies:
@@ -4978,9 +5365,9 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  geist@1.8.1(next@16.4.2(@babel/core@7.29.7)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)):
+  geist@1.8.1(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)):
     dependencies:
-      next: 16.4.2(@babel/core@7.29.7)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      next: 16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
 
   generator-function@2.0.1: {}
 
@@ -5099,6 +5486,8 @@ snapshots:
 
   immer@10.0.2: {}
 
+  immer@11.2.3: {}
+
   imurmurhash@0.1.4: {}
 
   inherits@2.0.4: {}
@@ -5108,6 +5497,8 @@ snapshots:
       es-errors: 1.3.0
       hasown: 2.0.4
       side-channel: 1.1.1
+
+  internmap@2.0.3: {}
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -5443,6 +5834,10 @@ snapshots:
 
   minimist@1.2.8: {}
 
+  mipd@0.0.7(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+
   ms@2.1.3: {}
 
   nanoid@3.3.20: {}
@@ -5459,7 +5854,7 @@ snapshots:
       split2: 3.2.2
       through2: 4.0.2
 
-  next@16.4.2(@babel/core@7.29.7)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@next/env': 16.4.2
       '@swc/helpers': 0.5.23
@@ -5478,6 +5873,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.4.2
       '@next/swc-win32-arm64-msvc': 16.4.2
       '@next/swc-win32-x64-msvc': 16.4.2
+      '@playwright/test': 1.64.1
       sharp: 0.35.5(@types/node@24.19.2)
     transitivePeerDependencies:
       - '@babel/core'
@@ -5553,7 +5949,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.14.56(typescript@5.9.3)(zod@4.6.7):
+  ox@0.14.56(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
@@ -5561,7 +5957,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.9.3)(zod@4.6.7)
+      abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.3
@@ -5591,6 +5987,12 @@ snapshots:
   picomatch@2.3.2: {}
 
   picomatch@4.0.7: {}
+
+  playwright-core@1.64.1: {}
+
+  playwright@1.64.1:
+    dependencies:
+      playwright-core: 1.64.1
 
   possible-typed-array-names@1.1.0: {}
 
@@ -5645,6 +6047,15 @@ snapshots:
 
   react-is@19.3.1: {}
 
+  react-redux@9.3.0(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1):
+    dependencies:
+      '@types/use-sync-external-store': 0.0.6
+      react: 19.3.1
+      use-sync-external-store: 1.7.0(react@19.3.1)
+    optionalDependencies:
+      '@types/react': 19.3.0
+      redux: 5.0.1
+
   react@19.3.1: {}
 
   readable-stream@3.6.2:
@@ -5654,6 +6065,32 @@ snapshots:
       util-deprecate: 1.0.2
 
   readdirp@5.1.1: {}
+
+  recharts@3.10.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react-is@19.3.1)(react@19.3.1)(redux@5.0.1):
+    dependencies:
+      '@reduxjs/toolkit': 2.13.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1))(react@19.3.1)
+      clsx: 2.1.1
+      decimal.js-light: 2.5.1
+      es-toolkit: 1.52.0
+      eventemitter3: 5.0.1
+      immer: 11.2.3
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      react-is: 19.3.1
+      react-redux: 9.3.0(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1)
+      reselect: 5.2.0
+      tiny-invariant: 1.3.3
+      use-sync-external-store: 1.7.0(react@19.3.1)
+      victory-vendor: 37.3.6
+    transitivePeerDependencies:
+      - '@types/react'
+      - redux
+
+  redux-thunk@3.1.0(redux@5.0.1):
+    dependencies:
+      redux: 5.0.1
+
+  redux@5.0.1: {}
 
   reflect.getprototypeof@1.0.10:
     dependencies:
@@ -5674,6 +6111,8 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  reselect@5.2.0: {}
 
   resolve-pkg-maps@1.0.0: {}
 
@@ -5939,6 +6378,8 @@ snapshots:
     dependencies:
       readable-stream: 3.6.2
 
+  tiny-invariant@1.3.3: {}
+
   tinybench@2.9.0: {}
 
   tinyexec@1.3.1: {}
@@ -6078,17 +6519,42 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
+  use-sync-external-store@1.4.0(react@19.3.1):
+    dependencies:
+      react: 19.3.1
+
+  use-sync-external-store@1.7.0(react@19.3.1):
+    dependencies:
+      react: 19.3.1
+
   util-deprecate@1.0.2: {}
 
-  viem@2.57.7(typescript@5.9.3)(zod@4.6.7):
+  victory-vendor@37.3.6:
+    dependencies:
+      '@types/d3-array': 3.2.2
+      '@types/d3-ease': 3.0.2
+      '@types/d3-interpolate': 3.0.4
+      '@types/d3-scale': 4.0.9
+      '@types/d3-shape': 3.2.0
+      '@types/d3-time': 3.0.4
+      '@types/d3-timer': 3.0.2
+      d3-array: 3.2.4
+      d3-ease: 3.0.1
+      d3-interpolate: 3.0.1
+      d3-scale: 4.0.2
+      d3-shape: 3.2.0
+      d3-time: 3.1.0
+      d3-timer: 3.0.1
+
+  viem@2.57.7(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@5.9.3)(zod@4.6.7)
+      abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
       isows: 1.0.7(ws@8.21.0)
-      ox: 0.14.56(typescript@5.9.3)(zod@4.6.7)
+      ox: 0.14.56(typescript@5.9.3)(zod@3.25.76)
       ws: 8.21.0
     optionalDependencies:
       typescript: 5.9.3
@@ -6137,6 +6603,28 @@ snapshots:
       '@types/node': 24.19.2
     transitivePeerDependencies:
       - msw
+
+  wagmi@3.7.7(@tanstack/query-core@5.104.4)(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)):
+    dependencies:
+      '@tanstack/react-query': 5.104.4(@types/react@19.3.0)(react@19.3.1)
+      '@wagmi/connectors': 8.2.0(@wagmi/core@3.6.5(@tanstack/query-core@5.104.4)(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.1))(viem@2.57.7(typescript@5.9.3)(zod@3.25.76)))(typescript@5.9.3)(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
+      '@wagmi/core': 3.6.5(@tanstack/query-core@5.104.4)(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.1))(viem@2.57.7(typescript@5.9.3)(zod@3.25.76))
+      react: 19.3.1
+      use-sync-external-store: 1.4.0(react@19.3.1)
+      viem: 2.57.7(typescript@5.9.3)(zod@3.25.76)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@base-org/account'
+      - '@coinbase/wallet-sdk'
+      - '@metamask/connect-evm'
+      - '@safe-global/safe-apps-provider'
+      - '@safe-global/safe-apps-sdk'
+      - '@tanstack/query-core'
+      - '@types/react'
+      - '@walletconnect/ethereum-provider'
+      - accounts
+      - immer
 
   which-boxed-primitive@1.1.1:
     dependencies:
@@ -6205,3 +6693,10 @@ snapshots:
   zod@3.25.76: {}
 
   zod@4.6.7: {}
+
+  zustand@5.0.0(@types/react@19.3.0)(immer@11.2.3)(react@19.3.1)(use-sync-external-store@1.4.0(react@19.3.1)):
+    optionalDependencies:
+      '@types/react': 19.3.0
+      immer: 11.2.3
+      react: 19.3.1
+      use-sync-external-store: 1.4.0(react@19.3.1)
