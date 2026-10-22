@@ -361,6 +361,37 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ── path to real use (one slide) ──────────────────────────── */}
+        <section id="path" className="container-rv scroll-mt-6 pb-16 sm:pb-[90px]" aria-labelledby="path-title">
+          <div className="rounded-[18px] bg-ink px-6 py-10 text-paper sm:px-10 sm:py-12">
+            <div className="grid items-end gap-6 md:grid-cols-2">
+              <h2 id="path-title" className="h2">
+                From replay
+                <br />
+                to real use.
+              </h2>
+              <p className="max-w-[46ch] leading-[1.8] opacity-85">
+                What would have to change before a real programme could rely on this. A roadmap, not a claim: today Rilva is a testnet demonstration.
+              </p>
+            </div>
+            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                ["More than one attestor", "m-of-n signatures or a challenge window, so no single party can settle a campaign alone."],
+                ["Calibrated triggers", "SPI or locally agreed thresholds, designed with the people a programme serves, instead of an illustrative 60 %."],
+                ["More places and seasons", "The same method with new specs: one public spec per location and season, each reproducible on its own."],
+                ["Audit, then a pilot", "An independent contract audit, then a supervised pilot alongside an existing anticipatory-action programme."],
+              ].map(([t, d], i) => (
+                <li key={t} className="rounded-[14px] bg-paper/10 p-5 ring-1 ring-paper/15">
+                  <span className="inline-grid size-6 place-items-center rounded-full text-[11px] ring-1 ring-paper/40">{i + 1}</span>
+                  <p className="mt-3 font-display text-[18px] font-semibold tracking-[-0.03em]">{t}</p>
+                  <p className="mt-1.5 text-[13px] leading-[1.75] opacity-80">{d}</p>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-6 text-[13px] opacity-80">What stays the same: a public spec, evidence anyone can recompute, and a rule the contract enforces itself.</p>
+          </div>
+        </section>
+
         {/* ── limitations ───────────────────────────────────────────── */}
         <section className="container-rv pb-16 sm:pb-[90px]" aria-labelledby="limits-title">
           <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
