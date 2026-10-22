@@ -39,7 +39,7 @@ export function RefundPanel({ id, c, escrow, canRefund, chainNow, onDone }: { id
         <button
           type="button"
           className="btn btn-ink w-fit"
-          disabled={tx.state.step === "simulating" || tx.state.step === "wallet" || tx.state.step === "pending"}
+          disabled={tx.state.step !== "idle" && tx.state.step !== "failed"}
           onClick={async () => {
             if (await tx.run(prepareRefundAfterDeadline({ escrow, campaignId: id }), "Refunded to the funder (reason: Timeout).")) onDone();
           }}

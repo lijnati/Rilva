@@ -11,7 +11,7 @@ import { loadBrowserEvidence } from "@/lib/app/browserEvidence";
 import { formatUtc, seasonLabel } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
 import { assertWalletChain } from "@/lib/app/walletRequest";
-import { parseSignedAttestation, serializeSignedAttestation, type SignedAttestation } from "@/lib/app/signedAttestation";
+import { parseSignedAttestation, serializeSignedAttestation, settleReadiness, type SignedAttestation } from "@/lib/app/signedAttestation";
 import { formatBpsAsPercent, formatDmmAsMm, type ClimateSpec } from "@/lib/climate";
 import type { ClimateEvidenceResult } from "@/lib/climate";
 import { attestationTypedData, buildAttestation, prepareSettle, rilvaDomain, verifyAttestation, type Attestation, type Campaign } from "@/lib/contracts";
@@ -48,7 +48,7 @@ export function AttestPanel({
   escrow: `0x${string}`;
   chainNow: bigint;
   signed: SignedAttestation | null;
-  onSigned: (s: SignedAttestation) => void;
+  onSigned: (s: SignedAttestation | null) => void;
   onSettled: () => void;
 }) {
   const connection = useConnection();
@@ -66,6 +66,9 @@ export function AttestPanel({
   const isAttestor = connected && connection.address.toLowerCase() === c.attestor.toLowerCase();
   const wrongChain = connected && connection.chainId !== CHAIN.chain.id;
   const busy = tx.state.step === "simulating" || tx.state.step === "wallet" || tx.state.step === "pending";
+  const settled = tx.state.step === "confirmed";
+  const readinessCtx = { campaignId: id, chainId: CHAIN.chain.id, escrow, chainNow };
+  const readiness = signed ? settleReadiness(signed, c, readinessCtx) : null;
 
   async function recompute() {
     setEvidence({ kind: "loading" });
@@ -103,8 +106,8 @@ export function AttestPanel({
     setPasteError(null);
     try {
       const s = parseSignedAttestation(pasted);
-      if (s.chainId !== CHAIN.chain.id || s.escrow.toLowerCase() !== escrow.toLowerCase()) throw new Error("This attestation is for a different chain or contract.");
-      if (s.attestation.campaignId !== id) throw new Error(`This attestation is for campaign #${s.attestation.campaignId}, not #${id}.`);
+      const ready = settleReadiness(s, c, readinessCtx);
+      if (!ready.ok) throw new Error(ready.reason);
       onSigned(s);
     } catch (e) {
       setPasteError(e instanceof Error ? e.message : String(e));
@@ -230,7 +233,16 @@ export function AttestPanel({
 
       <Step n={4} title="Submit to the contract" active={!!signed}>
         {signed ? (
-          !connected || wrongChain ? (
+          settled ? null : readiness && !readiness.ok ? (
+            <div className="grid gap-2 rounded-[12px] bg-warn-soft px-4 py-3 text-[13px]" role="alert">
+              <p>
+                <strong>This signed attestation can no longer settle.</strong> {readiness.reason}
+              </p>
+              <button type="button" className="btn btn-sm btn-outline w-fit" onClick={() => onSigned(null)}>
+                Discard it and start again
+              </button>
+            </div>
+          ) : !connected || wrongChain ? (
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-[13px] text-ink-2">Anyone can submit, paying only gas. Connect a wallet.</p>
               <WalletControl tone="paper" />
