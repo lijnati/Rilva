@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { ExplorerView } from "@/components/climate/ExplorerView";
 import { LocatorMap } from "@/components/climate/LocatorMap";
+import { SourceComparison } from "@/components/climate/SourceComparison";
 import { PageHero } from "@/components/site/PageHero";
 import { ReplayBanner } from "@/components/site/ReplayBanner";
-import { CHIRPS_OND } from "@/lib/app/chirps";
 import { loadScenarioEvidence } from "@/lib/app/evidence.server";
-import { formatBpsAsPercent, formatDmmAsMm } from "@/lib/climate";
+import { formatDmmAsMm } from "@/lib/climate";
 
 export const metadata: Metadata = {
   title: "Climate Explorer",
@@ -13,10 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ExplorePage() {
-  const { series, scenarios } = await loadScenarioEvidence();
+  const { series, scenarios, sources } = await loadScenarioEvidence();
   const { resolved, requested } = series.location;
-  const disagreement = CHIRPS_OND[2021];
-  const ond2021 = series.observed.find((o) => o.year === 2021);
 
   return (
     <>
@@ -45,6 +43,8 @@ export default async function ExplorePage() {
           }
         />
 
+        <SourceComparison rows={sources} thresholdBps={series.thresholdBps} />
+
         <section aria-labelledby="place-title">
           <div className="card p-5 sm:p-6">
             <h2 id="place-title" className="h3">Where and what</h2>
@@ -67,11 +67,10 @@ export default async function ExplorePage() {
               ))}
             </dl>
             <div className="rounded-[12px] bg-ice px-4 py-3.5 text-[13px] leading-6">
-              <p className="font-semibold">Why the sources disagree</p>
+              <p className="font-semibold">What this cell is, and is not</p>
               <p className="mt-1 text-ink-2">
-                ERA5 and CHIRPS v3 disagree for some seasons (e.g. MAM 2021: 55 % vs 101 % of normal). Rilva shows both and uses ERA5
-                for the rule. For OND 2021, ERA5 gives {ond2021 ? formatBpsAsPercent(ond2021.indexBps) : "—"} % and CHIRPS v3 {disagreement?.percentOfNormal} %. ERA5 is used because it
-                can be re-fetched and re-hashed byte-for-byte from a public API.
+                One ~28 km ERA5 grid cell over Yabelo. It is a model estimate, not a rain gauge, and it does not represent Borena Zone, a farm or a
+                household. A different baseline period would shift every percentage.
               </p>
             </div>
             </div>

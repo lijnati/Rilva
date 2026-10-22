@@ -2,6 +2,10 @@
 import { cache } from "react";
 import { getClimateEvidence, SCENARIOS, zScore, type ScenarioId } from "../climate";
 import { readManifestFromDisk, readSnapshotFileFromDisk } from "../climate/node";
+import { REFERENCE_CASES } from "../climate/scenarios";
+import { compareSources } from "./chirps";
+import { seasonLabel } from "./format";
+import { isoToYyyymmdd } from "../contracts/spec";
 import { buildSeasonSeries } from "./explorerSeries";
 
 /**
@@ -30,5 +34,14 @@ export const loadScenarioEvidence = cache(async () => {
     evidenceFile: `${id}.json`,
     provenance: { mode: result.provenance.mode, documents: result.provenance.documents },
   }));
-  return { series, scenarios, artifacts: Object.fromEntries(results.map((r) => [r.id, r.result.artifact])) as Record<ScenarioId, (typeof results)[number]["result"]["artifact"]> };
+  // Source comparison: the replay seasons plus the documented MAM 2021 counter-example (CLIMATE_DATA.md §3.2),
+  // all recomputed from snapshots. CHIRPS values are cited figures, never computed here.
+  const mam = await getClimateEvidence(REFERENCE_CASES["yabelo-mam-2021"].spec, { mode: "snapshot", manifest, readSnapshotFile: readSnapshotFileFromDisk });
+  const label = (core: { periods: { observed: { start: string; end: string } } }) =>
+    seasonLabel(isoToYyyymmdd(core.periods.observed.start), isoToYyyymmdd(core.periods.observed.end));
+  const sources = compareSources(
+    [...results.map((r) => r.result.artifact), mam.artifact].map((a) => ({ key: label(a.core), era5Bps: a.core.result.indexBps })),
+    series.thresholdBps,
+  );
+  return { series, scenarios, sources, artifacts: Object.fromEntries(results.map((r) => [r.id, r.result.artifact])) as Record<ScenarioId, (typeof results)[number]["result"]["artifact"]> };
 });
