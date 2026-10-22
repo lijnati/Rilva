@@ -90,7 +90,8 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 ## 5. APIs
 
 - **Removed from scope (2026-10-22):** the `/api/rainfall` proxy. The browser fetches Open-Meteo directly (CORS verified) and falls back to the committed, SHA-256-checked snapshots with a visible notice. One fewer server component to trust or operate.
-- No server API exists. Chain reads go through the public RPC `https://sepolia.base.org` via viem (or `NEXT_PUBLIC_RPC_URL`). Event history is read with `eth_getLogs` filtered by the indexed `campaignId`, in chunks of ≤ 9,000 blocks from the deploy block (`lib/app/chainHistory.ts`; the exact Base RPC range limit is UNVERIFIED). A dedicated RPC URL (e.g. Alchemy/QuickNode) is optional if rate-limited (UNVERIFIED whether that is needed).
+- No server API exists. Chain reads go through the public RPC `https://sepolia.base.org` via viem (or `NEXT_PUBLIC_RPC_URL`). Event history (`lib/app/chainHistory.ts`): the public endpoint rejects `eth_getLogs` over more than 200 blocks (observed 2026-10-22: "eth_getLogs is limited to a 200 range"), so nothing scans. The creation block is found by binary search over historical `campaignCount()` and the final block over the campaign's status (both only move forward; the public RPC serves historical `eth_call`, checked 2026-10-22), then logs are read for those single blocks with the indexed `campaignId`. `NEXT_PUBLIC_RILVA_DEPLOY_BLOCK` only narrows the search. The wagmi transport batches JSON-RPC (accepted by the public endpoint), with 3 retries and a 15 s timeout. A dedicated RPC URL is optional (`NEXT_PUBLIC_RPC_URL`).
+- Before any chain-backed page renders, `EscrowGate` confirms the configured address is RilvaEscrow v1 on the configured chain (RPC chain id, code present, EIP-5267 domain). Otherwise it shows a configuration error and offers no transaction; climate pages keep working. Every write and signature names its chain (`lib/app/walletRequest.ts`).
 
 ## 6. Persistence decision
 
@@ -150,7 +151,7 @@ The contract-level table is in CONTRACTS.md §8. Additional system boundaries:
 
 ## 10. Deployment
 
-- Contracts: `pnpm contracts:deploy:base-sepolia` (Hardhat Ignition with `--verify`). The deployer key comes from the Hardhat keystore. See DEPLOYMENT.md. **Status: pending credentials and approval.**
+- Contracts: `pnpm contracts:preflight:base-sepolia` (read-only) → `pnpm contracts:deploy:base-sepolia` (Hardhat Ignition, production compiler profile pinned to the tested settings) → `pnpm contracts:smoke:base-sepolia` → `pnpm contracts:verify:base-sepolia`. The deployer key comes from the Hardhat keystore. See DEPLOYMENT.md. **Status: pending credentials and approval.**
 - App: Vercel (needs the human's account). Public env vars only: `NEXT_PUBLIC_RILVA_ESCROW_ADDRESS`, `NEXT_PUBLIC_RILVA_DEPLOY_BLOCK`, optional `NEXT_PUBLIC_RPC_URL`, and `NEXT_PUBLIC_RILVA_CHAIN` (`base-sepolia` default, or `local` for a Hardhat node on 31337; there is no mainnet option).
 - Local development chain (Phase 3): `pnpm chain:node`, `pnpm chain:deploy:local`, `pnpm chain:seed:local` (refuses any chain but 31337; the node's dev accounts sign over JSON-RPC, so no keys are stored). Every view labels it "Local Hardhat chain · development only".
 - Demo campaigns:
