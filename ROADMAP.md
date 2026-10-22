@@ -92,7 +92,7 @@ Test-first throughout.
 2. Locator map → replace with a text location card (coordinates and grid cell).
 3. Landing page → shrink to a single section that links to the explorer and demos.
 4. Explorer CHIRPS column → keep it as a static table in `/methodology`, sourced from CLIMATE_DATA.md.
-5. `/api/rainfall` proxy → the browser fetches Open-Meteo directly (CORS verified), with the saved snapshot as fallback.
+5. `/api/rainfall` proxy → the browser fetches Open-Meteo directly (CORS verified), with the saved snapshot as fallback. **Applied 2026-10-22: removed from scope.**
 6. Live creation in the video → use pre-created campaigns A and B and show the create form only.
 7. **Last resort:**
    - If Base Sepolia or the faucets are unusable, run the demo on a local Anvil chain and record it. State clearly that it is local.
@@ -138,7 +138,7 @@ The following are **never cut**: the SRPN golden tests, contract security tests,
 | R1 | **6-day schedule** | High | High | Strict gates, freeze on Fri 18:00, fallback list §2, video reserved for a full day |
 | R2 | Eligibility conflict ("Students only") | Medium | Critical | Human emails the organisers on day 0 |
 | R3 | Testnet faucet limits / no ETH | Medium | High | Get funds on day 1. Demo amounts are 0.01 ETH. Anvil fallback. |
-| R4 | Open-Meteo outage or rate limit (observed flakiness) | Medium | Medium | Committed snapshots (done), retry with backoff (done), proxy cache |
+| R4 | Open-Meteo outage or rate limit (observed flakiness) | Medium | Medium | Committed snapshots (done), retry with backoff (done); no proxy (removed from scope) |
 | R5 | Typed-data mismatch between viem and Solidity | Medium | High | Golden digest parity test in Phase 1 |
 | R6 | Dependency incompatibility (TS 7, Next 16.4, wagmi 3) | Medium | Medium | Use the versions create-next-app pins. Pin exact versions and lock. |
 | R7 | Scientific credibility challenged (ERA5 vs CHIRPS disagreement) | Medium | Medium | Show both sources openly. The chosen OND season agrees (r = 0.90). Explicit limitations. |

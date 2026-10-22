@@ -12,7 +12,7 @@
    - Campaign state lives on-chain.
    - Evidence is reproducible from `spec` + public data.
    - Demo evidence JSON is also committed as static files.
-4. **AI is not in the decision path.** If added later, it is limited to labeled, grounded summaries of already-computed evidence.
+4. **No AI.** Rilva has no AI features (AI summaries were removed from scope on 2026-10-22). Nothing but the deterministic SRPN-v1 code and the contract decides anything.
 5. **Minimal dependencies, one repo, one deployable app.** Contracts live in the same repo under Hardhat 3 (Phase 2 switched from Foundry).
 
 ## 2. System diagram
@@ -29,10 +29,9 @@
  Anyone / judge ────────►│  /verify/[id] ─► read events + campaign ─► re-fetch → recompute → compare ◄── Base Sepolia: RilvaEscrow      │
                          │  /explore     ─► lib/climate + Recharts (real ERA5 & CHIRPS numbers)          (events = audit trail)          │
                          └─────────────┬────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                       │ GET (optional proxy + cache; fallback to direct CORS fetch, then saved snapshots)
+                                       │ direct CORS GET (models=era5), with a labelled fallback to the saved snapshots
                                        ▼
-                    Next.js route handler /api/rainfall  ───────►  archive-api.open-meteo.com (ERA5, models=era5)
-                    (no keys, no writes, cache-only)              /public/snapshots/.../*.json (committed raw responses)
+                    archive-api.open-meteo.com (ERA5, models=era5)     /public/snapshots/.../*.json (committed raw responses)
 ```
 
 ## 3. Components
@@ -42,11 +41,10 @@
 | `contracts/` (Hardhat 3, solc 0.8.37) | `RilvaEscrow` escrow, EIP-712 verification, state machine, events (CONTRACTS.md) | Security-critical |
 | `lib/contracts/` | Generated ABI, the single EIP-712 type definition, spec→terms mapping, read/write-prep helpers, event parsing, error text, Base Sepolia config | Security-relevant; parity-tested with Solidity |
 | `lib/climate/` (pure TS, no I/O in core) | Parse Open-Meteo responses, validate completeness, compute SRPN-v1 with BigInt, build `evidence.core`, JCS + keccak256 | Correctness-critical; must be unit-tested against golden values |
-| `lib/climate/source.ts` | Fetch with retry, chunking by decade, and fallback order **proxy → direct → saved snapshot**, always labelled | Untrusted I/O |
+| `lib/climate/source.ts` | Fetch with retry, chunking by decade, and fallback order **direct → saved snapshot**, always labelled | Untrusted I/O |
 | `lib/app/` (Phase 3, pure TS, relative imports, unit-tested) | View logic for the UI: explorer series, create-form validation (exact wei, contract-rule mirror), campaign view model (contract states only), bounded log history + settle-calldata decoding, the verification checklist, signed-attestation export/import, revert decoding, browser evidence loader | Security-relevant: never decides eligibility; the contract re-checks everything |
 | `components/chain/` | wagmi (injected wallet only) + TanStack Query providers, wallet/network states, read hooks via the public RPC | UI; no keys |
 | `app/` (Next.js App Router) | Pages in [DESIGN.md](DESIGN.md) §5 | UI |
-| `app/api/rainfall/route.ts` | **Not built (Phase 3, ROADMAP fallback #5).** The browser fetches Open-Meteo directly (CORS verified) and falls back to the committed snapshots with a visible notice. | — |
 | `public/snapshots/open-meteo/era5/yabelo/` | Committed raw Open-Meteo responses (baseline decades and observed seasons) | Byte-exact. SHA-256 recorded in `manifest.json`; `.gitattributes -text` |
 | `public/evidence/` | Precomputed evidence JSON for demo campaigns, named by `evidenceHash` | Convenience only; the verifier recomputes regardless |
 | `ignition/modules/RilvaEscrow.ts` | Hardhat Ignition deployment of the single contract | Deployer key only from the Hardhat keystore or a shell env; never in the repo |
@@ -91,10 +89,7 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 
 ## 5. APIs
 
-- *Deferred (fallback #5, not implemented in Phase 3):* `GET /api/rainfall?lat=4.88&lon=38.08&start=YYYY-MM-DD&end=YYYY-MM-DD`
-  - The server forces `daily=precipitation_sum&models=era5&timezone=Africa/Addis_Ababa`.
-  - It returns the upstream JSON verbatim with an `x-rilva-source: upstream|cache` header.
-  - It rejects ranges longer than 11 years (chunking happens in the client), and dates outside 1940..today−7d.
+- **Removed from scope (2026-10-22):** the `/api/rainfall` proxy. The browser fetches Open-Meteo directly (CORS verified) and falls back to the committed, SHA-256-checked snapshots with a visible notice. One fewer server component to trust or operate.
 - No server API exists. Chain reads go through the public RPC `https://sepolia.base.org` via viem (or `NEXT_PUBLIC_RPC_URL`). Event history is read with `eth_getLogs` filtered by the indexed `campaignId`, in chunks of ≤ 9,000 blocks from the deploy block (`lib/app/chainHistory.ts`; the exact Base RPC range limit is UNVERIFIED). A dedicated RPC URL (e.g. Alchemy/QuickNode) is optional if rate-limited (UNVERIFIED whether that is needed).
 
 ## 6. Persistence decision
@@ -148,8 +143,6 @@ The contract-level table is in CONTRACTS.md §8. Additional system boundaries:
 | Boundary | Threat | Control |
 |---|---|---|
 | Browser ↔ Open-Meteo | MITM / spoofed data | HTTPS. The verifier can cross-check saved snapshots and CHIRPS. Any deviation shows as a hash mismatch. |
-| Browser ↔ `/api/rainfall` | A compromised server serves altered data | The attestor client recomputes with a **direct** fetch before signing (a "direct" toggle defaults on for the attestor). The hash exposes divergence. |
-| Proxy abuse | Open-proxy or rate-limit exhaustion | Param whitelist, fixed model and variable, cache, no arbitrary URL |
 | UI ↔ wallet | Blind signing | EIP-712 with named fields. The UI repeats the fields and hash in readable form. |
 | Repo / secrets | Key leakage | `.env*` in `.gitignore`. No keys on the server. Pre-commit grep for `PRIVATE_KEY=0x` (CLAUDE.md). |
 | Dependencies | Malicious update | Exact version pins and a committed lockfile. No postinstall scripts from unknown packages. |

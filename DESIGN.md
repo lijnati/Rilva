@@ -78,7 +78,7 @@ Rules (unchanged from Phase 0):
 | Route | Purpose | Key content |
 |---|---|---|
 | `/` | Landing | Headline, a one-paragraph problem statement, a 4-step "how it works" (Spec → Evidence → Attestation → Settlement), a real OND chart preview, a trust-model summary, links to the explorer and the live demo campaigns, and limitations in a footer section |
-| `/explore` | Climate explorer | Static locator map (Ethiopia, Borena, ERA5 cell square, CHIRPS cell), season toggle (OND / MAM), 1991–2023 bar chart, a year detail panel (ERA5 total, % of normal, z, CHIRPS v3 %), and a "Why sources disagree" note |
+| `/explore` | Climate explorer | Static locator map (Ethiopia, Borena, ERA5 cell square, CHIRPS cell), replay season tabs (OND 2021–2023; no MAM toggle — MAM 2021 appears only as the documented counter-example in the ERA5 vs CHIRPS comparison), 1991–2023 bar chart, a year detail panel (ERA5 total, % of normal, z, CHIRPS v3 %), and a "Why sources disagree" note |
 | `/campaigns` | List | Campaigns read from the chain: status, period, amount, outcome |
 | `/campaigns/new` | Create and fund | Stepped form → spec preview (mono JSON, hash) → review → fund (wallet) |
 | `/campaigns/[id]` | Status + evidence + attest/settle + refund + "Try to break it" | Role-aware: the connected wallet's role (funder / attestor / beneficiary / visitor) changes which actions are shown |

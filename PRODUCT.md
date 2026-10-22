@@ -55,10 +55,11 @@ In scope:
 
 - Tokens, DAOs, NFTs, governance, staking, or any speculative crypto mechanics.
 - Mainnet, real money, insurance products, or claims of actual relief delivery or humanitarian impact.
-- Multiple regions, polygons, multiple indicators, SPI, or ML forecasting.
+- Multiple regions or seasons beyond the Yabelo OND replays (and no MAM toggle), polygons, multiple indicators, SPI, or ML forecasting. These appear only as roadmap items in "From replay to real use".
 - Accounts, enterprise auth, a database, or notifications.
 - Live drought alerts. Every demo season is a labelled retrospective replay.
-- AI deciding eligibility or payouts. AI summaries are optional future work, labelled and grounded only.
+- Any AI: no AI deciding eligibility or payouts, and no AI summaries (removed from scope 2026-10-22).
+- A server-side rainfall proxy (`/api/rainfall`): removed from scope 2026-10-22; the browser reads Open-Meteo directly with a snapshot fallback.
 
 ## 7. User journeys
 
