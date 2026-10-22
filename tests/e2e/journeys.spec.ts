@@ -30,8 +30,9 @@ test("landing: hero, how-it-works and disclosures", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(/Climate evidence you can verify/);
   await expect(page.getByText("Testnet demonstration. No real funds, no insurance, no relief delivered.")).toBeVisible();
-  await page.getByRole("link", { name: /See how it works/ }).click();
-  await expect(page.getByRole("heading", { name: /Public rules/ })).toBeVisible();
+  await page.getByRole("link", { name: /See it work, no wallet/ }).click();
+  await expect(page.getByRole("heading", { name: /See it work/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Open the Climate Explorer/ }).first()).toBeVisible();
 });
 
 test("invalid campaign ids are explained, not crashed", async ({ page }) => {

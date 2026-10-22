@@ -3,6 +3,7 @@ import { HashField } from "@/components/chain/HashField";
 import { RuleOutcome } from "@/components/climate/Outcome";
 import { SeasonChart } from "@/components/climate/SeasonChart";
 import { IsoArt } from "@/components/site/IsoArt";
+import { JudgePath } from "@/components/site/JudgePath";
 import { PixelCritter, PixelScene } from "@/components/site/PixelScene";
 import { SiteNav } from "@/components/site/SiteNav";
 import { SplitTitle } from "@/components/site/SplitTitle";
@@ -96,8 +97,8 @@ export default async function Home() {
             <ButtonLink href="/explore" variant="butter" arrow="→">
               Explore climate data
             </ButtonLink>
-            <ButtonLink href="#how" variant="sheet" arrow="↓">
-              See how it works
+            <ButtonLink href="#see-it-work" variant="sheet" arrow="↓">
+              See it work, no wallet
             </ButtonLink>
           </div>
           <p className="reveal mt-5 text-[12px] text-white/90" style={{ "--d": ".8s" } as React.CSSProperties}>
@@ -162,6 +163,8 @@ export default async function Home() {
             <span>Base Sepolia testnet</span>
           </div>
         </div>
+
+        <JudgePath />
 
         {/* ── problem ───────────────────────────────────────────────── */}
         <section className="container-rv py-16 sm:py-[90px]" aria-labelledby="problem-title">

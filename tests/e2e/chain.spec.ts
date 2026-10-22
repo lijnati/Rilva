@@ -41,3 +41,12 @@ test("campaign list shows real records and a missing id is explained", async ({ 
   await page.goto("/campaigns/999");
   await expect(page.getByText("Campaign #999 does not exist")).toBeVisible();
 });
+
+test("judge path links to real released, refunded and active campaigns", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("#see-it-work");
+  await expect(section.getByRole("link", { name: /Verify campaign #\d+/ }).first()).toBeVisible({ timeout: 60_000 });
+  await expect(section.getByRole("link", { name: /Attack campaign #\d+/ })).toBeVisible();
+  await section.getByRole("link", { name: /Verify a payout/ }).click();
+  await expect(page.getByText("Every applicable check passed")).toBeVisible({ timeout: 90_000 });
+});
