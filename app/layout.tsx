@@ -1,41 +1,49 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
+import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { Footer } from "@/components/site/Footer";
+import { RevealObserver } from "@/components/site/RevealObserver";
 import "./globals.css";
 
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-dm-sans", display: "swap" });
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Rilva — Climate evidence. Verifiable relief.",
+  title: { default: "Rilva — Climate evidence. Verifiable relief.", template: "%s · Rilva" },
   description:
     "Reproducible rainfall evidence and auditable, testnet-only drought-relief escrow. Historical replays only; not a live alert.",
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f9f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1512" },
+  ],
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable} ${dmSans.variable} ${instrumentSerif.variable}`}
+    >
       <body className="min-h-dvh">
-        <header className="border-b border-rule">
-          <div className="mx-auto flex max-w-[1200px] items-center justify-between px-4 py-4 sm:px-6">
-            <span className="text-lg font-semibold tracking-[-0.02em]">Rilva</span>
-            <span className="text-xs text-ink-3">Base Sepolia · testnet</span>
-          </div>
-        </header>
+        <noscript>
+          <style>{`.reveal,.split .w{opacity:1!important;transform:none!important;filter:none!important}`}</style>
+        </noscript>
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn btn-sm btn-butter">
+          Skip to content
+        </a>
         {children}
-        <footer className="border-t border-rule">
-          <div className="mx-auto max-w-[1200px] px-4 py-8 text-xs leading-5 text-ink-3 sm:px-6">
-            <p>Testnet demonstration. No real funds, no insurance, no relief delivered.</p>
-            <p>
-              Weather data by{" "}
-              <a className="underline" href="https://open-meteo.com/">
-                Open-Meteo.com
-              </a>{" "}
-              (
-              <a className="underline" href="https://creativecommons.org/licenses/by/4.0/">
-                CC BY 4.0
-              </a>
-              ), based on ERA5 — Copernicus Climate Change Service.
-            </p>
-          </div>
-        </footer>
+        <Footer />
+        <RevealObserver />
       </body>
     </html>
   );
