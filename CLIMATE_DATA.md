@@ -98,7 +98,7 @@ ERA5 via Open-Meteo, point 4.88/38.08 (resolved 5.0/38.0), `timezone=Africa/Addi
 | **OND 2023** | 498.9 mm (4989 dmm) | **21322 bps (213.22 %)** | +2.28 | 238.8 mm | 140.9 % | **Does not trigger** |
 
 Notes:
-- ERA5 OND 2021 ties 1998 as the driest OND in 1991–2023 at this point. CHIRPS v3 ranks OND 2021 fifth driest.
+- ERA5 OND 2021 (78.7 mm) is the second-driest OND in 1991–2023 at this point, 0.1 mm above OND 1998 (78.6 mm = 786 dmm, from the committed snapshots; corrected 2026-10-22 from an earlier "ties 1998"). CHIRPS v3 ranks OND 2021 fifth driest.
 - **Agreement:** the year-to-year correlation of percent-of-normal between ERA5 and CHIRPS v3 at this location is **r = 0.90 for OND** and only **r = 0.75 for MAM**.
 - **Disagreement example (why we did not choose MAM 2021):** ERA5 MAM 2021 = 54.68 %, but CHIRPS v3 MAM 2021 = 101.4 %. A MAM 2021 trigger would therefore be source-dependent. MAM 2022 is 74.6 % (ERA5) versus 58.6 % (CHIRPS), with the opposite sign of disagreement.
 - **OND 2020** is above normal in both datasets (ERA5 145 %, CHIRPS 155 %) at this point, although regional narratives often count OND 2020 as the first failed season. We do not claim OND 2020 was dry at Yabelo.
