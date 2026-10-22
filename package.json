@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "climate:snapshot": "tsx scripts/climate/snapshot.ts",
     "climate:evidence": "tsx scripts/climate/evidence.ts",
     "climate:verify": "tsx scripts/climate/verify.ts",

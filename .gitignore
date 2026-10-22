@@ -28,3 +28,7 @@ artifacts/
 cache/
 types/
 ignition/deployments/chain-31337/
+
+# playwright
+test-results/
+playwright-report/
