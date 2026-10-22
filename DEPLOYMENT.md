@@ -52,6 +52,7 @@ How the deploy behaves:
    - `campaignCount()` = 0.
 3. Set the public configuration (e.g. Vercel project env, or local `.env.local`):
    ```
+   NEXT_PUBLIC_RILVA_CHAIN=base-sepolia
    NEXT_PUBLIC_RILVA_ESCROW_ADDRESS=0x…
    NEXT_PUBLIC_RILVA_DEPLOY_BLOCK=…
    ```
@@ -66,3 +67,20 @@ const client = createPublicClient({ chain: RILVA_CHAIN, transport: http() });
 await client.readContract({ address, abi: RILVA_ESCROW_ABI, functionName: "eip712Domain" });
 await client.readContract({ address, abi: RILVA_ESCROW_ABI, functionName: "campaignCount" });
 ```
+
+## Local development chain (Phase 3, no credentials)
+For building and testing the UI before the testnet deployment. Nothing here touches a public network.
+```bash
+pnpm chain:node            # terminal 1 — Hardhat node, chain 31337, http://127.0.0.1:8545
+pnpm chain:deploy:local    # terminal 2 — Ignition deploy to localhost (record in ignition/deployments/chain-31337, git-ignored)
+pnpm chain:seed:local      # creates demo campaigns via the app helpers; refuses any chain but 31337
+```
+`chain:seed:local` creates #1 OND 2021 (settled → Released), #2 OND 2023 (settled → Refunded, rule not met), #3 OND 2022 (Active, 7-day window) and #4 OND 2021 (Active, 11-minute window for the timeout-refund demo). The node's unlocked dev accounts sign over JSON-RPC; the script holds no keys.
+
+Then create `.env.local` (git-ignored) with the values the script prints:
+```
+NEXT_PUBLIC_RILVA_CHAIN=local
+NEXT_PUBLIC_RILVA_ESCROW_ADDRESS=<printed address>
+NEXT_PUBLIC_RILVA_DEPLOY_BLOCK=0
+```
+To sign or submit from the browser, a wallet must be pointed at `http://127.0.0.1:8545` (chain 31337) with one of Hardhat's publicly documented **test** accounts — local only, never on any public network. Every page shows "Local Hardhat chain · development only" in this mode.

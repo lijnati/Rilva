@@ -43,9 +43,10 @@
 | `lib/contracts/` | Generated ABI, the single EIP-712 type definition, spec→terms mapping, read/write-prep helpers, event parsing, error text, Base Sepolia config | Security-relevant; parity-tested with Solidity |
 | `lib/climate/` (pure TS, no I/O in core) | Parse Open-Meteo responses, validate completeness, compute SRPN-v1 with BigInt, build `evidence.core`, JCS + keccak256 | Correctness-critical; must be unit-tested against golden values |
 | `lib/climate/source.ts` | Fetch with retry, chunking by decade, and fallback order **proxy → direct → saved snapshot**, always labelled | Untrusted I/O |
-| `lib/chain/` | viem/wagmi config for Base Sepolia, ABI, typed-data builder shared with tests, error decoding | Security-relevant (typed data must match Solidity) |
+| `lib/app/` (Phase 3, pure TS, relative imports, unit-tested) | View logic for the UI: explorer series, create-form validation (exact wei, contract-rule mirror), campaign view model (contract states only), bounded log history + settle-calldata decoding, the verification checklist, signed-attestation export/import, revert decoding, browser evidence loader | Security-relevant: never decides eligibility; the contract re-checks everything |
+| `components/chain/` | wagmi (injected wallet only) + TanStack Query providers, wallet/network states, read hooks via the public RPC | UI; no keys |
 | `app/` (Next.js App Router) | Pages in [DESIGN.md](DESIGN.md) §5 | UI |
-| `app/api/rainfall/route.ts` | GET-only proxy that whitelists params (lat/lon/date/model fixed to `era5`/`precipitation_sum`) and caches responses | Untrusted; never signs; no secrets |
+| `app/api/rainfall/route.ts` | **Not built (Phase 3, ROADMAP fallback #5).** The browser fetches Open-Meteo directly (CORS verified) and falls back to the committed snapshots with a visible notice. | — |
 | `public/snapshots/open-meteo/era5/yabelo/` | Committed raw Open-Meteo responses (baseline decades and observed seasons) | Byte-exact. SHA-256 recorded in `manifest.json`; `.gitattributes -text` |
 | `public/evidence/` | Precomputed evidence JSON for demo campaigns, named by `evidenceHash` | Convenience only; the verifier recomputes regardless |
 | `ignition/modules/RilvaEscrow.ts` | Hardhat Ignition deployment of the single contract | Deployer key only from the Hardhat keystore or a shell env; never in the repo |
@@ -90,11 +91,11 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 
 ## 5. APIs
 
-- `GET /api/rainfall?lat=4.88&lon=38.08&start=YYYY-MM-DD&end=YYYY-MM-DD`
+- *Deferred (fallback #5, not implemented in Phase 3):* `GET /api/rainfall?lat=4.88&lon=38.08&start=YYYY-MM-DD&end=YYYY-MM-DD`
   - The server forces `daily=precipitation_sum&models=era5&timezone=Africa/Addis_Ababa`.
   - It returns the upstream JSON verbatim with an `x-rilva-source: upstream|cache` header.
   - It rejects ranges longer than 11 years (chunking happens in the client), and dates outside 1940..today−7d.
-- No other server API. Chain reads go through the public RPC `https://sepolia.base.org` via viem. A dedicated RPC URL (e.g. Alchemy/QuickNode) is optional if rate-limited (UNVERIFIED whether that is needed).
+- No server API exists. Chain reads go through the public RPC `https://sepolia.base.org` via viem (or `NEXT_PUBLIC_RPC_URL`). Event history is read with `eth_getLogs` filtered by the indexed `campaignId`, in chunks of ≤ 9,000 blocks from the deploy block (`lib/app/chainHistory.ts`; the exact Base RPC range limit is UNVERIFIED). A dedicated RPC URL (e.g. Alchemy/QuickNode) is optional if rate-limited (UNVERIFIED whether that is needed).
 
 ## 6. Persistence decision
 
@@ -112,7 +113,8 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 | Styling | Tailwind CSS + shadcn/ui | tailwindcss 4.3.3, shadcn 4.22.1 | Use only the components we need |
 | Fonts | Geist (`geist` package / `next/font`) | geist 1.8.1 | |
 | Chain | viem + wagmi + TanStack Query | viem 2.57.7, wagmi 3.7.7, @tanstack/react-query 5.104.4 | Injected wallet connector only (MetaMask / Rabby / Coinbase) |
-| Charts | Recharts | recharts 3.10.1 | Or a hand-built SVG if simpler for the one bar chart |
+| Charts | Recharts | recharts 3.10.1 | Installed Phase 3 |
+| E2E | Playwright | @playwright/test 1.64.1 | Added Phase 3 (approved), Chromium only |
 | Map | **Static SVG locator** (Natural Earth admin-0, public domain) **instead of MapLibre** | maplibre-gl 6.15.0 | **Proposed simplification:** one point and two grid cells don't justify a tile-server dependency. MapLibre is a stretch goal. |
 | Canonical JSON | `canonicalize` (RFC 8785) | canonicalize 5.1.0 | Or a 30-line audited implementation with tests |
 | Hashing | viem `keccak256` | — | |
@@ -123,7 +125,8 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 
 ```
 /app                 Next.js routes (see DESIGN.md §5)
-/components          UI components
+/components          UI components (site, climate, chain, campaign, verify, ui)
+/lib/app             Phase 3 view logic (pure, tested)
 /lib/climate         SRPN-v1, evidence, canonicalization (pure) + source.ts (I/O)
 /lib/contracts       generated ABI, EIP-712 typed data, spec→terms, read/write helpers, config
 /contracts           RilvaEscrow.sol (+ contracts/test/ receivers used only by tests)
@@ -131,6 +134,8 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 /public/snapshots    raw Open-Meteo responses + manifest.json (Yabelo, era5)
 /public/evidence     demo evidence JSON by hash
 /tests/climate, /tests/lib   Vitest (pnpm test)
+/tests/e2e           Playwright journeys (pnpm test:e2e; chain journeys need E2E_CHAIN=local)
+/public/vendor       pixel-scene.js (pixel-meadow-ui skill, vendored)
 /tests/contracts     Hardhat node:test suites (pnpm contracts:test), incl. real-evidence integration
 hardhat.config.ts    solc 0.8.37, optimizer off, baseSepolia network
 PRODUCT.md CLIMATE_DATA.md ARCHITECTURE.md CONTRACTS.md DESIGN.md ROADMAP.md CLAUDE.md README.md
@@ -153,7 +158,8 @@ The contract-level table is in CONTRACTS.md §8. Additional system boundaries:
 ## 10. Deployment
 
 - Contracts: `pnpm contracts:deploy:base-sepolia` (Hardhat Ignition with `--verify`). The deployer key comes from the Hardhat keystore. See DEPLOYMENT.md. **Status: pending credentials and approval.**
-- App: Vercel (needs the human's account). Public env vars only: `NEXT_PUBLIC_ESCROW_ADDRESS`, `NEXT_PUBLIC_DEPLOY_BLOCK`, optional `NEXT_PUBLIC_RPC_URL`.
+- App: Vercel (needs the human's account). Public env vars only: `NEXT_PUBLIC_RILVA_ESCROW_ADDRESS`, `NEXT_PUBLIC_RILVA_DEPLOY_BLOCK`, optional `NEXT_PUBLIC_RPC_URL`, and `NEXT_PUBLIC_RILVA_CHAIN` (`base-sepolia` default, or `local` for a Hardhat node on 31337; there is no mainnet option).
+- Local development chain (Phase 3): `pnpm chain:node`, `pnpm chain:deploy:local`, `pnpm chain:seed:local` (refuses any chain but 31337; the node's dev accounts sign over JSON-RPC, so no keys are stored). Every view labels it "Local Hardhat chain · development only".
 - Demo campaigns:
   - A: OND 2021, triggers.
   - B: OND 2023, does not trigger.

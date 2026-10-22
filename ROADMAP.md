@@ -54,6 +54,7 @@ Test-first throughout.
   - explicit approval → `pnpm contracts:deploy:base-sepolia` (DEPLOYMENT.md).
 
 ### Phase 2b → Phase 3: Chain + core flows (Wed 21 Oct)
+> Status 2026-10-22: pages, wallet flows and verification are **built and tested on a local Hardhat chain** (Phase 3 below). **Still pending (human):** the Base Sepolia deployment (key + explicit approval) and the testnet demo campaigns A/B. Gate G2 cannot be green until then.
 - Deploy to Base Sepolia, verify the contract on Basescan, and record the address and deploy block.
 - Pages: `/campaigns/new` (create + fund), `/campaigns/[id]` (evidence, attest via the wallet's signTypedData, settle, refund), `/verify/[id]`.
 - Create demo campaigns A (OND 2021) and B (OND 2023) on testnet.
@@ -62,7 +63,8 @@ Test-first throughout.
   - The verify page shows all checks passing for A and B.
   - Rejection simulations return the expected errors.
 
-### Phase 3: Explorer, landing, rejection UX (Thu 22 Oct)
+### Phase 3: Premium application interface (Thu 22 Oct)
+> Status 2026-10-22: **done locally** with the `pixel-meadow-ui` skill — `/`, `/explore`, `/campaigns`, `/campaigns/new`, `/campaigns/[id]` (recompute → EIP-712 review → sign → submit/export, timeout refund, Try to break it), `/verify/[id]`, `/methodology`. Gates: lint, typecheck, Vitest, `climate:verify`, build, Hardhat tests incl. `appFlow.test.ts`, Playwright (journeys, 360/390 px overflow, local-chain journeys). Screenshot review at 1440/390 px, light and dark. **Not done:** Vercel deploy (human account + approval) and the deployed-URL journey, so Gate G3 remains open.
 - `/explore` (chart, year panel, CHIRPS cross-check table), `/` landing, `/methodology`.
 - "Try to break it" panel, plus all loading, error and wallet states.
 - Deploy to Vercel (preview → production).
