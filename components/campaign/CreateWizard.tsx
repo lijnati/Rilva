@@ -300,8 +300,11 @@ export function CreateWizard() {
           </ol>
         </div>
         <div className="rounded-[18px] bg-paper-deep/70 p-5 text-[12.5px] leading-6 text-ink-2">
-          <p className="font-semibold text-ink">Network</p>
+          <p className="font-semibold text-ink">Wallet and network</p>
           <p>{CHAIN.label}{CHAIN.isLocal && " — a development chain on this computer, not a public network."}</p>
+          <div className="mt-3">
+            <WalletControl tone="paper" />
+          </div>
         </div>
       </aside>
     </div>

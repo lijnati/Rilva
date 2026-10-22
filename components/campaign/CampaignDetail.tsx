@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useConnection } from "wagmi";
 import { useCampaignRecord, useChainTime } from "@/components/chain/useRilva";
+import { WalletControl } from "@/components/chain/WalletControl";
 import { ReplayBanner } from "@/components/site/ReplayBanner";
 import { CampaignStatusChip, EmptyState, NotConfigured, Skeleton } from "@/components/ui/States";
 import { CHAIN, ESCROW } from "@/lib/app/appConfig";
@@ -75,6 +76,11 @@ export function CampaignDetail({ id }: { id: bigint }) {
         {view.status !== "NotFound" && <CampaignStatusChip status={view.status} reason={view.refundReason} />}
         {connection.status === "connected" && (
           <span className="chip bg-paper-deep text-ink-2">You are: {roles.join(" & ")}</span>
+        )}
+        {view.status === "Active" && (
+          <span className="ml-auto">
+            <WalletControl tone="paper" />
+          </span>
         )}
       </div>
       {spec?.replay && <ReplayBanner season={seasonLabel(c.observationStart, c.observationEnd)} />}
