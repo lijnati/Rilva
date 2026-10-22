@@ -10,6 +10,7 @@ import { CHAIN } from "@/lib/app/appConfig";
 import { loadBrowserEvidence } from "@/lib/app/browserEvidence";
 import { formatUtc, seasonLabel } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
+import { assertWalletChain } from "@/lib/app/walletRequest";
 import { parseSignedAttestation, serializeSignedAttestation, type SignedAttestation } from "@/lib/app/signedAttestation";
 import { formatBpsAsPercent, formatDmmAsMm, type ClimateSpec } from "@/lib/climate";
 import type { ClimateEvidenceResult } from "@/lib/climate";
@@ -85,6 +86,7 @@ export function AttestPanel({
     if (!attestation || !isAttestor) return;
     setSignError(null);
     try {
+      assertWalletChain(connection.chainId, CHAIN.chain.id);
       const signature = (await sign.mutateAsync(attestationTypedData(domain, attestation))) as Hex;
       if (!(await verifyAttestation(domain, attestation, signature, c.attestor))) throw new Error("The signature does not recover to the attestor. Nothing was submitted.");
       onSigned({ attestation, signature, chainId: CHAIN.chain.id, escrow });

@@ -13,6 +13,7 @@ import { CHAIN, ESCROW } from "@/lib/app/appConfig";
 import { MAX_DEADLINE_SECONDS, MIN_DEADLINE_SECONDS, validateCreateForm, type CreateFormErrors, type CreateFormInput } from "@/lib/app/createForm";
 import { formatDuration, formatEth, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
+import { pinChain } from "@/lib/app/walletRequest";
 import { canonicalSpec, SCENARIOS, type ScenarioId } from "@/lib/climate";
 import { campaignIdFromReceipt, campaignTermsFromSpec, prepareCreateCampaign } from "@/lib/contracts";
 import { cn } from "@/lib/utils";
@@ -75,7 +76,7 @@ export function CreateWizard() {
       setTx({ step: "simulating" });
       const sim = await client.simulateContract({ ...call, account: funder as Address });
       setTx({ step: "wallet" });
-      const hash = await write.mutateAsync(sim.request);
+      const hash = await write.mutateAsync(pinChain(sim.request, CHAIN.chain.id));
       setTx({ step: "pending", hash });
       const receipt = await client.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") return setTx({ step: "failed", name: "Reverted", reason: "The transaction was mined but reverted. No campaign was created.", hash });

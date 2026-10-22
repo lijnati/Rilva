@@ -5,7 +5,9 @@ import type { Abi, Address } from "viem";
 import { useConnection, useWriteContract } from "wagmi";
 import { useEscrowClient } from "@/components/chain/useRilva";
 import type { TxState } from "@/components/chain/TxStatus";
+import { CHAIN } from "@/lib/app/appConfig";
 import { describeRevert } from "@/lib/app/revert";
+import { pinChain } from "@/lib/app/walletRequest";
 
 /**
  * simulate (eth_call, no gas) → wallet → receipt. A call that would revert never reaches the wallet;
@@ -26,7 +28,7 @@ export function useContractWrite() {
       setState({ step: "simulating" });
       const sim = await client.simulateContract({ ...call, account: connection.address } as Parameters<typeof client.simulateContract>[0]);
       setState({ step: "wallet" });
-      const hash = await write.mutateAsync(sim.request as Parameters<typeof write.mutateAsync>[0]);
+      const hash = await write.mutateAsync(pinChain(sim.request, CHAIN.chain.id) as Parameters<typeof write.mutateAsync>[0]);
       setState({ step: "pending", hash });
       const receipt = await client.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") {

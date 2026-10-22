@@ -20,7 +20,18 @@ function isUserRejection(e: unknown): boolean {
   return false;
 }
 
+function isWrongNetwork(e: unknown): boolean {
+  let cur: unknown = e;
+  for (let i = 0; i < 8 && cur; i++) {
+    const name = (cur as { name?: string }).name;
+    if (name === "ChainMismatchError" || name === "WrongNetworkError") return true;
+    cur = (cur as { cause?: unknown }).cause;
+  }
+  return false;
+}
+
 export function describeRevert(e: unknown): RevertInfo {
+  if (isWrongNetwork(e)) return { name: "WrongNetwork", reason: "Your wallet is on a different network. Switch networks and try again. Nothing was sent." };
   if (isUserRejection(e)) return { name: "UserRejected", reason: "You rejected the request in your wallet. Nothing was sent." };
   if (e instanceof BaseError) {
     const reverted = e instanceof ContractFunctionRevertedError ? e : e.walk((x) => x instanceof ContractFunctionRevertedError);

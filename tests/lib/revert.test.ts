@@ -1,4 +1,5 @@
-import { BaseError, ContractFunctionRevertedError, encodeErrorResult, keccak256, stringToBytes } from "viem";
+import { BaseError, ChainMismatchError, ContractFunctionRevertedError, encodeErrorResult, keccak256, stringToBytes } from "viem";
+import { baseSepolia } from "viem/chains";
 import { describe, expect, it } from "vitest";
 import { describeRevert } from "@/lib/app/revert";
 import { RILVA_ESCROW_ABI } from "@/lib/contracts";
@@ -24,6 +25,13 @@ describe("describeRevert", () => {
   it("a wallet rejection is reported as such, not as a contract error", () => {
     const e = Object.assign(new Error("User rejected the request."), { code: 4001 });
     expect(describeRevert(e)).toEqual({ name: "UserRejected", reason: "You rejected the request in your wallet. Nothing was sent." });
+  });
+
+  it("a wallet on the wrong network is reported as WrongNetwork, nothing sent", () => {
+    const e = new BaseError("write failed", { cause: new ChainMismatchError({ chain: baseSepolia, currentChainId: 1 }) });
+    const r = describeRevert(e);
+    expect(r.name).toBe("WrongNetwork");
+    expect(r.reason).toMatch(/Nothing was sent/);
   });
 
   it("unknown errors keep a short message", () => {
