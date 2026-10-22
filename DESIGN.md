@@ -4,7 +4,7 @@
 
 ## 1. Brand
 
-- **Name:** Rilva. **Tagline:** *Climate evidence. Verifiable relief.* Supporting line: "When climate data moves, relief follows."
+- **Name:** Rilva. **Tagline:** *Climate evidence. Verifiable relief.*
 - **Personality:** warm, quiet confidence. A calm, exact research instrument (climate-science publication × audit statement) framed by 16-bit pixel landscapes of the Ethiopian highlands. The art does the emotional work; type and UI stay restrained and precise. It is not a crypto dashboard.
 - **Voice:**
   - Plain and precise. Numbers always carry units and a source.
