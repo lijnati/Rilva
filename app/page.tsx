@@ -46,20 +46,12 @@ const limits = (baseHits: number, baseYears: number) => [
     a: "No. Every season shown is a retrospective replay of a past season. Rilva is not issuing drought alerts.",
   },
   {
-    q: "Is ERA5 the ground truth?",
-    a: "No. ERA5 is a reanalysis model estimate for one ~28 km grid cell, not a rain gauge. CHIRPS v3 sometimes disagrees materially, and Rilva shows that disagreement instead of hiding it.",
-  },
-  {
     q: "Is 60 % of normal an official drought threshold?",
     a: `No. It is an illustrative hackathon rule. In ERA5 it would have fired in ${baseHits} of the ${baseYears} baseline seasons; a real programme would calibrate it.`,
   },
   {
     q: "Who do I still have to trust?",
     a: "The attestor is trusted to sign honestly; Rilva makes every attestation checkable, not automatically true. A wrong or conflicting signature can be detected by anyone, but the contract cannot prevent it.",
-  },
-  {
-    q: "Does low rainfall mean people lost money?",
-    a: "Not necessarily. Rainfall deficit is not drought impact, and drought impact is not financial loss. The index ignores temperature, soil moisture, pasture, markets and conflict.",
   },
   {
     q: "Is this insurance, or are real funds involved?",
@@ -166,36 +158,16 @@ export default async function Home() {
 
         <JudgePath />
 
-        {/* ── problem ───────────────────────────────────────────────── */}
-        <section className="container-rv py-16 sm:py-[90px]" aria-labelledby="problem-title">
-          <div className="grid items-end gap-8 md:grid-cols-2">
-            <h2 id="problem-title" className="h2 reveal">
-              The rains fail.
-              <br />
-              The rule stays <em>private</em>.
-            </h2>
-            <p className="reveal max-w-[46ch] leading-[1.8] text-ink-2" style={{ "--d": ".1s" } as React.CSSProperties}>
-              Drought-relief funding often runs on pre-agreed triggers: if the rains fail, money moves. For anyone outside the room, three
-              questions are hard to answer.
-            </p>
-          </div>
-          <ol className="mt-10 grid gap-4 md:grid-cols-3">
-            {[
-              ["Which data?", "Rainfall products disagree. The same season can look like a drought in one and normal in another."],
-              ["How was it computed?", "The calculation often lives in a spreadsheet that nobody outside can rerun."],
-              ["Who decided, and where did the money go?", "The audit trail is usually an email thread, not a public record."],
-            ].map(([q, a], i) => (
-              <li key={q} className="reveal card p-6" style={{ "--d": `${i * 0.1}s` } as React.CSSProperties}>
-                <span className="num">{i + 1}</span>
-                <p className="h3 mt-4">{q}</p>
-                <p className="mt-2 text-[13.5px] leading-[1.8] text-ink-2">{a}</p>
-              </li>
-            ))}
-          </ol>
+        {/* ── problem, in one line ──────────────────────────────────── */}
+        <section className="container-rv border-y border-rule py-8" aria-label="The problem">
+          <p className="max-w-[80ch] text-[17px] leading-[1.7]">
+            <strong className="font-semibold">Drought-relief triggers are often decided out of sight:</strong>{" "}
+            <span className="text-ink-2">which rainfall data, how the number was computed, and who decided it was met. Rilva makes all three public, checkable and enforced.</span>
+          </p>
         </section>
 
         {/* ── how it works ──────────────────────────────────────────── */}
-        <section id="how" className="container-rv scroll-mt-6 pb-16 sm:pb-[90px]" aria-labelledby="how-title">
+        <section id="how" className="container-rv scroll-mt-6 py-16 sm:py-[90px]" aria-labelledby="how-title">
           <div className="grid items-end gap-8 md:grid-cols-2">
             <h2 id="how-title" className="h2 reveal">
               Public rules.
