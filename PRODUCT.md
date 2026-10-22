@@ -80,6 +80,8 @@ In scope:
 
 ## 8. Demo story (3–5 min video; Devpost requires 3–5 minutes)
 
+> Superseded in detail by [VIDEO.md](VIDEO.md) (2026-10-22): the video is built around three moments — the evidence (with source disagreement), money moving only on the rule, and anyone verifying while attacks are refused. The table below remains the high-level beat sheet.
+
 | t | Beat | Judging criterion served |
 |---|---|---|
 | 0:00–0:35 | The problem. Borena's 2021 Hagaya rains failed (FEWS NET: deyr/hagaya 45–75 % of average in southern pastoral areas). Relief triggers are opaque. "Rilva makes the rule and the evidence public and enforceable." | Climate Impact, Presentation |

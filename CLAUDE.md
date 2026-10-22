@@ -8,6 +8,7 @@ Source-of-truth docs (read the relevant one before changing anything in its area
 - [CONTRACTS.md](CONTRACTS.md) — `RilvaEscrow` interface, EIP-712 struct, invariants, test list
 - [DESIGN.md](DESIGN.md) — tokens, typography, components, required copy
 - [ROADMAP.md](ROADMAP.md) — phases, gates, fallback order, acceptance tests
+- [VIDEO.md](VIDEO.md) — demo video: three moments, shot list, what not to show
 
 If code and docs disagree, stop and reconcile. Update the doc in the same change, or ask.
 
