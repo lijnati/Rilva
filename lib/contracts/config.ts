@@ -2,8 +2,8 @@
  * Public deployment configuration and explorer links. Only NEXT_PUBLIC_ values belong here —
  * never a private key.
  */
-import { isAddress, type Address, type Hex } from "viem";
-import { baseSepolia } from "viem/chains";
+import { isAddress, type Address, type Chain, type Hex } from "viem";
+import { baseSepolia, hardhat } from "viem/chains";
 
 export const BASE_SEPOLIA_CHAIN_ID = 84532;
 export const RILVA_CHAIN = baseSepolia;
@@ -31,6 +31,54 @@ export function readEscrowConfig(env: { NEXT_PUBLIC_RILVA_ESCROW_ADDRESS?: strin
     address: rawAddress ? (rawAddress as Address) : null,
     deployBlock: rawBlock ? BigInt(rawBlock) : null,
   };
+}
+
+// ── network selection (Phase 3) ──────────────────────────────────────────────────────────────
+
+export type RilvaNetwork = "base-sepolia" | "local";
+
+export interface RilvaChainConfig {
+  network: RilvaNetwork;
+  chain: Chain;
+  rpcUrl: string;
+  /** Block explorer base URL, or null for the local development chain. */
+  explorer: string | null;
+  isLocal: boolean;
+  label: string;
+}
+
+/**
+ * Selects the chain the app talks to. Only Base Sepolia (default) and a local Hardhat node exist;
+ * there is deliberately no mainnet option. Pass the NEXT_PUBLIC_ values written out literally.
+ */
+export function resolveRilvaChain(env: { NEXT_PUBLIC_RILVA_CHAIN?: string; NEXT_PUBLIC_RPC_URL?: string }): RilvaChainConfig {
+  const raw = env.NEXT_PUBLIC_RILVA_CHAIN?.trim() || "base-sepolia";
+  if (raw !== "base-sepolia" && raw !== "local") {
+    throw new Error(`NEXT_PUBLIC_RILVA_CHAIN must be "base-sepolia" or "local", got ${raw}`);
+  }
+  const override = env.NEXT_PUBLIC_RPC_URL?.trim();
+  if (override && !/^https?:\/\/[^\s]+$/.test(override)) {
+    throw new Error(`NEXT_PUBLIC_RPC_URL is not an http(s) RPC URL: ${override}`);
+  }
+  if (raw === "local") {
+    return { network: "local", chain: hardhat, rpcUrl: override || "http://127.0.0.1:8545", explorer: null, isLocal: true, label: "Local Hardhat chain · development only" };
+  }
+  return {
+    network: "base-sepolia",
+    chain: baseSepolia,
+    rpcUrl: override || "https://sepolia.base.org",
+    explorer: BASE_SEPOLIA_EXPLORER,
+    isLocal: false,
+    label: "Base Sepolia · testnet",
+  };
+}
+
+export function chainTxUrl(cfg: Pick<RilvaChainConfig, "explorer">, hash: Hex): string | null {
+  return cfg.explorer ? `${cfg.explorer}/tx/${hash}` : null;
+}
+
+export function chainAddressUrl(cfg: Pick<RilvaChainConfig, "explorer">, address: Address): string | null {
+  return cfg.explorer ? `${cfg.explorer}/address/${address}` : null;
 }
 
 export function explorerTxUrl(hash: Hex): string {
