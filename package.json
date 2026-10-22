@@ -24,6 +24,9 @@
     "contracts:coverage": "hardhat test nodejs --coverage",
     "contracts:abi": "tsx scripts/contracts/export-abi.ts",
     "contracts:deploy:local": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts",
+    "chain:node": "hardhat node",
+    "chain:deploy:local": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network localhost",
+    "chain:seed:local": "tsx scripts/contracts/seed-local.ts",
     "contracts:deploy:base-sepolia": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network baseSepolia --verify"
   },
   "dependencies": {
