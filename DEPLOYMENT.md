@@ -25,20 +25,25 @@
 
 ## Pre-flight (must all pass)
 ```bash
-pnpm contracts:compile && pnpm contracts:test && pnpm test && pnpm climate:verify all \
-  && pnpm lint && pnpm typecheck && pnpm build && pnpm contracts:deploy:local
+pnpm contracts:compile && pnpm contracts:test && pnpm test && pnpm climate:verify all   && pnpm lint && pnpm typecheck && pnpm build
+pnpm contracts:preflight:base-sepolia   # read-only: sends nothing
 ```
+The preflight prints the Hardhat network, the chain id **reported by the RPC** (it refuses anything other than 84532 or a local 31337), the deployer address and balance, the artifact and its creation-code hash, the gas estimate (2,653,742 locally) and the worst-case cost. It never prints a key or the full RPC URL. Show its output to the human before asking for approval.
+
+Compiler profiles: `hardhat ignition deploy` compiles with Hardhat's **production** profile. `hardhat.config.ts` defines it identically to the default profile (solc 0.8.37, optimizer off, cancun), because Hardhat's generated production profile would otherwise enable the optimizer and deploy different bytecode from the tested build. `tests/contracts/deployment.test.ts` guards this.
 
 ## Deploy (requires explicit human approval)
 ```bash
-pnpm contracts:deploy:base-sepolia
-# = hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network baseSepolia --verify
+pnpm contracts:deploy:base-sepolia      # hardhat ignition deploy … --network baseSepolia
+pnpm contracts:smoke:base-sepolia       # read-only checks; writes deployments/base-sepolia.json if all pass
+pnpm contracts:verify:base-sepolia      # source verification (hardhat ignition verify chain-84532)
 ```
 
 How the deploy behaves:
 - Ignition asks for confirmation of the network before broadcasting.
 - It writes the journal and addresses to `ignition/deployments/chain-84532/`. Commit that folder; it is the deployment record.
-- If Basescan verification fails (no or invalid API key), retry with `pnpm hardhat ignition verify chain-84532`. Blockscout (`base-sepolia.blockscout.com`) needs no key.
+- The smoke test reads the address and deployment transaction from that journal and checks them against the chain: RPC chain id, a successful receipt that created exactly that address, runtime code equal to the compiled artifact (immutables masked), the EIP-712 domain and `campaignCount()`.
+- Verification is a separate step, so a missing or invalid `ETHERSCAN_API_KEY` cannot fail the deployment. Blockscout (`base-sepolia.blockscout.com`) needs no key.
 
 ## After deployment
 1. Record the following from `ignition/deployments/chain-84532/deployed_addresses.json` and the journal:

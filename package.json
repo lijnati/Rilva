@@ -28,7 +28,12 @@
     "chain:node": "hardhat node",
     "chain:deploy:local": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network localhost",
     "chain:seed:local": "tsx scripts/contracts/seed-local.ts",
-    "contracts:deploy:base-sepolia": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network baseSepolia --verify"
+    "chain:preflight:local": "hardhat run scripts/contracts/preflight.ts --network localhost",
+    "chain:smoke:local": "tsx scripts/contracts/smoke.ts local",
+    "contracts:preflight:base-sepolia": "hardhat run scripts/contracts/preflight.ts --network baseSepolia",
+    "contracts:deploy:base-sepolia": "hardhat ignition deploy ignition/modules/RilvaEscrow.ts --network baseSepolia",
+    "contracts:smoke:base-sepolia": "tsx scripts/contracts/smoke.ts base-sepolia",
+    "contracts:verify:base-sepolia": "hardhat ignition verify chain-84532"
   },
   "dependencies": {
     "@tanstack/react-query": "5.104.4",
