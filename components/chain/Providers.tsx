@@ -9,7 +9,8 @@ import { CHAIN } from "@/lib/app/appConfig";
 const wagmiConfig = createConfig({
   chains: [CHAIN.chain],
   connectors: [injected()],
-  transports: { [CHAIN.chain.id]: http(CHAIN.rpcUrl) },
+  // JSON-RPC batching (accepted by https://sepolia.base.org, checked 2026-10-22), bounded retries and a timeout.
+  transports: { [CHAIN.chain.id]: http(CHAIN.rpcUrl, { batch: true, retryCount: 3, timeout: 15_000 }) },
   ssr: true,
 });
 

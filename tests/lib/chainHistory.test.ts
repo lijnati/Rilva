@@ -1,18 +1,29 @@
 import { encodeFunctionData, keccak256, stringToBytes, type Hex } from "viem";
 import { describe, expect, it } from "vitest";
-import { decodeSettleCalldata, logRanges } from "@/lib/app/chainHistory";
+import { decodeSettleCalldata, findFirstBlock } from "@/lib/app/chainHistory";
 import { RILVA_ESCROW_ABI, type Attestation } from "@/lib/contracts";
 
-describe("logRanges", () => {
-  it("splits an inclusive block range into bounded chunks, newest last", () => {
-    expect(logRanges(0n, 25n, 10n)).toEqual([
-      { fromBlock: 0n, toBlock: 9n },
-      { fromBlock: 10n, toBlock: 19n },
-      { fromBlock: 20n, toBlock: 25n },
-    ]);
-    expect(logRanges(5n, 5n, 10n)).toEqual([{ fromBlock: 5n, toBlock: 5n }]);
-    expect(logRanges(6n, 5n, 10n)).toEqual([]);
-    expect(() => logRanges(0n, 5n, 0n)).toThrow();
+describe("findFirstBlock", () => {
+  const firstTrueAt = (t: bigint) => {
+    const calls: bigint[] = [];
+    return { calls, pred: async (b: bigint) => (calls.push(b), b >= t) };
+  };
+
+  it("finds the first block where a monotonic predicate holds, in O(log n) calls", async () => {
+    for (const t of [0n, 1n, 4_999n, 123_456n, 199_999n, 200_000n]) {
+      const p = firstTrueAt(t);
+      expect(await findFirstBlock(0n, 200_000n, p.pred)).toBe(t);
+      expect(p.calls.length).toBeLessThanOrEqual(19);
+    }
+  });
+
+  it("returns null when the predicate never holds, and for an empty range", async () => {
+    expect(await findFirstBlock(10n, 20n, firstTrueAt(21n).pred)).toBeNull();
+    expect(await findFirstBlock(21n, 20n, firstTrueAt(0n).pred)).toBeNull();
+  });
+
+  it("works for a single-block range", async () => {
+    expect(await findFirstBlock(7n, 7n, firstTrueAt(7n).pred)).toBe(7n);
   });
 });
 

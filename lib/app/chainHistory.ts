@@ -1,22 +1,30 @@
 /**
- * Reading a campaign's history from RilvaEscrow without a database: bounded log queries from the
- * deployment block (public RPCs cap getLogs ranges) and decoding the settle() calldata so anyone can
- * recover exactly what the attestor signed.
+ * Reading a campaign's history from RilvaEscrow without a database or an indexer. Public RPCs cap
+ * eth_getLogs ranges (Base Sepolia's public endpoint allows 200 blocks), so instead of scanning, we
+ * locate each event's block by binary search over contract state — campaignCount() and the campaign's
+ * status only ever move forward — and then read logs for that single block. The settle() calldata is
+ * decoded so anyone can recover exactly what the attestor signed.
  */
-import { decodeFunctionData, type Address, type Hex, type PublicClient } from "viem";
-import { RILVA_ESCROW_ABI, type Attestation } from "../contracts";
+import { BaseError, ContractFunctionZeroDataError, decodeFunctionData, type Address, type Hex, type PublicClient } from "viem";
+import { CampaignStatus, RILVA_ESCROW_ABI, type Attestation } from "../contracts";
 
-/** Max block span per eth_getLogs request (conservative for public RPCs; UNVERIFIED exact Base limit). */
-export const LOG_SPAN = 9_000n;
-
-export function logRanges(fromBlock: bigint, toBlock: bigint, span: bigint): Array<{ fromBlock: bigint; toBlock: bigint }> {
-  if (span <= 0n) throw new Error("span must be positive");
-  const out: Array<{ fromBlock: bigint; toBlock: bigint }> = [];
-  for (let start = fromBlock; start <= toBlock; start += span) {
-    const end = start + span - 1n;
-    out.push({ fromBlock: start, toBlock: end < toBlock ? end : toBlock });
+/**
+ * Smallest block in [lo, hi] at which a monotonic predicate (false…false, true…true) holds, or null
+ * if it does not hold at hi. Uses ⌈log2(hi − lo + 1)⌉ + 1 predicate calls at most.
+ */
+export async function findFirstBlock(lo: bigint, hi: bigint, pred: (block: bigint) => Promise<boolean>): Promise<bigint | null> {
+  if (lo > hi || !(await pred(hi))) return null;
+  while (lo < hi) {
+    const mid = (lo + hi) / 2n;
+    if (await pred(mid)) hi = mid;
+    else lo = mid + 1n;
   }
-  return out;
+  return lo;
+}
+
+/** Before the contract was deployed, a call returns no data: that block simply precedes everything. */
+function isNoCode(e: unknown): boolean {
+  return e instanceof BaseError && !!e.walk((x) => x instanceof ContractFunctionZeroDataError);
 }
 
 export function decodeSettleCalldata(input: Hex): { attestation: Attestation; signature: Hex } {
@@ -42,12 +50,30 @@ export interface CampaignHistory {
   refunded: { txHash: Hex; blockNumber: bigint; amount: bigint; reason: "NotTriggered" | "Timeout"; funder: Address } | null;
 }
 
-/** All three events for one campaign id, using the indexed campaignId topic and chunked block ranges. */
+/** All three events for one campaign id, read from at most two exactly-located blocks. */
 export async function readCampaignHistory(client: PublicClient, escrow: Address, campaignId: bigint, deployBlock: bigint): Promise<CampaignHistory> {
-  const latest = await client.getBlockNumber();
   const history: CampaignHistory = { created: null, settled: null, refunded: null };
-  for (const range of logRanges(deployBlock, latest, LOG_SPAN)) {
-    const logs = await client.getContractEvents({ address: escrow, abi: RILVA_ESCROW_ABI, args: { campaignId }, ...range });
+  const latest = await client.getBlockNumber();
+  const at = <T>(read: (blockNumber: bigint) => Promise<T>, fallback: T) => async (blockNumber: bigint) => {
+    try {
+      return await read(blockNumber);
+    } catch (e) {
+      if (isNoCode(e)) return fallback;
+      throw e;
+    }
+  };
+  const countAt = at((blockNumber) => client.readContract({ address: escrow, abi: RILVA_ESCROW_ABI, functionName: "campaignCount", blockNumber }), 0n);
+  const statusAt = at(
+    async (blockNumber) => (await client.readContract({ address: escrow, abi: RILVA_ESCROW_ABI, functionName: "getCampaign", args: [campaignId], blockNumber })).status,
+    CampaignStatus.None as number,
+  );
+
+  const createdBlock = await findFirstBlock(deployBlock, latest, async (b) => (await countAt(b)) >= campaignId);
+  if (createdBlock === null) return history;
+  const finalBlock = await findFirstBlock(createdBlock, latest, async (b) => (await statusAt(b)) !== CampaignStatus.Active);
+
+  for (const block of new Set([createdBlock, ...(finalBlock === null ? [] : [finalBlock])])) {
+    const logs = await client.getContractEvents({ address: escrow, abi: RILVA_ESCROW_ABI, args: { campaignId }, fromBlock: block, toBlock: block });
     for (const log of logs) {
       const base = { txHash: log.transactionHash as Hex, blockNumber: log.blockNumber as bigint };
       if (log.eventName === "CampaignCreated") {
