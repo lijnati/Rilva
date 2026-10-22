@@ -40,8 +40,8 @@ export function EscrowGate({ children }: { children: React.ReactNode }) {
           </>
         }
       >
-        <p>{health.data && !health.data.ok ? health.data.detail : String(health.error)}</p>
-        <p className="mt-1 text-[12.5px]">
+        <p className="wrap-anywhere">{health.data && !health.data.ok ? health.data.detail : String(health.error)}</p>
+        <p className="mt-1 wrap-anywhere text-[12.5px]">
           {CHAIN.label} · RPC {CHAIN.rpcUrl} · <code className="font-mono">{ESCROW.address}</code>
         </p>
         {!rpcDown && <p className="mt-1 text-[12.5px]">Transactions are disabled until this is fixed. Nothing on this page is simulated.</p>}
