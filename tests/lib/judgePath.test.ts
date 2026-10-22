@@ -31,6 +31,11 @@ describe("pickDemoCampaigns", () => {
     expect(picks).toEqual({ released: 5n, refunded: 2n, active: 3n });
   });
 
+  it("for Try to break it, prefers the open campaign with the most time left, not the newest", () => {
+    const picks = pickDemoCampaigns([mk(3n, CampaignStatus.Active, 0, 9000n), mk(4n, CampaignStatus.Active, 0, 700n)], 500n);
+    expect(picks.active).toBe(3n);
+  });
+
   it("a timeout refund (no attested index) is not shown as a rule-not-met refund", () => {
     expect(pickDemoCampaigns([mk(1n, CampaignStatus.Refunded, 0)], 0n).refunded).toBeNull();
   });

@@ -9,7 +9,7 @@ export interface DemoPicks {
   released: bigint | null;
   /** Newest campaign refunded because the attested index did not meet the rule (not a timeout). */
   refunded: bigint | null;
-  /** Newest active campaign whose settlement window is still open (for "Try to break it"). */
+  /** Open active campaign with the most settlement time left (for "Try to break it"; ties → newest). */
   active: bigint | null;
 }
 
@@ -20,6 +20,11 @@ export function pickDemoCampaigns(rows: Array<{ id: bigint; c: Campaign }>, chai
     released: newest((c) => c.status === CampaignStatus.Released),
     // settle() writes indexBps; a timeout refund leaves it at 0, so a non-zero index means "rule not met".
     refunded: newest((c) => c.status === CampaignStatus.Refunded && c.indexBps > c.thresholdBps),
-    active: newest((c) => c.status === CampaignStatus.Active && chainNow < c.settlementDeadline),
+    active: rows
+      .filter((r) => r.c.status === CampaignStatus.Active && chainNow < r.c.settlementDeadline)
+      .reduce<{ id: bigint; d: bigint } | null>(
+        (best, r) => (best === null || r.c.settlementDeadline > best.d || (r.c.settlementDeadline === best.d && r.id > best.id) ? { id: r.id, d: r.c.settlementDeadline } : best),
+        null,
+      )?.id ?? null,
   };
 }
