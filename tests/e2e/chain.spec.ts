@@ -50,3 +50,19 @@ test("judge path links to real released, refunded and active campaigns", async (
   await section.getByRole("link", { name: /Verify a payout/ }).click();
   await expect(page.getByText("Every applicable check passed")).toBeVisible({ timeout: 90_000 });
 });
+
+test("verification results are shareable: link copy and a JSON report", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/verify/1");
+  await expect(page.getByText("Every applicable check passed")).toBeVisible({ timeout: 90_000 });
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download verification JSON" }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toBe("rilva-verification-campaign-1.json");
+  const json = JSON.parse(await (await file.createReadStream()).toArray().then((c) => Buffer.concat(c).toString("utf8")));
+  expect(json.schema).toBe("rilva.verification-report.v1");
+  expect(json.summary).toBe("all-passed");
+  expect(json.checks).toHaveLength(7);
+  await page.getByRole("button", { name: "Copy report link" }).click();
+  await expect(page.getByText(/Link copied/)).toBeVisible();
+});

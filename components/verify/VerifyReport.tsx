@@ -16,6 +16,8 @@ import { decodeSettleCalldata } from "@/lib/app/chainHistory";
 import { formatEth, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
 import { buildVerification, type Check, type CheckKind } from "@/lib/app/verifyChecks";
+import { buildVerificationReport } from "@/lib/app/verifyReport";
+import { ShareReport } from "./ShareReport";
 import { formatBpsAsPercent, type ClimateSpec } from "@/lib/climate";
 import { recoverAttestationSigner, rilvaDomain } from "@/lib/contracts";
 import { cn } from "@/lib/utils";
@@ -164,6 +166,29 @@ export function VerifyReport({ id }: { id: bigint }) {
             <p id="checks-title" className="text-[16px] font-semibold">{summary.title}</p>
             <p className="text-[13px] text-ink-2">{summary.text}</p>
           </div>
+          <ShareReport
+            campaignId={id.toString()}
+            ready={!waiting}
+            buildJson={(url) =>
+              buildVerificationReport({
+                campaignId: id,
+                chainId: CHAIN.chain.id,
+                chainLabel: CHAIN.label,
+                escrow: ESCROW.address!,
+                url,
+                summary: verification.summary,
+                checks: verification.checks,
+                amountWei: c.amount,
+                status: view.status === "Refunded" && view.refundReason ? `Refunded (${view.refundReason})` : view.status,
+                specHash: c.specHash,
+                evidenceHash: history.settled ? c.evidenceHash : null,
+                attestedIndexBps: history.settled?.indexBps ?? null,
+                thresholdBps: c.thresholdBps,
+                recomputation: recomputed.data ? { mode: recomputed.data.provenance.mode, evidenceDigest: recomputed.data.artifact.evidenceDigest } : null,
+                generatedAt: new Date().toISOString(),
+              })
+            }
+          />
           <ol className="mt-2">
             {verification.checks.map((ch, i) => (
               <CheckRow key={ch.id} check={ch} i={i} />
