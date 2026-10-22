@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { Providers } from "@/components/chain/Providers";
 import { Footer } from "@/components/site/Footer";
 import { RevealObserver } from "@/components/site/RevealObserver";
 import "./globals.css";
@@ -41,8 +42,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn btn-sm btn-butter">
           Skip to content
         </a>
-        {children}
-        <Footer />
+        <Providers>
+          {children}
+          <Footer />
+        </Providers>
         <RevealObserver />
       </body>
     </html>
