@@ -1,77 +1,77 @@
 # DESIGN.md — Rilva design direction
 
-> Phase 0. No UI is implemented yet. All items are **Decisions**. Contrast ratios below were computed with the WCAG 2.x relative-luminance formula on 2026-10-19.
+> Phase 0 decisions, **revised in Phase 3 (2026-10-22)** when the UI was built with the `pixel-meadow-ui` design skill (mandated by the human). Where pixel-meadow and the Phase 0 rules conflicted, the human chose: pixel-meadow "Paper" mode everywhere, pixel art only inside inset art frames, pills for every control, glass only on the nav over art; Rilva's data/state colours and required copy are kept unchanged. Contrast ratios for the Phase 0 tokens were computed with the WCAG 2.x formula on 2026-10-19; the Phase 3 paper/ink tokens come from the skill and were checked visually, not re-computed (**UNVERIFIED** exact ratios for `--ink-2`/`--ink-3` on `--paper`).
 
 ## 1. Brand
 
-- **Name:** Rilva. **Tagline:** *Climate evidence. Verifiable relief.*
-- **Personality:** a calm, exact, editorial research instrument. It should feel like a climate-science publication merged with a financial audit statement, not a crypto dashboard.
+- **Name:** Rilva. **Tagline:** *Climate evidence. Verifiable relief.* Supporting line: "When climate data moves, relief follows."
+- **Personality:** warm, quiet confidence. A calm, exact research instrument (climate-science publication × audit statement) framed by 16-bit pixel landscapes of the Ethiopian highlands. The art does the emotional work; type and UI stay restrained and precise. It is not a crypto dashboard.
 - **Voice:**
   - Plain and precise. Numbers always carry units and a source.
-  - Hedges are explicit ("estimate", "replay", "illustrative") and never marketing.
-  - The UI never says "AI-powered", "revolutionary", "real-time", or "guaranteed".
-- **Wordmark:** "Rilva" set in Geist Sans 600 with −0.02em tracking. An optional mark is a single horizontal hairline with a short drop: a rain gauge reading or a ledger rule. This is a Phase 2 nice-to-have. A text-only wordmark is fine.
+  - Headlines are two short parallel sentences ("Public rules. Checkable evidence."), at most one italic serif word.
+  - Hedges are explicit ("estimate", "replay", "illustrative") and never marketing. No exclamation marks.
+  - The UI never says "AI-powered", "revolutionary", "real-time", "seamless" or "guaranteed".
+- **Wordmark:** lowercase "rilva", DM Sans 650, −0.04em, next to a round mark: a raindrop resting on a ledger rule (rain-gauge reading / audit line). Butter mark on art, accent mark on paper. `components/site/Brand.tsx`.
 
 ## 2. Anti-patterns (explicitly banned)
 
-- Gradient hero backgrounds, glowing orbs, or 3D blobs and globes.
-- Glassmorphism, neon, and "web3" purple.
-- Stat tiles with invented numbers ("10k+ farmers"), and fake logos or testimonials.
-- Pill or badge overload. Use at most one status pill per object.
-- Dashboard noise such as six charts on one screen, or sparklines without axes.
-- Emoji in the UI.
-- Decorative charts. Every chart shows real data with a source line.
+- Full-bleed art, or art outside an inset rounded frame. Pixel art is never blurred or smoothed (`image-rendering: pixelated`).
+- Gradient/mesh hero backgrounds, glowing orbs, 3D blobs and globes, "web3" purple, neon.
+- Glassmorphism anywhere except the nav over the art (the desktop link pill and the mobile menu sheet).
+- Stat tiles with invented numbers ("10k+ farmers"), fake logos, testimonials or partnerships.
+- More than one status pill per object. Pills are for *controls*; status uses one chip with an icon and a word.
+- Dashboard noise: six charts on one screen, sparklines without axes, decorative charts. Every chart shows real data with a source line.
+- Emoji in the UI. Display weights ≥ 700 (they go chunky against pixel art). Pure black text.
+- Frontend-only financial states. Campaign status mirrors the contract enum (Active / Released / Refunded) only.
 
-## 3. Color tokens
-
-These go in `:root` and `[data-theme="dark"]`, as Tailwind v4 `@theme` variables.
+## 3. Color tokens (`app/globals.css`, Tailwind v4 `@theme`, light + dark)
 
 | Token | Role | Light | Dark |
 |---|---|---|---|
-| `--paper` | Page background (warm off-white / near-black) | `#F6F4EE` | `#0E1012` |
-| `--surface` | Cards, panels | `#FFFFFF` | `#16191C` |
-| `--ink` | Primary text | `#15171A` (16.3:1 on paper) | `#ECE9E2` (15.7:1) |
-| `--ink-2` | Secondary text | `#4B5058` (7.4:1) | `#B4B0A7` (8.8:1) |
-| `--ink-3` | Captions, axis labels (min 4.5:1) | `#6B7078` (4.5:1) | `#8C8981` (5.5:1) |
-| `--rule` | Hairlines, gridlines | `#E2DED4` | `#2A2E33` |
-| `--deficit` | **Below-normal rainfall** (data) | `#A8471F` burnt ochre (5.3:1) | `#E38B5F` (7.4:1) |
-| `--normal` | **The normal / at-or-above** (data) | `#2C6A6E` deep teal (5.6:1) | `#72B6B8` (8.3:1) |
-| `--baseline` | Baseline-year bars (non-text, ≥3:1) | `#8F8A7E` (3.1:1) | `#6E7277` (3.9:1) |
-| `--ok` | Check passed | `#2F6B45` | `#79C08F` |
-| `--fail` | Check failed / rejected | `#A2322A` | `#EE8A80` |
-| `--warn` | Replay / uncertainty notice | `#8A5A0B` | `#E0B25A` |
+| `--paper` | Page background | `#F7F9F5` | `#0F1512` |
+| `--paper-deep` | Tracks, quiet panels | `#EAF0E8` | `#18211C` |
+| `--surface` | Cards | `#FFFFFF` | `#161F1A` |
+| `--ink` | Primary text (deep green, never black) | `#183D32` | `#E6EEE8` |
+| `--ink-2` / `--ink-3` | Secondary text / captions, axis labels | `#4C6158` / `#5C7067` | `#B3C2B9` / `#93A59B` |
+| `--rule` / `--rule-strong` | Hairlines / control outlines | `#DCE4DA` / `#BDCABE` | `#26332C` / `#3A4A41` |
+| `--accent` | Links, focus glow, selected cards | `#21634E` | `#8FD0B2` |
+| `--butter` | **Primary action only** (one per view) | `#FFE46B` on `#313712` | same |
+| `--mint` / `--cream` / `--ice` | Pastel card fills only, in that order | `#E8F1E5` / `#FCF0C9` / `#E7F0F6` | muted dark variants |
+| `--deficit` | **Below-normal rainfall** (data) | `#A8471F` | `#E38B5F` |
+| `--normal` | **The normal / at-or-above** (data) | `#2C6A6E` | `#72B6B8` |
+| `--baseline` | Baseline-year bars (non-text) | `#8F8A7E` | `#6E7277` |
+| `--ok` / `--fail` / `--warn` (+ `-soft`) | Check passed / failed / replay or uncertainty | `#2F6B45` / `#A2322A` / `#8A5A0B` | `#79C08F` / `#EE8A80` / `#E0B25A` |
 
-Rules:
-- **Data color ≠ state color.** Ochre and teal describe rainfall. Green and red describe verification. Never use green for "wet" or red for "dry".
-- Ochre against teal is a blue–orange pair, which is safe for common colour-vision deficiencies. Status is also carried by an icon and a word (`Passed` / `Rejected`), never by colour alone.
-- The only accent is the data. Buttons are ink-on-paper: primary = `--ink` background with `--paper` text; secondary = outlined with `--rule`.
+Rules (unchanged from Phase 0):
+- **Data colour ≠ state colour.** Ochre and teal describe rainfall; green and red describe verification. Never green for "wet" or red for "dry".
+- State is always carried by an icon **and** a word (`Passed` / `Failed` / `Checking` / `Not applicable` / `Could not check`), never colour alone.
+- Art frames keep their scene in dark mode; only the haze overlay darkens.
 
-## 4. Typography and spacing
+## 4. Typography, spacing, shape, motion
 
-- **Geist Sans** for all text. **Geist Mono** for hashes, addresses, tx IDs, spec JSON, and tabular numbers in evidence tables. Load both via the `geist` package or `next/font`.
-- Numerals: `font-variant-numeric: tabular-nums` in tables, charts and amounts.
+- **DM Sans** 500–650 for display and headings (`.display`, `.h2`, `.h3`), tracking −0.03 to −0.04em. **Instrument Serif italic** for at most one accent word per headline. **Geist Sans** for UI and body. **Geist Mono** for hashes, addresses, tx ids, spec JSON and `.meta` labels. All via `next/font`.
+- Numerals: `tabular-nums` (`.tnum`) in tables, charts and amounts.
 
-**Type scale (px / line-height / weight):**
+| Use | Size / line-height | Weight |
+|---|---|---|
+| Landing display | `clamp(38px, 4.6vw, 68px)` / 1.08 | 650 |
+| Page-banner display | `clamp(34px, 4.6vw, 60px)` / 1.08 | 650 |
+| H2 | `clamp(30px, 3.6vw, 47px)` / 1.12 | 600 |
+| H3 | 21 / 1.3 | 600 |
+| Hero numeral | 64–80 (decimals at .45em) | 600, `--deficit` or `--normal` by outcome |
+| Body | 15 / 1.6–1.8 | 400 |
+| Meta / labels | Geist Mono 10.5 uppercase, +0.04em | 500 |
+| Eyebrow | 12 uppercase, +0.28em | 500 |
 
-| Use | Size / line-height | Weight | Tracking |
-|---|---|---|---|
-| Display | 56/60 (mobile 40/44) | 600 | −0.025em |
-| H1 | 40/44 | 600 | |
-| H2 | 28/34 | 600 | |
-| H3 | 20/28 | 600 | |
-| Body | 16/26 | 400 | |
-| Small | 14/22 | | |
-| Caption | 12/18, uppercase only for overlines | | +0.06em |
+- **Layout:** 1160 px container (16 px side gutter < 640 px), 90 px section rhythm (64 px mobile), head rows with H2 left and a ≤ 46ch paragraph right. Grid tracks use `minmax(0, …)` so wide charts scroll inside their card, never the page.
+- **Shape:** every control is a pill (999 px); cards 14 px; panels/art frames 18 px (12 px mobile), inset 20 px (10 px mobile) from the page edge. Hairline rings instead of grey shadows; one soft tinted shadow for raised cards.
+- **Motion:** `cubic-bezier(.22,1,.36,1)`; blur-to-sharp `.reveal` (1.1 s), CSS split-word hero, nav fade-down, verification checks reveal with a 60 ms stagger. No bounce or spin, no scroll hijacking. `prefers-reduced-motion` disables all of it; the scene still renders (static art). `<noscript>` shows all revealed content.
+- **Focus:** 2 px `--ink` outline, 2 px offset (white over art); inputs add a 4 px accent glow.
 
-- Readable measure: 64–72ch for prose.
-- **Hero numeral** (the evidence page's key number, e.g. "33.6 % of normal"): Geist Sans 600, 96/96 on desktop and 64 on mobile, `--deficit` or `--normal` by outcome, with a caption beneath giving the source and period.
-- **Spacing:** a 4 px base. Use the scale 4, 8, 12, 16, 24, 32, 48, 64, 96, 128. Sections are separated by 96–128 px on desktop and 64 px on mobile.
-- **Grid:** 12 columns, max width 1200 px, 24 px gutters on desktop and a 16 px side gutter on mobile. Editorial pages use a 7/5 split: narrative on the left, evidence on the right.
-- **Radius:** 6 px for controls and 10 px for cards. Hairline borders (1 px `--rule`) instead of shadows. One soft shadow is reserved for overlays.
-- **Motion:**
-  - 150–200 ms ease-out for state changes.
-  - Checklist items reveal sequentially (60 ms stagger) when verification runs.
-  - No looping animation. Respect `prefers-reduced-motion`.
+### 4a. Pixel-meadow implementation (Phase 3)
+- `public/vendor/pixel-scene.js` is the skill's generator, vendored verbatim; `components/site/PixelScene.tsx` loads it once and mounts StrictMode-safely.
+- Preset **`highland`** (table mountains, acacias, round huts, golden grass) for every frame, because the case study is southern Ethiopia. Seeds differ per instance (landing 11/4/23, explore 41, campaigns 57, new 73, detail 88, verify 101 with a dawn sky, methodology 131). The closing band uses a violet-dusk sky.
+- Page banners add a left-weighted haze so copy stays readable over hills (strengthen haze, never shrink type). 1–2 pixel birds on the landing hero only, hidden on mobile.
 
 ## 5. Information architecture
 
@@ -85,18 +85,19 @@ Rules:
 | `/verify/[id]` | Public verification | Checklist, evidence table, tx timeline with Basescan links. No wallet needed. |
 | `/methodology` | Formula, data sources, limitations, trust model | Text and tables mirroring CLIMATE_DATA.md §4 and §7, with source links |
 
-Navigation: wordmark · Explore · Campaigns · Methodology · Verify, plus `Connect wallet` on the right. A persistent **network badge** reads "Base Sepolia · testnet".
+Navigation (implemented): wordmark · Explore · Campaigns · Methodology, then the network badge ("Base Sepolia · testnet" or "Local Hardhat chain · development only") and the wallet control. Verify pages are reached from each campaign (and by id), since they need an id. Below 1024 px the links collapse into a Menu sheet.
 
 ## 6. Components (meaningful only)
 
+> Phase 3: implemented under `components/` (site, climate, chain, campaign, verify, ui). Differences from the Phase 0 sketch are noted inline.
+
 - **ReplayBanner:**
-  - A full-width thin bar in `--warn`: "Retrospective replay of OND 2021. Not a live drought alert. Testnet funds only."
+  - A rounded `--warn-soft` note with a clock icon: "Retrospective replay of OND 2021. Not a live drought alert. Testnet funds only."
   - It appears on every campaign, evidence and verify view whose spec has `replay: true`, and it cannot be dismissed.
 - **SeasonChart:**
   - Vertical bars, one per year 1991–2023. Baseline years use `--baseline`.
   - Seasons after the baseline are outlined. The selected year is filled `--deficit` if below normal, otherwise `--normal`.
-  - The 100 % normal line is a solid `--normal` hairline, labelled "1991–2020 normal · 234.0 mm".
-  - The threshold line is dashed `--deficit`, labelled "60 % — illustrative threshold".
+  - The 100 % normal line is a solid `--normal` hairline and the threshold line is dashed `--deficit`; both are labelled in the legend row ("1991–2020 normal · 234.0 mm", "60 % of normal · illustrative threshold") because inline labels collided with bars. Lines draw above bars.
   - The y-axis is in mm. Source caption: "ERA5 via Open-Meteo (CC BY 4.0) · Copernicus C3S". Keyboard focusable bars with a tooltip showing year, mm, % of normal and CHIRPS %. A table fallback is available.
 - **LocatorMap:** a static SVG of Ethiopia's admin-0 outline (Natural Earth, public domain). It shows a point for Yabelo, a 0.25° square for the ERA5 cell, and a 0.05° square for the CHIRPS cell, with a scale bar. It is not interactive in the MVP.
 - **EvidencePanel:**
@@ -107,10 +108,10 @@ Navigation: wordmark · Explore · Campaigns · Methodology · Verify, plus `Con
   - Cross-check row (CHIRPS v3).
   - "Download evidence JSON".
 - **HashField:** Geist Mono with a middle-truncated value (`0x3f2a…9c1e`), a copy button, and a full value in a tooltip. Hashes being compared are shown side by side, with a match/mismatch icon and word.
-- **VerificationChecklist:** an ordered list of checks (see ARCHITECTURE.md §4.3). Each check shows pending (spinner) → passed or failed, with a one-line reason and a "how to check yourself" disclosure.
+- **VerificationChecklist** (`components/verify/VerifyReport.tsx`, logic in `lib/app/verifyChecks.ts`): seven ordered checks (ARCHITECTURE.md §4.3). Each shows Checking → Passed / Failed / Not applicable / Could not check, its **kind** (cryptographically authentic · data reproducible · attested by an authorised party · contract conditions satisfied), a one-line reason and a "how to check this yourself" disclosure. A "Not checked, and not claimed" box follows. Pending work is never shown as an error or a pass.
 - **AuditTimeline:** a vertical rule with nodes for Created → Attested (signer) → Settled (Released / NotTriggered) → Refunded. Each node shows the time, the actor's address (mono), and a Basescan link.
 - **AttestationReview:** shown to the attestor before signing. It lists every EIP-712 field in plain words next to its raw value, plus the locally recomputed hash and the predicted outcome. The button reads "Sign attestation".
-- **RejectionCard:** "Try to break it". There are three buttons. Each result shows the attempted action, the contract's answer (decoded custom error), and the reason in one sentence ("The signature does not come from this campaign's attestor."). Styled with `--fail` and an icon. No alarmist visuals.
+- **BreakItPanel** (was RejectionCard): "Try to break it", five scenarios — stranger's signature, modified index, modified evidence hash, duplicate settlement, premature timeout refund. Each runs `eth_call` against the deployed contract (labelled "no transaction sent") and shows the decoded custom error with a one-sentence reason; a second tab lists the matching Hardhat tests ("local contract-test reproduction"). Expected rejections use `--ok-soft` (the guarantee held); anything unexpected is shown honestly. No alarmist visuals.
 - **States:** every async element needs an empty, loading (skeleton matching the final layout), error (with retry and a cause, e.g. "Open-Meteo unreachable. Using committed fixture."), and success state. Wallet states: not connected, wrong network (with a one-click switch), insufficient funds, tx pending (with hash link), confirmed, failed.
 
 ## 7. Required copy and disclosures
@@ -125,7 +126,8 @@ Navigation: wordmark · Explore · Campaigns · Methodology · Verify, plus `Con
 
 - Breakpoints: 640, 1024, 1280. Every page works at 360 px wide with no horizontal scroll.
 - On mobile the 7/5 grid stacks: evidence comes before narrative on evidence pages and after narrative on the landing page.
-- The chart scrolls horizontally inside its own container on mobile with fixed y-axis labels, or reduces to 2001–2023 with a toggle for all years.
+- The chart scrolls horizontally inside its own card on mobile, starting at the most recent (replay) seasons, with a "← Scroll for earlier seasons" hint. The table alternative lists all 33 seasons.
+- Nav links collapse into a Menu sheet below 1024 px. Verified by Playwright: no horizontal scroll at 360 and 390 px on every route (`tests/e2e/responsive.spec.ts`).
 
 ## 9. Accessibility
 
