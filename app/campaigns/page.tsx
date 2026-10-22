@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CampaignList } from "@/components/campaign/CampaignList";
+import { EscrowGate } from "@/components/chain/EscrowGate";
 import { PageHero } from "@/components/site/PageHero";
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function CampaignsPage() {
         lede="Each campaign escrows testnet ETH for one beneficiary. If the attested rainfall index meets the rule, the contract pays out; otherwise the funder is refunded."
       />
       <main id="main" className="container-rv grid gap-10 pb-20 pt-6">
-        <CampaignList />
+        <EscrowGate>
+          <CampaignList />
+        </EscrowGate>
         <section className="grid gap-4 md:grid-cols-3" aria-label="What a campaign is">
           {[
             ["Funder", "Locks a fixed amount and publishes the rule. Cannot attest, and cannot pull funds back before the deadline."],

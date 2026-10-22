@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CampaignDetail } from "@/components/campaign/CampaignDetail";
+import { EscrowGate } from "@/components/chain/EscrowGate";
 import { PageHero } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/ui/States";
 import { parseCampaignId } from "@/lib/app/format";
@@ -21,7 +22,9 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
             <p>Campaign ids are whole numbers starting at 1.</p>
           </EmptyState>
         ) : (
-          <CampaignDetail id={id} />
+          <EscrowGate>
+            <CampaignDetail id={id} />
+          </EscrowGate>
         )}
       </main>
     </>

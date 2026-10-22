@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 import { readCampaignHistory, type CampaignHistory } from "@/lib/app/chainHistory";
+import { checkEscrowDeployment } from "@/lib/app/escrowHealth";
 import { CHAIN, ESCROW } from "@/lib/app/appConfig";
 import { CampaignStatus, readCampaign, readCampaignCount, type Campaign } from "@/lib/contracts";
 
@@ -10,6 +11,17 @@ import { CampaignStatus, readCampaign, readCampaignCount, type Campaign } from "
 export function useEscrowClient() {
   const client = usePublicClient({ chainId: CHAIN.chain.id });
   return { client, escrow: ESCROW.address, deployBlock: ESCROW.deployBlock ?? 0n };
+}
+
+/** Is ESCROW.address really RilvaEscrow v1 on CHAIN? Checked once per page load; gates every write. */
+export function useEscrowHealth() {
+  const { client, escrow } = useEscrowClient();
+  return useQuery({
+    queryKey: ["escrowHealth", CHAIN.chain.id, escrow],
+    enabled: !!client,
+    staleTime: Infinity,
+    queryFn: () => checkEscrowDeployment(client!, { address: escrow, chainId: CHAIN.chain.id }),
+  });
 }
 
 export type CampaignRecord = { found: false } | { found: true; campaign: Campaign; history: CampaignHistory };

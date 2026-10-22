@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { EscrowGate } from "@/components/chain/EscrowGate";
 import { PageHero } from "@/components/site/PageHero";
 import { EmptyState } from "@/components/ui/States";
 import { VerifyReport } from "@/components/verify/VerifyReport";
@@ -30,7 +31,9 @@ export default async function VerifyPage({ params }: { params: Promise<{ id: str
         {id === null ? (
           <EmptyState title="Not a campaign id"><p>Campaign ids are whole numbers starting at 1.</p></EmptyState>
         ) : (
-          <VerifyReport id={id} />
+          <EscrowGate>
+            <VerifyReport id={id} />
+          </EscrowGate>
         )}
       </main>
     </>

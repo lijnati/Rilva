@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useCampaignCount, useChainTime, useEscrowClient } from "@/components/chain/useRilva";
+import { useCampaignCount, useChainTime, useEscrowClient, useEscrowHealth } from "@/components/chain/useRilva";
 import { Skeleton } from "@/components/ui/States";
 import { CHAIN, ESCROW } from "@/lib/app/appConfig";
 import { pickDemoCampaigns } from "@/lib/app/judgePath";
@@ -57,6 +57,7 @@ function JudgeCard({ card, loading }: { card: Card; loading: boolean }) {
  */
 export function JudgePath() {
   const { client, escrow } = useEscrowClient();
+  const health = useEscrowHealth();
   const count = useCampaignCount();
   const now = useChainTime();
   const total = count.data ?? 0n;
@@ -73,10 +74,14 @@ export function JudgePath() {
   });
 
   const loading = !!ESCROW.address && (count.isPending || now.isPending || (total > 0n && picks.isPending));
-  const p = picks.data ?? { released: null, refunded: null, active: null };
+  // Never link to campaigns on a contract that failed the deployment check.
+  const p = (health.data?.ok !== false && picks.data) || { released: null, refunded: null, active: null };
   const unconfigured = !ESCROW.address;
+  const misconfigured = health.data?.ok === false && health.data.problem !== "rpc-error";
   const missing = unconfigured
     ? "Appears once the testnet contract is deployed."
+    : misconfigured
+      ? "The configured contract could not be confirmed on-chain."
     : count.error || picks.error
       ? "Could not reach the chain right now."
       : "No such campaign on this contract yet.";
