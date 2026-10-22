@@ -12,13 +12,20 @@ import { configVariable, defineConfig } from "hardhat/config";
  * (`pnpm hardhat keystore set BASE_SEPOLIA_PRIVATE_KEY`) or an env var — and only when the
  * baseSepolia network is actually used. Never commit keys; never use a NEXT_PUBLIC_ variable for them.
  */
+const SOLC_SETTINGS = {
+  optimizer: { enabled: false },
+  evmVersion: "cancun",
+} as const;
+
 export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
   solidity: {
-    version: "0.8.37",
-    settings: {
-      optimizer: { enabled: false },
-      evmVersion: "cancun",
+    // Both profiles are spelled out: `hardhat ignition deploy` builds with "production", and Hardhat's
+    // generated production profile would otherwise drop these settings and turn the optimizer on
+    // (observed with Hardhat 3.19), deploying bytecode that differs from the tested build.
+    profiles: {
+      default: { version: "0.8.37", settings: SOLC_SETTINGS },
+      production: { version: "0.8.37", settings: SOLC_SETTINGS },
     },
   },
   paths: {
