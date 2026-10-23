@@ -16,7 +16,7 @@ import { formatEther, formatGwei, keccak256, type Hex } from "viem";
 
 const ALLOWED: Record<number, string> = { 84532: "Base Sepolia (testnet)", 31337: "local Hardhat node" };
 
-const connection = await network.connect();
+const connection = await network.create();
 const publicClient = await connection.viem.getPublicClient();
 const chainId = await publicClient.getChainId();
 if (!(chainId in ALLOWED)) {
@@ -37,8 +37,9 @@ const balance = await publicClient.getBalance({ address });
 const gas = await publicClient.estimateGas({ account: address, data: artifact.bytecode });
 const fees = await publicClient.estimateFeesPerGas();
 const maxCost = gas * fees.maxFeePerGas;
-const transport = publicClient.transport as { url?: string };
-const rpcHost = transport.url ? new URL(transport.url).host : "(in-process)";
+// viem only sees Hardhat's EIP-1193 provider, so the URL comes from the resolved network config.
+const netConfig = connection.networkConfig;
+const rpcHost = netConfig.type === "http" ? new URL(await netConfig.url.get()).host : "(in-process)";
 const journal = path.join("ignition", "deployments", `chain-${chainId}`, "deployed_addresses.json");
 
 const rows: Array<[string, string]> = [
