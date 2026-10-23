@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", ".next", "out", "tests/contracts", "scripts/contracts", "hardhat.config.ts", "ignition", "types", "artifacts"]
+}
