@@ -636,3 +636,92 @@ describe("RilvaEscrow — EIP-712 cross-language compatibility", () => {
     }
   });
 });
+
+// ───────────────────────────────────────────────────────────────────────────────────────────────
+describe("RilvaEscrow — adversarial hardening (release review)", () => {
+  it("keeps a timeout-refunded campaign terminal: settle and a second refund are rejected", async () => {
+    const f = await load();
+    const { id, deadline } = await createCampaign(f);
+    const a = attestationFor(id, OND2021_TERMS, 1000, deadline + DAY);
+    const sig = await sign(f, a); // signed while Active, submitted after the timeout refund
+    await networkHelpers.time.setNextBlockTimestamp(deadline);
+    await f.escrow.write.refundAfterDeadline([id]);
+    const c = await f.escrow.read.getCampaign([id]);
+    assert.equal(c.status, CampaignStatus.Refunded);
+    assert.equal(c.indexBps, 0);
+    await viem.assertions.revertWithCustomError(f.escrow.write.settle([a, sig]), f.escrow, "CampaignNotActive");
+    await viem.assertions.revertWithCustomError(f.escrow.write.refundAfterDeadline([id]), f.escrow, "CampaignNotActive");
+    assert.equal(await f.publicClient.getBalance({ address: f.escrow.address }), 0n);
+  });
+
+  it("takes the right branch at the index extremes (0 and 2^32 − 1)", async () => {
+    const f = await load();
+    const low = await createCampaign(f);
+    const high = await createCampaign(f);
+    await settleAs(f, low.id, 0);
+    await settleAs(f, high.id, 2 ** 32 - 1);
+    const l = await f.escrow.read.getCampaign([low.id]);
+    const h = await f.escrow.read.getCampaign([high.id]);
+    assert.equal(l.status, CampaignStatus.Released);
+    assert.equal(l.indexBps, 0);
+    assert.equal(h.status, CampaignStatus.Refunded);
+    assert.equal(h.indexBps, 2 ** 32 - 1);
+  });
+
+  it("blocks a reentrant beneficiary from refunding its own campaign during the payout", async () => {
+    const f = await load();
+    const attacker = await viem.deployContract("ReentrantReceiver", [f.escrow.address]);
+    const bait = await createCampaign(f, { beneficiary: attacker.address });
+    await attacker.write.setTarget([bait.id]);
+    const a = attestationFor(bait.id, OND2021_TERMS, 1000, (await now()) + DAY);
+    await f.escrow.write.settle([a, await sign(f, a)]);
+    assert.equal(await attacker.read.reentryAttempted(), true);
+    assert.equal(await attacker.read.reentrySucceeded(), false);
+    assert.equal((await f.escrow.read.getCampaign([bait.id])).status, CampaignStatus.Released);
+    assert.equal(await f.publicClient.getBalance({ address: attacker.address }), AMOUNT); // paid exactly once
+    assert.equal(await f.publicClient.getBalance({ address: f.escrow.address }), 0n);
+  });
+
+  it("rejects every single-field mutation of a signed attestation with its exact error (seeded fuzz)", async () => {
+    const f = await load();
+    const target = await createCampaign(f);
+    const sibling = await createCampaign(f); // same terms, same attestor: only campaignId tells them apart
+    const a = attestationFor(target.id, OND2021_TERMS, 9000, (await now()) + DAY);
+    const sig = await sign(f, a);
+    let seed = 0xf022n;
+    const rand = (n: number) => {
+      seed = (seed * 6364136223846793005n + 1442695040888963407n) & ((1n << 64n) - 1n);
+      return Number((seed >> 33n) % BigInt(n));
+    };
+    const randHash = () => keccak256(stringToBytes(`mutation-${rand(2 ** 30)}`));
+    const mutations: Array<[string, () => typeof a, "InvalidSigner" | "SpecMismatch" | "ObservationPeriodMismatch"]> = [
+      ["campaignId", () => ({ ...a, campaignId: sibling.id }), "InvalidSigner"],
+      ["specHash", () => ({ ...a, specHash: randHash() }), "SpecMismatch"],
+      ["evidenceHash", () => ({ ...a, evidenceHash: randHash() }), "InvalidSigner"],
+      ["indexBps", () => ({ ...a, indexBps: (a.indexBps + 1 + rand(2 ** 31)) % 2 ** 32 }), "InvalidSigner"],
+      ["observationStart", () => ({ ...a, observationStart: a.observationStart - 1 - rand(300) }), "ObservationPeriodMismatch"],
+      ["observationEnd", () => ({ ...a, observationEnd: a.observationEnd + 1 + rand(300) }), "ObservationPeriodMismatch"],
+      ["expiresAt", () => ({ ...a, expiresAt: a.expiresAt + 1n + BigInt(rand(10_000)) }), "InvalidSigner"],
+    ];
+    for (const [field, mutate, error] of mutations) {
+      for (let round = 0; round < 6; round++) {
+        const m = mutate();
+        await viem.assertions.revertWithCustomError(f.escrow.write.settle([m, sig], { account: f.relayer.account }), f.escrow, error);
+        assert.notDeepEqual(m, a, `${field} mutation must change the payload`);
+      }
+    }
+    // A signature for the same payload under another domain (chain or contract) never recovers to the attestor.
+    await viem.assertions.revertWithCustomError(f.escrow.write.settle([a, await sign(f, a, attestorAccount, 84532)]), f.escrow, "InvalidSigner");
+    await viem.assertions.revertWithCustomError(
+      f.escrow.write.settle([a, await sign(f, a, attestorAccount, f.chainId, f.A.other)]),
+      f.escrow,
+      "InvalidSigner",
+    );
+    // Nothing moved, and the untouched attestation still settles once.
+    assert.equal(await f.publicClient.getBalance({ address: f.escrow.address }), 2n * AMOUNT);
+    assert.equal((await f.escrow.read.getCampaign([target.id])).status, CampaignStatus.Active);
+    await f.escrow.write.settle([a, sig], { account: f.relayer.account });
+    assert.equal((await f.escrow.read.getCampaign([target.id])).status, CampaignStatus.Refunded);
+    assert.equal((await f.escrow.read.getCampaign([sibling.id])).status, CampaignStatus.Active);
+  });
+});
