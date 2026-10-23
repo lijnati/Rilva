@@ -1,6 +1,6 @@
 # CONTRACTS.md — RilvaEscrow (as implemented, Phase 2)
 
-> Source: `contracts/RilvaEscrow.sol`. Tests: `tests/contracts/` (62 passing, 100 % line and statement coverage of `RilvaEscrow.sol`). Deployment: [DEPLOYMENT.md](DEPLOYMENT.md), currently **not deployed** (pending credentials and approval).
+> Source: `contracts/RilvaEscrow.sol`. Tests: `tests/contracts/` (62 passing, 100 % line and statement coverage of `RilvaEscrow.sol`). Deployment: [DEPLOYMENT.md](DEPLOYMENT.md), deployed to Base Sepolia at `0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E` (2026-10-23).
 > Chain: **Base Sepolia, chain ID 84532** (Verified 2026-10-19: `eth_chainId` on `https://sepolia.base.org` returned `0x14a34`). **Testnet ETH only. Never mainnet.**
 > **This contract has not been audited.** Passing tests and the review in §9 are not a professional security audit.
 

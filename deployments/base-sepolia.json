@@ -1,0 +1,17 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "contract": "RilvaEscrow",
+  "address": "0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E",
+  "deployTxHash": "0x52999d1c1280d0e0498c4b4a1cdb60040e70f27134178316d15cd0b3a53c500d",
+  "deployBlock": "49094017",
+  "deployer": "0xdb3e14879897939ccfd0b22da16f178463ae6020",
+  "compiler": "solc 0.8.37 (optimizer off, evmVersion cancun)",
+  "buildInfoId": "solc-0_8_37-0e57f30efb050e38769da6c15fb6c51812a03db3",
+  "runtimeCodeKeccak256": "0x9b6997161241ce195bfc0fb8f4159292e06d72fb74922f0d4a523cbb60dbad6a",
+  "explorer": {
+    "contract": "https://sepolia.basescan.org/address/0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E",
+    "deployTx": "https://sepolia.basescan.org/tx/0x52999d1c1280d0e0498c4b4a1cdb60040e70f27134178316d15cd0b3a53c500d"
+  },
+  "smokeCheckedAt": "2026-10-23T07:37:14.948Z"
+}

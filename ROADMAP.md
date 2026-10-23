@@ -43,19 +43,16 @@ Test-first throughout.
   - Coverage ≥ 95 %.
   - Lint, typecheck and build pass.
 
-### Phase 2a: Secure escrow contracts (Hardhat 3) ✅ done 2026-10-19, except the Base Sepolia broadcast
+### Phase 2a: Secure escrow contracts (Hardhat 3) ✅ done 2026-10-19; deployed to Base Sepolia 2026-10-23
 - `RilvaEscrow` implemented test-first.
   - 62 Hardhat tests: creation, settlement, attacks, lifecycle, randomized invariant, cross-language EIP-712 parity, and real OND 2021/2022/2023 evidence.
   - 100 % line coverage. Gas recorded (CONTRACTS.md §10).
 - `lib/contracts` integration surface; Ignition module deployed locally.
-- **Pending (human):**
-  - testnet deployer key in the Hardhat keystore;
-  - Base Sepolia ETH;
-  - explicit approval → `pnpm contracts:deploy:base-sepolia` (DEPLOYMENT.md).
+- Deployed to Base Sepolia 2026-10-23 with human approval: `0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`, block 49094017. Smoke checks passed (DEPLOYMENT.md).
 
 ### Phase 2b → Phase 3: Chain + core flows (Wed 21 Oct)
-> Status 2026-10-22: pages, wallet flows and verification are **built and tested on a local Hardhat chain** (Phase 3 below). **Still pending (human):** the Base Sepolia deployment (key + explicit approval) and the testnet demo campaigns A/B. Gate G2 cannot be green until then.
-- Deploy to Base Sepolia, verify the contract on Basescan, and record the address and deploy block.
+> Status 2026-10-22: pages, wallet flows and verification are **built and tested on a local Hardhat chain** (Phase 3 below). Update 2026-10-23: `RilvaEscrow` is **deployed to Base Sepolia** (DEPLOYMENT.md). **Still pending:** source verification, the app's Base Sepolia config, and the testnet demo campaigns A/B. Gate G2 cannot be green until then.
+- ~~Deploy to Base Sepolia~~ (done 2026-10-23, address and deploy block recorded in DEPLOYMENT.md); verify the contract on Basescan.
 - Pages: `/campaigns/new` (create + fund), `/campaigns/[id]` (evidence, attest via the wallet's signTypedData, settle, refund), `/verify/[id]`.
 - Create demo campaigns A (OND 2021) and B (OND 2023) on testnet.
 - **Gate G2:**

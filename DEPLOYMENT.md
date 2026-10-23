@@ -1,6 +1,17 @@
 # DEPLOYMENT.md — RilvaEscrow on Base Sepolia
 
-> **Status (2026-10-19): NOT DEPLOYED.** No deployer credentials or testnet ETH are available in this environment. Everything below has been prepared and verified locally; the broadcast step needs the human's key and explicit approval. Do not record an address, block or transaction hash here until a real deployment produces one.
+> **Status (2026-10-23): DEPLOYED to Base Sepolia** with explicit human approval. All smoke checks passed. Source verification has not been done yet.
+>
+> | | |
+> |---|---|
+> | Address | [`0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`](https://sepolia.basescan.org/address/0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E) |
+> | Deployment tx | [`0x52999d1c1280d0e0498c4b4a1cdb60040e70f27134178316d15cd0b3a53c500d`](https://sepolia.basescan.org/tx/0x52999d1c1280d0e0498c4b4a1cdb60040e70f27134178316d15cd0b3a53c500d) |
+> | Block | 49094017 |
+> | Deployer | `0xdb3e14879897939ccfd0b22da16f178463ae6020` (testnet-only, no rights in the contract) |
+> | Gas used | 2,653,742 (equal to the local measurement; the preflight's RPC estimate was 2,675,971) |
+> | Creation code keccak256 | `0x8e75864f7e03615f36e790ad8bc79522e230583d501554d5868305903e0733db` (equal to the tested artifact) |
+>
+> Record: `ignition/deployments/chain-84532/` (Ignition journal) and `deployments/base-sepolia.json` (smoke test output).
 
 **Testnet only.**
 - Chain: Base Sepolia (chain ID **84532**).

@@ -18,7 +18,7 @@ All scenarios are **retrospective replays**, not live drought alerts. Specs and 
 **Phase 2 is complete, except the Base Sepolia broadcast:**
 - `RilvaEscrow` is implemented and tested with Hardhat 3 (CONTRACTS.md).
 - The `lib/contracts` integration surface is ready.
-- Deployment is prepared but **not deployed**: it is waiting for a testnet key and approval (DEPLOYMENT.md).
+- Deployed to **Base Sepolia** (testnet) at `0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E` (DEPLOYMENT.md).
 
 Not yet built: wallet UI flows and the full UI (Phase 3).
 
