@@ -25,7 +25,7 @@ export default async function VerifyPage({ params }: { params: Promise<{ id: str
             Don&apos;t trust the page. Check the <em>math</em>.
           </>
         }
-        lede="Your browser reads the contract, decodes the signed attestation, re-fetches the rainfall and recomputes every hash. Each check says exactly what it proves."
+        lede="Your browser reads the contract, decodes the signed attestation, re-downloads the SHA-256-pinned ERA5 data and recomputes every hash. Each check says exactly what it proves."
       />
       <main id="main" className="container-rv pb-20 pt-6">
         {id === null ? (

@@ -4,10 +4,11 @@ import { useState } from "react";
 import type { Hex } from "viem";
 import { useConnection, useSignTypedData } from "wagmi";
 import { HashField } from "@/components/chain/HashField";
+import { UpstreamNote } from "@/components/climate/UpstreamNote";
 import { TxStatus } from "@/components/chain/TxStatus";
 import { WalletControl } from "@/components/chain/WalletControl";
 import { CHAIN } from "@/lib/app/appConfig";
-import { loadBrowserEvidence } from "@/lib/app/browserEvidence";
+import { checkUpstream, loadBrowserEvidence, type UpstreamCheck } from "@/lib/app/browserEvidence";
 import { formatUtc, seasonLabel } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
 import { assertWalletChain } from "@/lib/app/walletRequest";
@@ -55,6 +56,7 @@ export function AttestPanel({
   const sign = useSignTypedData();
   const tx = useContractWrite();
   const [evidence, setEvidence] = useState<Evidence>({ kind: "idle" });
+  const [upstream, setUpstream] = useState<UpstreamCheck | "pending" | null>(null);
   const [attestation, setAttestation] = useState<Attestation | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
   const [pasted, setPasted] = useState("");
@@ -73,13 +75,17 @@ export function AttestPanel({
   async function recompute() {
     setEvidence({ kind: "loading" });
     setAttestation(null);
+    setUpstream(null);
     try {
-      const r = await loadBrowserEvidence(spec, { mode: "live-with-snapshot-fallback", timeoutMs: 15_000, retries: 1 });
+      // Pinned: the committed, SHA-256-checked snapshot is what gets signed (CLIMATE_DATA.md §2.4).
+      const r = await loadBrowserEvidence(spec, { mode: "snapshot" });
       if (r.artifact.core.specHash.toLowerCase() !== c.specHash.toLowerCase()) throw new Error("the recomputed spec hash does not match this campaign");
       const att = buildAttestation({ evidence: r.artifact, campaignId: id, expiresAt: chainNow + 3600n });
       if (att.observationStart !== c.observationStart || att.observationEnd !== c.observationEnd) throw new Error("the evidence period does not match this campaign");
       setEvidence({ kind: "ok", r });
       setAttestation(att);
+      setUpstream("pending");
+      void checkUpstream(spec, r, { timeoutMs: 15_000, retries: 1 }).then(setUpstream);
     } catch (e) {
       setEvidence({ kind: "error", message: e instanceof Error ? e.message : String(e) });
     }
@@ -132,20 +138,21 @@ export function AttestPanel({
           <button type="button" className="btn btn-sm btn-ink" onClick={recompute} disabled={evidence.kind === "loading"}>
             {evidence.kind === "loading" ? "Fetching ERA5…" : evidence.kind === "ok" ? "Recompute again" : "Recompute from ERA5"}
           </button>
-          <span className="text-[12px] text-ink-3">Open-Meteo, models=era5 · falls back to the saved snapshot with a notice</span>
+          <span className="text-[12px] text-ink-3">Committed ERA5 snapshot (Open-Meteo, models=era5) · SHA-256 checked · compared with a live re-fetch</span>
         </div>
         <div aria-live="polite">
           {evidence.kind === "error" && <p className="rounded-[12px] bg-fail-soft px-4 py-3 text-[13px]"><strong>Evidence INVALID — nothing can be signed.</strong> {evidence.message}</p>}
           {core && evidence.kind === "ok" && (
             <div className="grid gap-2 rounded-[12px] bg-paper-deep/70 px-4 py-3 text-[13px]">
               <p>
-                <span className="meta mr-2">{evidence.r.provenance.mode === "live" ? "Live response" : "Saved snapshot"}</span>
-                {evidence.r.provenance.fellBackFromLive && `Open-Meteo unreachable (${evidence.r.provenance.liveError}); used the committed snapshot. `}
+                <span className="meta mr-2">Pinned snapshot</span>
+                {evidence.r.provenance.documents[0] && `retrieved ${evidence.r.provenance.documents[0].retrievedAt.slice(0, 10)} · `}
                 {core.periods.observed.days}/{core.periods.observed.days} days · {core.periods.baseline.years} baseline seasons · {formatDmmAsMm(core.result.observedTotalDmm)} mm
               </p>
               <p className="tnum">
                 Index <strong>{core.result.indexBps} bps</strong> ({formatBpsAsPercent(core.result.indexBps)} % of normal) · spec hash matches this campaign ✓
               </p>
+              <UpstreamNote check={upstream === "pending" ? undefined : (upstream ?? undefined)} pending={upstream === "pending"} />
             </div>
           )}
         </div>
@@ -164,7 +171,7 @@ export function AttestPanel({
                   {[
                     ["campaignId", "Only this campaign", attestation.campaignId.toString()],
                     ["specHash", "The rule stored at creation", attestation.specHash],
-                    ["evidenceHash", "The evidence you just recomputed", attestation.evidenceHash],
+                    ["evidenceHash", "The pinned evidence you just recomputed", attestation.evidenceHash],
                     ["indexBps", `${formatBpsAsPercent(attestation.indexBps)} % of normal`, String(attestation.indexBps)],
                     ["observationStart", "First day observed", String(attestation.observationStart)],
                     ["observationEnd", "Last day observed", String(attestation.observationEnd)],

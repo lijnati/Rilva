@@ -57,6 +57,29 @@ We pulled 1991–2023 at Yabelo with `best_match` and with `models=era5`:
 - A baseline mixing models is invalid for anomaly work.
 - **Decision:** always pin `models=era5`, and include the model in the campaign spec and the evidence hash.
 
+#### 2.4 Finding (2026-10-24): Open-Meteo revises ERA5 values in place
+
+On 2026-10-24 the same URLs (`models=era5`, unchanged grid cell 5.0° N, 38.0° E) returned different daily values from the 2026-10-19 snapshots. Measured by diffing every day:
+
+| File | Days that changed |
+|---|---|
+| 1991–2000 / 2001–2010 / 2011–2020 baseline | 531 / 553 / 644 |
+| OND 2021 / OND 2022 / OND 2023 | 9 / 14 / 31 |
+| MAM 2021 | 22 |
+
+Most changes are ±0.1–2 mm shifts between adjacent days. Effect on SRPN-v1 (live 2026-10-24, versus the committed snapshot):
+
+| Scenario | Snapshot (golden) | Live 2026-10-24 | Decision |
+|---|---|---|---|
+| OND 2021 | 3363 | 3362 | same (trigger) |
+| OND 2022 | 4461 | 4460 | same (trigger) |
+| OND 2023 | 21322 | 21318 | same (no trigger) |
+| MAM 2021 | 5468 | 5468 | same |
+
+The baseline sum S moved from 70193 to 70221 dmm. `pnpm climate:verify all --live` reports `live digest differs` for all three scenarios, as designed. The golden values are unchanged: they are defined on the committed snapshots.
+
+**Decision (approved 2026-10-24):** the decision path is pinned to the committed, SHA-256-checked snapshot. Attestations sign the snapshot evidence (`public/evidence/*.json`). The attest step, `/verify` and the explorer recompute from the snapshot and show a live re-fetch next to it as an "Upstream revised" note that never changes a check's status. A live API is not an immutable record. Reproducibility comes from content-addressed inputs plus a deterministic method, not from re-querying a provider that may reprocess its archive.
+
 ### 2.2 CHIRPS v3.0 (Climate Hazards Center, UCSB)
 
 Verified from `README-CHIRPSv3.0.txt` at https://data.chc.ucsb.edu/products/CHIRPS/v3.0/ (HTTP 200).

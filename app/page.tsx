@@ -343,7 +343,7 @@ export default async function Home() {
                 Check the <em>math</em>.
               </h2>
               <p className="reveal mt-4 max-w-[44ch] leading-[1.8] text-ink-2">
-                Every campaign has a public verification report. Your browser re-fetches the rainfall, recomputes the index and the hashes,
+                Every campaign has a public verification report. Your browser re-downloads the SHA-256-pinned ERA5 data, recomputes the index and the hashes,
                 recovers the signer, and compares everything with the chain.
               </p>
               <ul className="mt-6 grid gap-2.5 text-[13.5px]">

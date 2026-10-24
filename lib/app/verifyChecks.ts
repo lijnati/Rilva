@@ -107,7 +107,7 @@ export function buildVerification(v: VerificationInput): Verification {
         : !rc.ok
           ? `Could not recompute: ${rc.error}`
           : `Recomputed ${rc.indexBps} bps from ${rc.mode === "live" ? "a live Open-Meteo response" : "the saved ERA5 snapshot"}; attested ${attested.indexBps} bps.`,
-    howTo: "Fetch the spec's ERA5 series from Open-Meteo (models=era5) and apply floor(T × 10000 × N / S).",
+    howTo: "Download the committed ERA5 snapshot files (Open-Meteo, models=era5), check each SHA-256 against manifest.json, and apply floor(T × 10000 × N / S).",
   });
   checks.push({
     id: "evidence-hash",

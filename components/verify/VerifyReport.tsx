@@ -7,10 +7,11 @@ import { AddressField, TxLink } from "@/components/chain/AddressField";
 import { HashField } from "@/components/chain/HashField";
 import { useCampaignRecord, useEscrowClient } from "@/components/chain/useRilva";
 import { ERA5_NOTE, thresholdNote } from "@/components/climate/Outcome";
+import { UpstreamNote } from "@/components/climate/UpstreamNote";
 import { ReplayBanner } from "@/components/site/ReplayBanner";
 import { CampaignStatusChip, EmptyState, NotConfigured, Skeleton } from "@/components/ui/States";
 import { CHAIN, ESCROW } from "@/lib/app/appConfig";
-import { loadBrowserEvidence } from "@/lib/app/browserEvidence";
+import { checkUpstream, loadBrowserEvidence } from "@/lib/app/browserEvidence";
 import { campaignView } from "@/lib/app/campaignView";
 import { decodeSettleCalldata } from "@/lib/app/chainHistory";
 import { formatEth, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
@@ -95,10 +96,16 @@ export function VerifyReport({ id }: { id: bigint }) {
     enabled: !!spec && !!found?.history.settled,
     staleTime: Infinity,
     retry: false,
-    queryFn: async () => {
-      const r = await loadBrowserEvidence(spec!, { mode: "live-with-snapshot-fallback", timeoutMs: 15_000, retries: 1 });
-      return r;
-    },
+    // Pinned to the committed snapshot (SHA-256 checked): Open-Meteo revises ERA5, so live bytes are not stable.
+    queryFn: () => loadBrowserEvidence(spec!, { mode: "snapshot" }),
+  });
+
+  const upstream = useQuery({
+    queryKey: ["upstream", found?.campaign.specHash],
+    enabled: !!recomputed.data,
+    staleTime: Infinity,
+    retry: false,
+    queryFn: () => checkUpstream(spec!, recomputed.data!, { timeoutMs: 15_000, retries: 1 }),
   });
 
   if (!ESCROW.address) return <NotConfigured />;
@@ -195,10 +202,13 @@ export function VerifyReport({ id }: { id: bigint }) {
             ))}
           </ol>
           {recomputed.data && (
-            <p className="mt-2 text-[12px] text-ink-3">
-              Recomputed from {recomputed.data.provenance.mode === "live" ? "a live Open-Meteo response" : "the committed ERA5 snapshot (SHA-256 verified)"}
-              {recomputed.data.provenance.fellBackFromLive && ` because Open-Meteo was unreachable (${recomputed.data.provenance.liveError})`}.
-            </p>
+            <div className="mt-2 grid gap-1">
+              <p className="text-[12px] text-ink-3">
+                Recomputed from the committed ERA5 snapshot (Open-Meteo, retrieved {recomputed.data.provenance.documents[0]?.retrievedAt.slice(0, 10)}, every file SHA-256 checked
+                against the manifest).
+              </p>
+              <UpstreamNote check={upstream.data} pending={upstream.isPending} />
+            </div>
           )}
           <div className="mt-5 rounded-[14px] bg-paper-deep/70 p-4 text-[13px] leading-6">
             <p className="font-semibold">Not checked, and not claimed</p>

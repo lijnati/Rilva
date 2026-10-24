@@ -21,6 +21,38 @@ async function getBytes(fetchImpl: FetchLike, url: string): Promise<Uint8Array> 
   return new Uint8Array(await res.arrayBuffer());
 }
 
+/**
+ * The decision path is pinned to the committed snapshot: Open-Meteo revised its ERA5 archive after the
+ * 2026-10-19 snapshot (CLIMATE_DATA.md §2.4), so a live re-fetch is reported next to it, never in place of it.
+ */
+export type UpstreamCheck =
+  | { kind: "same"; indexBps: number; digest: string }
+  | { kind: "revised"; indexBps: number; digest: string; deltaBps: number; sameDecision: boolean }
+  | { kind: "unreachable"; error: string };
+
+export async function checkUpstream(
+  spec: ClimateSpec,
+  pinned: ClimateEvidenceResult,
+  opts: Omit<BrowserEvidenceOptions, "mode"> = {},
+): Promise<UpstreamCheck> {
+  try {
+    const live = await loadBrowserEvidence(spec, { ...opts, mode: "live" });
+    const indexBps = live.artifact.core.result.indexBps;
+    const digest = live.artifact.evidenceDigest;
+    if (digest === pinned.artifact.evidenceDigest) return { kind: "same", indexBps, digest };
+    const pinnedResult = pinned.artifact.core.result;
+    return {
+      kind: "revised",
+      indexBps,
+      digest,
+      deltaBps: indexBps - pinnedResult.indexBps,
+      sameDecision: live.artifact.core.result.triggered === pinnedResult.triggered,
+    };
+  } catch (e) {
+    return { kind: "unreachable", error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 export async function loadBrowserEvidence(spec: ClimateSpec, opts: BrowserEvidenceOptions): Promise<ClimateEvidenceResult> {
   const fetchImpl: FetchLike = opts.fetchImpl ?? ((url, init) => fetch(url, init));
   const manifestBytes = await getBytes(fetchImpl, `${SNAPSHOT_BASE_PATH}manifest.json`);

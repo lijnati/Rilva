@@ -5,7 +5,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { loadBrowserEvidence, SNAPSHOT_BASE_PATH } from "@/lib/app/browserEvidence";
+import { checkUpstream, loadBrowserEvidence, SNAPSHOT_BASE_PATH } from "@/lib/app/browserEvidence";
 import { deficitVsNormal } from "@/lib/app/explorerSeries";
 import { SCENARIOS } from "@/lib/climate";
 
@@ -60,6 +60,53 @@ describe("loadBrowserEvidence", () => {
     await expect(loadBrowserEvidence(SCENARIOS["yabelo-ond-2021"].spec, { mode: "snapshot", fetchImpl: impl })).rejects.toThrow(
       /manifest hash/,
     );
+  });
+});
+
+/** Serves the committed snapshot bytes for the matching live Open-Meteo URL, optionally revising one day. */
+function liveFromSnapshots(revise?: { file: string; date: string; mm: number }) {
+  return async (url: string) => {
+    if (url.startsWith(SNAPSHOT_BASE_PATH)) return new Response(new Uint8Array(await readFile(path.join(PUBLIC, decodeURIComponent(url)))), { status: 200 });
+    const manifest = JSON.parse(await readFile(path.join(PUBLIC, SNAPSHOT_BASE_PATH, "manifest.json"), "utf8")) as { documents: { url: string; file: string }[] };
+    const doc = manifest.documents.find((d) => d.url === url);
+    if (!doc) return new Response("not found", { status: 404 });
+    const raw = await readFile(path.join(PUBLIC, SNAPSHOT_BASE_PATH, doc.file), "utf8");
+    if (!revise || revise.file !== doc.file) return new Response(raw, { status: 200 });
+    const json = JSON.parse(raw) as { daily: { time: string[]; precipitation_sum: number[] } };
+    json.daily.precipitation_sum[json.daily.time.indexOf(revise.date)] = revise.mm;
+    return new Response(JSON.stringify(json), { status: 200 });
+  };
+}
+
+describe("checkUpstream (pinned snapshot vs a live re-fetch)", () => {
+  const spec = SCENARIOS["yabelo-ond-2021"].spec;
+
+  it("same: live bytes equal to the snapshot give the same digest", async () => {
+    const impl = liveFromSnapshots();
+    const pinned = await loadBrowserEvidence(spec, { mode: "snapshot", fetchImpl: impl });
+    const u = await checkUpstream(spec, pinned, { fetchImpl: impl, retries: 0 });
+    expect(u).toEqual({ kind: "same", indexBps: 3363, digest: pinned.artifact.evidenceDigest });
+  });
+
+  it("revised: a changed upstream day is reported with the live index, never used for the pinned result", async () => {
+    // 2021-10-07 is 0.4 mm in the snapshot; set to 40.4 mm, T moves from 787 to 787 - 4 + 404 = 1187 dmm.
+    const impl = liveFromSnapshots({ file: "2021-10-01_2021-12-31.json", date: "2021-10-07", mm: 40.4 });
+    const pinned = await loadBrowserEvidence(spec, { mode: "snapshot", fetchImpl: impl });
+    const u = await checkUpstream(spec, pinned, { fetchImpl: impl, retries: 0 });
+    expect(u.kind).toBe("revised");
+    if (u.kind !== "revised") return;
+    expect(u.indexBps).toBe(Number((1187n * 10000n * 30n) / 70193n));
+    expect(u.deltaBps).toBe(u.indexBps - 3363);
+    expect(u.sameDecision).toBe(true);
+    expect(u.digest).not.toBe(pinned.artifact.evidenceDigest);
+    expect(pinned.artifact.core.result.indexBps).toBe(3363);
+  });
+
+  it("unreachable: a live failure is reported, not thrown", async () => {
+    const { impl } = diskFetch({ liveFails: true });
+    const pinned = await loadBrowserEvidence(spec, { mode: "snapshot", fetchImpl: impl });
+    const u = await checkUpstream(spec, pinned, { fetchImpl: impl, retries: 0 });
+    expect(u.kind).toBe("unreachable");
   });
 });
 
