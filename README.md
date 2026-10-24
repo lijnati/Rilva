@@ -145,7 +145,7 @@ The full record, including creation transactions and the source-verification sta
 - Testnet only and not audited. No partnerships or pilots exist.
 
 ## Project documents
-[PRODUCT.md](PRODUCT.md) · [CLIMATE_DATA.md](CLIMATE_DATA.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRACTS.md](CONTRACTS.md) · [DESIGN.md](DESIGN.md) · [DEPLOYMENT.md](DEPLOYMENT.md) · [ROADMAP.md](ROADMAP.md) · [JUDGE_GUIDE.md](JUDGE_GUIDE.md)
+[PRODUCT.md](PRODUCT.md) · [CLIMATE_DATA.md](CLIMATE_DATA.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRACTS.md](CONTRACTS.md) · [DEPLOYMENT.md](DEPLOYMENT.md) · [JUDGE_GUIDE.md](JUDGE_GUIDE.md)
 
 ## Credits and data attribution
 - Weather data by [Open-Meteo.com](https://open-meteo.com/) ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)), based on ERA5: Copernicus Climate Change Service information. The app footer carries the same credit.

@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — Rilva system architecture
 
-> Phase 0 design. Unless marked Verified, statements are **Decisions**. Related: [CONTRACTS.md](CONTRACTS.md) (on-chain), [CLIMATE_DATA.md](CLIMATE_DATA.md) (indicator and evidence), [DESIGN.md](DESIGN.md) (UI).
+> Phase 0 design. Unless marked Verified, statements are **Decisions**. Related: [CONTRACTS.md](CONTRACTS.md) (on-chain), [CLIMATE_DATA.md](CLIMATE_DATA.md) (indicator and evidence).
 
 ## 1. Principles
 
@@ -44,7 +44,7 @@
 | `lib/climate/source.ts` | Fetch with retry, chunking by decade, and fallback order **direct → saved snapshot**, always labelled | Untrusted I/O |
 | `lib/app/` (Phase 3, pure TS, relative imports, unit-tested) | View logic for the UI: explorer series, create-form validation (exact wei, contract-rule mirror), campaign view model (contract states only), bounded log history + settle-calldata decoding, the verification checklist, signed-attestation export/import, revert decoding, browser evidence loader | Security-relevant: never decides eligibility; the contract re-checks everything |
 | `components/chain/` | wagmi (injected wallet only) + TanStack Query providers, wallet/network states, read hooks via the public RPC | UI; no keys |
-| `app/` (Next.js App Router) | Pages in [DESIGN.md](DESIGN.md) §5 | UI |
+| `app/` (Next.js App Router) | Pages (`/`, `/explore`, `/campaigns`, `/campaigns/[id]`, `/verify/[id]`, `/methodology`) | UI |
 | `public/snapshots/open-meteo/era5/yabelo/` | Committed raw Open-Meteo responses (baseline decades and observed seasons) | Byte-exact. SHA-256 recorded in `manifest.json`; `.gitattributes -text` |
 | `public/evidence/` | Precomputed evidence JSON for demo campaigns, named by `evidenceHash` | Convenience only; the verifier recomputes regardless |
 | `ignition/modules/RilvaEscrow.ts` | Hardhat Ignition deployment of the single contract | Deployer key only from the Hardhat keystore or a shell env; never in the repo |
@@ -120,7 +120,7 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 ## 8. Repository layout (as of Phase 2)
 
 ```
-/app                 Next.js routes (see DESIGN.md §5)
+/app                 Next.js routes
 /components          UI components (site, climate, chain, campaign, verify, ui)
 /lib/app             Phase 3 view logic (pure, tested)
 /lib/climate         SRPN-v1, evidence, canonicalization (pure) + source.ts (I/O)
@@ -134,7 +134,7 @@ All three are also Hardhat contract tests (`tests/contracts/`). Optionally, one 
 /public/vendor       pixel-scene.js (pixel-meadow-ui skill, vendored)
 /tests/contracts     Hardhat node:test suites (pnpm contracts:test), incl. real-evidence integration
 hardhat.config.ts    solc 0.8.37, optimizer off, baseSepolia network
-PRODUCT.md CLIMATE_DATA.md ARCHITECTURE.md CONTRACTS.md DESIGN.md ROADMAP.md CLAUDE.md README.md
+PRODUCT.md CLIMATE_DATA.md ARCHITECTURE.md CONTRACTS.md DEPLOYMENT.md JUDGE_GUIDE.md CLAUDE.md README.md
 ```
 
 ## 9. Threat model (system level)
@@ -147,7 +147,7 @@ The contract-level table is in CONTRACTS.md §8. Additional system boundaries:
 | UI ↔ wallet | Blind signing | EIP-712 with named fields. The UI repeats the fields and hash in readable form. |
 | Repo / secrets | Key leakage | `.env*` in `.gitignore`. No keys on the server. Pre-commit grep for `PRIVATE_KEY=0x` (CLAUDE.md). |
 | Dependencies | Malicious update | Exact version pins and a committed lockfile. No postinstall scripts from unknown packages. |
-| Presentation | Misleading claims | Mandatory replay banner, limitation copy, and "illustrative threshold" labels (DESIGN.md §7) |
+| Presentation | Misleading claims | Mandatory replay banner, limitation copy, and "illustrative threshold" labels |
 
 ## 10. Deployment
 

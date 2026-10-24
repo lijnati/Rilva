@@ -90,7 +90,7 @@ How the deploy behaves:
    NEXT_PUBLIC_RILVA_ESCROW_ADDRESS=0x…
    NEXT_PUBLIC_RILVA_DEPLOY_BLOCK=…
    ```
-4. Update this file and ROADMAP.md with the real values.
+4. Update this file with the real values.
 5. Demo campaigns use small testnet amounts only, for example 0.001–0.01 test ETH, created through the app in Phase 3.
 
 ## Smoke checks (read-only)

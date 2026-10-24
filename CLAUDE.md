@@ -10,6 +10,8 @@ Source-of-truth docs (read the relevant one before changing anything in its area
 - [ROADMAP.md](ROADMAP.md) — phases, gates, fallback order, acceptance tests
 - [VIDEO.md](VIDEO.md) — demo video: three moments, shot list, what not to show
 
+DESIGN.md, ROADMAP.md, VIDEO.md and the submission docs are internal: kept locally and git-ignored since 2026-10-24, so they are not in the public repo.
+
 If code and docs disagree, stop and reconcile. Update the doc in the same change, or ask.
 
 ## Phase discipline
