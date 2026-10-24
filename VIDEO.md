@@ -1,5 +1,7 @@
 # VIDEO.md — Rilva demo video (≤ 4:50)
 
+> **2026-10-24:** the timed narration, shot list and capture plan now live in [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md), [STORYBOARD.md](STORYBOARD.md) and [RECORDING_PLAN.md](RECORDING_PLAN.md) and use the real Base Sepolia campaigns #1–#3. This file keeps the three moments and the do-not-show list.
+
 > Devpost requires a 3–5 minute video (PRODUCT.md §10). Target **4:30–4:50**, recorded at 1080p. Built around **three moments**; everything else is setup or close. Every on-screen number must come from the deployed app, a saved snapshot or a cited source — never from this script. Re-read PRODUCT.md §9 (forbidden claims) before recording.
 
 ## The three moments
