@@ -1,0 +1,253 @@
+{
+  "schema": "rilva.evidence-file.v1",
+  "scenario": "petrolina-mam-2012",
+  "title": "Petrolina MAM 2012 — Brazilian Sertão drought",
+  "notice": "Retrospective replay of a past season, not a live drought alert. ERA5 reanalysis estimate for one ~28 km grid cell; it does not measure drought impact or financial loss. The 60 % threshold is an illustrative hackathon rule.",
+  "artifact": {
+    "core": {
+      "schema": "rilva.evidence.v1",
+      "algorithm": "SRPN-v1",
+      "specHash": "0x8c5f59a888fe0e1d942037a78a7648017b73b7bb826a41a5951ee932baad84f6",
+      "spec": {
+        "schema": "rilva.spec.v1",
+        "method": "SRPN-v1",
+        "replay": true,
+        "location": {
+          "label": "Petrolina, Pernambuco, Brazil",
+          "latitude": -9.39,
+          "longitude": -40.5
+        },
+        "source": {
+          "provider": "open-meteo",
+          "model": "era5",
+          "variable": "precipitation_sum",
+          "timezone": "America/Bahia"
+        },
+        "period": {
+          "start": "2012-03-01",
+          "end": "2012-05-31"
+        },
+        "baseline": {
+          "startYear": 1981,
+          "endYear": 2010
+        },
+        "thresholdBps": 6000
+      },
+      "source": {
+        "provider": "open-meteo",
+        "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+        "model": "era5",
+        "variable": "precipitation_sum",
+        "unit": "mm",
+        "normalizedUnit": "dmm",
+        "timezone": "America/Bahia"
+      },
+      "location": {
+        "requested": {
+          "latitude": -9.39,
+          "longitude": -40.5
+        },
+        "resolved": {
+          "latitude": -9.5,
+          "longitude": -40.5,
+          "elevation": 381,
+          "utcOffsetSeconds": -10800
+        }
+      },
+      "periods": {
+        "observed": {
+          "start": "2012-03-01",
+          "end": "2012-05-31",
+          "days": 92
+        },
+        "baseline": {
+          "startYear": 1981,
+          "endYear": 2010,
+          "years": 30,
+          "daysPerSeason": 92
+        }
+      },
+      "data": {
+        "seriesDigest": "0xb9caed51bb3e325231fa4978c4d4525ed890e703a009af30d3cd6eab6709705d",
+        "observedDailyDmm": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          26,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          2,
+          3,
+          7,
+          9,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "baselineSeasonTotalsDmm": [
+          2734,
+          929,
+          717,
+          2388,
+          3704,
+          1382,
+          2668,
+          2849,
+          1694,
+          286,
+          1496,
+          849,
+          189,
+          2005,
+          1713,
+          1723,
+          3855,
+          157,
+          1057,
+          1023,
+          744,
+          528,
+          1640,
+          589,
+          1297,
+          1676,
+          140,
+          2629,
+          2081,
+          1360
+        ]
+      },
+      "result": {
+        "observedTotalDmm": 74,
+        "baselineSumDmm": 46102,
+        "baselineYears": 30,
+        "indexBps": 481,
+        "deficitBps": 9519,
+        "thresholdBps": 6000,
+        "triggered": true
+      }
+    },
+    "evidenceDigest": "0xf1e10ea8b66337c4107f2dd0ecc52b5011402441b9b8a738f3b899a87e89c4a9"
+  },
+  "provenance": {
+    "mode": "snapshot",
+    "fellBackFromLive": false,
+    "documents": [
+      {
+        "id": "1981-01-01_1990-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=1981-01-01&end_date=1990-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+        "retrievedAt": "2026-10-24T10:37:39.165Z",
+        "sha256": "0x84df9a1b2d343b2daf7ac6aa8d4ffa6642e0c39090d2dc77ab1702a4d5c6ca04",
+        "bytes": 66137
+      },
+      {
+        "id": "1991-01-01_2000-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+        "retrievedAt": "2026-10-24T10:37:40.106Z",
+        "sha256": "0xd133fafac5c2abcd10644aae04ea35557e72d84c6bab3b8d92425409082a3d9d",
+        "bytes": 66156
+      },
+      {
+        "id": "2001-01-01_2010-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+        "retrievedAt": "2026-10-24T10:37:40.711Z",
+        "sha256": "0xa9fa03760669c010fd8e0d38eb806f1d312ac53942d00d40c7f62b37871dd2bd",
+        "bytes": 66131
+      },
+      {
+        "id": "2012-03-01_2012-05-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=2012-03-01&end_date=2012-05-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+        "retrievedAt": "2026-10-24T10:37:40.873Z",
+        "sha256": "0xb3172aceb6deafcc26b3bdaa192c875b2f71325de35681a46adb35f49d971690",
+        "bytes": 1935
+      }
+    ],
+    "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information."
+  },
+  "presentation": {
+    "observedTotalMm": "7.4",
+    "baselineMeanMm": "153.7",
+    "percentOfNormal": "4.81",
+    "thresholdPercent": "60.00",
+    "zScoreInformational": -1.46
+  }
+}

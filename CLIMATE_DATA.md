@@ -141,6 +141,26 @@ These sources describe the situation; Rilva does not verify them and does not us
 
 Impact figures vary widely between sources (livestock deaths range from tens of thousands to millions depending on area and date). **Rilva must not display a single impact number as fact.** At most, it may link these sources under "Context from humanitarian monitoring".
 
+### 3.4 Regional replays outside Ethiopia (Decision, 2026-10-24)
+
+**Decision (scope change requested by the founder on 2026-10-24):** three more retrospective replays show that the same rule, method and contract work elsewhere. They are demo cases, not studies of these regions. Yabelo stays the primary case study; its specs, snapshots, evidence and golden values are unchanged.
+
+- **Same method:** SRPN-v1, `models=era5`, `daily=precipitation_sum`, the illustrative 60 % rule, seasons inside one calendar year, no 29 Feb.
+- **Local timezone (Decision):** each regional spec requests days in its own timezone (`Africa/Nairobi`, `America/Bahia`, `Asia/Kolkata`), so a "day" matches the local day. Yabelo keeps `Africa/Addis_Ababa`.
+- **Baseline (Decision):** a season may not lie inside its own baseline (`assertValidSpec`). Marsabit OND 2021 uses 1991–2020. Petrolina MAM 2012 and Beed JJAS 2015 fall inside 1991–2020, so they use **1981–2010**, the WMO standard normal in force at the time. The baseline is part of the hashed spec.
+- **Points:** approximate town centres, 2 decimals. Snapshots retrieved 2026-10-24 and committed per location under `public/snapshots/open-meteo/era5/<slug>/` with their own `manifest.json`.
+
+| Scenario | Request point → ERA5 cell | Timezone | Baseline | Season total | Normal | % of normal | indexBps | Rule ≤ 6000 |
+|---|---|---|---|---|---|---|---|---|
+| `marsabit-ond-2021` Marsabit, Kenya | 2.33° N, 37.99° E → 2.25° N, 38.0° E (1362 m) | Africa/Nairobi | 1991–2020 | 47.6 mm | 170.7 mm | 27.88 % | **2788** | Trigger |
+| `petrolina-mam-2012` Petrolina, Brazil | 9.39° S, 40.5° W → 9.5° S, 40.5° W (381 m) | America/Bahia | 1981–2010 | 7.4 mm | 153.7 mm | 4.81 % | **481** | Trigger |
+| `beed-jjas-2015` Beed, India | 18.99° N, 75.76° E → 19.0° N, 75.75° E (510 m) | Asia/Kolkata | 1981–2010 | 513.2 mm | 597.7 mm | 85.86 % | **8586** | No trigger |
+
+**Context, not computed by Rilva** (accessed 2026-10-24; secondary sources are marked):
+- **Marsabit, OND 2021.** The NDMA attributed Kenya's 2022 food crisis to "the poor performance of the 2021 short rains" and listed Marsabit among counties that received 50–75 % of normal rain (The Star, 12 May 2022, reporting NDMA): https://www.the-star.co.ke/news/2022-05-12-35-million-kenyans-face-acute-hunger--ndma. The article does not tie the 50–75 % figure to a specific season (**UNVERIFIED** for OND 2021). Citizen Digital reported Marsabit's drought followed the failure of both 2021 rainy seasons, citing NDMA's December 2021 Marsabit bulletin: https://citizen.digital/news/emergency-aid-needed-to-avoid-starvation-in-marsabit-as-drought-rages-on-n290687 (secondary; the bulletin itself was not retrieved).
+- **Petrolina / Pernambuco, 2012.** Agência Brasil (25 May 2012) reported the drought as likely the worst in at least 50 years, 99 Pernambuco municipalities in a state of emergency, and less than a quarter of the expected rain over six months: https://memoria.ebc.com.br/agenciabrasil//new-in-english/2012-05-25/news-english-%E2%80%93-north-and-northeast-regions-brazil-punished-extreme-weather-i. Other outlets called it the worst in 30 years, so the record length is a press description, not a measurement.
+- **Beed / Marathwada, JJAS 2015.** SANDRP, quoting IMD, gives Beed 287.4 mm for 1 June–30 September 2015 (−50 %) and Marathwada 412.4 mm (−40 %): https://sandrp.in/2015/10/02/state-says-59-9-rainfall-imd-says-73-highlights-and-discrepancies-of-maharashtras-monsoon-2015/ (secondary; the IMD bulletin itself was not retrieved). **ERA5 at this cell gives 513.2 mm, 85.86 % of its 1981–2010 normal, so the illustrative rule is not met.** This is a source disagreement as large as Yabelo's ERA5/CHIRPS gap: a district station average is not a ~28 km reanalysis cell, and the normals differ. Rilva shows it as a non-trigger and does not adjust it.
+
 ---
 
 ## 4. Indicator specification — SRPN-v1 (Decision)
@@ -150,9 +170,9 @@ Impact figures vary widely between sources (livestock deaths range from tens of 
 **Inputs (all fixed in the campaign spec):**
 - `latitude`, `longitude` (request point, 2 decimals)
 - `model = "era5"`
-- `timezone = "Africa/Addis_Ababa"`
+- `timezone = "Africa/Addis_Ababa"` for Yabelo; regional replays use their local timezone (§3.4)
 - `periodStart`, `periodEnd`: ISO dates, both **inclusive**
-- `baselineStartYear = 1991`, `baselineEndYear = 2020`
+- `baselineStartYear = 1991`, `baselineEndYear = 2020` (1981–2010 for the two regional seasons that fall inside 1991–2020, §3.4)
 
 **Season definition:**
 - The target season is the calendar-day range `[periodStart, periodEnd]`.
@@ -169,7 +189,7 @@ Impact figures vary widely between sources (livestock deaths range from tens of 
 6. Display only: `percent = indexBps / 100` (2 decimals); `mean_mm = S / N / 10` (1 decimal); `z` = (T − mean)/SD with sample SD, on 2 decimals. **z is informational and never used for decisions.**
 
 **Missing-data rules:**
-- Every day in the target and all 30 baseline seasons must be present and non-null. The day count must equal the expected calendar days (92 for OND).
+- Every day in the target and all 30 baseline seasons must be present and non-null. The day count must equal the expected calendar days (92 for OND and MAM, 122 for JJAS).
 - Any `null`, a missing day, a negative value, an API `error:true`, or a resolved-coordinate mismatch → evidence status **`INVALID`**. No attestation can be produced.
 - There is no gap filling and no partial seasons.
 - `S = 0` → `INVALID` (division guard).
@@ -182,6 +202,14 @@ Impact figures vary widely between sources (livestock deaths range from tens of 
 | OND 2022 | 1044 | 70193 | 30 | **4461** |
 | OND 2023 | 4989 | 70193 | 30 | **21322** |
 | MAM 2021 (counter-example) | 2265 | 124257 | 30 | 5468 |
+
+Regional replays (§3.4; data retrieved 2026-10-24, `tests/climate/regional.test.ts`):
+
+| Case | T (dmm) | S (dmm) | N | indexBps |
+|---|---|---|---|---|
+| Marsabit OND 2021 (1991–2020) | 476 | 51205 | 30 | **2788** |
+| Petrolina MAM 2012 (1981–2010) | 74 | 46102 | 30 | **481** |
+| Beed JJAS 2015 (1981–2010) | 5132 | 179313 | 30 | **8586** |
 
 **Threshold:**
 - `thresholdBps = 6000` is an **illustrative hackathon rule**.

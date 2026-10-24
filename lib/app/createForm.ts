@@ -4,7 +4,8 @@
  * from campaignTermsFromSpec() — never from user-typed percentages or dates.
  */
 import { getAddress, isAddress, parseEther, zeroAddress, type Address } from "viem";
-import { isScenarioId, SCENARIOS, type ClimateSpec } from "../climate";
+import type { ClimateSpec } from "../climate";
+import { ALL_SCENARIOS, isAnyScenarioId } from "../climate/scenarios";
 import { campaignTermsFromSpec, type CampaignTerms } from "../contracts";
 
 const MAX_UINT96 = (1n << 96n) - 1n;
@@ -57,8 +58,8 @@ export function validateCreateForm(input: CreateFormInput, ctx: { now: bigint; f
   const same = (a?: string, b?: string) => !!a && !!b && a.toLowerCase() === b.toLowerCase();
 
   let spec: ClimateSpec | undefined;
-  if (!isScenarioId(input.scenarioId)) errors.scenarioId = "Choose one of the verified Yabelo replay seasons.";
-  else spec = SCENARIOS[input.scenarioId].spec;
+  if (!isAnyScenarioId(input.scenarioId)) errors.scenarioId = "Choose one of the verified replay seasons.";
+  else spec = ALL_SCENARIOS[input.scenarioId].spec;
 
   const b = parseAddress(input.beneficiary, "beneficiary");
   const a = parseAddress(input.attestor, "attestor");

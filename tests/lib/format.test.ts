@@ -1,11 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { formatDuration, formatEth, formatPct, formatUtc, parseCampaignId, seasonLabel } from "@/lib/app/format";
+import { formatDuration, formatEth, formatLatLon, formatPct, formatUtc, parseCampaignId, seasonLabel } from "@/lib/app/format";
 
 describe("format helpers", () => {
   it("labels OND periods, falls back to ISO dates otherwise", () => {
     expect(seasonLabel(20211001, 20211231)).toBe("OND 2021");
     expect(seasonLabel(20210301, 20210531)).toBe("MAM 2021");
     expect(seasonLabel(20210115, 20210220)).toBe("2021-01-15 → 2021-02-20");
+  });
+
+  it("labels coordinates by hemisphere", () => {
+    expect(formatLatLon(4.88, 38.08)).toBe("4.88° N, 38.08° E");
+    expect(formatLatLon(-9.39, -40.5)).toBe("9.39° S, 40.5° W");
+    expect(formatLatLon(0, 0)).toBe("0° N, 0° E");
+    expect(seasonLabel(20150601, 20150930)).toBe("JJAS 2015");
   });
 
   it("formats wei exactly (no float rounding)", () => {

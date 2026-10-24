@@ -118,3 +118,61 @@ export const REFERENCE_CASES = {
 export function isScenarioId(v: string): v is ScenarioId {
   return Object.hasOwn(SCENARIOS, v);
 }
+
+/**
+ * Regional demo scenarios outside Ethiopia (Decision 2026-10-24, CLIMATE_DATA.md §3.4). Each uses its
+ * local timezone. Brazil 2012 and India 2015 lie inside 1991–2020, so they use the 1981–2010 normal.
+ */
+export const MARSABIT = { label: "Marsabit, Marsabit County, Kenya", latitude: 2.33, longitude: 37.99, timezone: "Africa/Nairobi" } as const;
+export const PETROLINA = { label: "Petrolina, Pernambuco, Brazil", latitude: -9.39, longitude: -40.5, timezone: "America/Bahia" } as const;
+export const BEED = { label: "Beed, Marathwada, Maharashtra, India", latitude: 18.99, longitude: 75.76, timezone: "Asia/Kolkata" } as const;
+
+function regional(place: typeof MARSABIT | typeof PETROLINA | typeof BEED, start: IsoDate, end: IsoDate, baselineStartYear: number): ClimateSpec {
+  return makeSeasonSpec({
+    ...place,
+    start,
+    end,
+    baselineStartYear,
+    baselineEndYear: baselineStartYear + 29,
+    thresholdBps: ILLUSTRATIVE_THRESHOLD_BPS,
+    replay: true,
+  });
+}
+
+export const REGIONAL_SCENARIOS = {
+  "marsabit-ond-2021": { title: "Marsabit OND 2021 — northern Kenya short rains", spec: regional(MARSABIT, "2021-10-01", "2021-12-31", 1991) },
+  "petrolina-mam-2012": { title: "Petrolina MAM 2012 — Brazilian Sertão drought", spec: regional(PETROLINA, "2012-03-01", "2012-05-31", 1981) },
+  "beed-jjas-2015": { title: "Beed JJAS 2015 — Marathwada monsoon", spec: regional(BEED, "2015-06-01", "2015-09-30", 1981) },
+} as const satisfies Record<string, { title: string; spec: ClimateSpec }>;
+
+export type RegionalScenarioId = keyof typeof REGIONAL_SCENARIOS;
+
+/** Every demo scenario, Yabelo first. */
+export const ALL_SCENARIOS = { ...SCENARIOS, ...REGIONAL_SCENARIOS } as const;
+export type AnyScenarioId = keyof typeof ALL_SCENARIOS;
+
+export function isAnyScenarioId(v: string): v is AnyScenarioId {
+  return Object.hasOwn(ALL_SCENARIOS, v);
+}
+
+/** Snapshot folders under public/snapshots/open-meteo/era5/, keyed by exact location and timezone. */
+const SNAPSHOT_LOCATIONS = [
+  { slug: "yabelo", latitude: YABELO.latitude, longitude: YABELO.longitude, timezone: DEFAULT_TIMEZONE },
+  { slug: "marsabit", ...MARSABIT },
+  { slug: "petrolina", ...PETROLINA },
+  { slug: "beed", ...BEED },
+] as const;
+
+export type SnapshotSlug = (typeof SNAPSHOT_LOCATIONS)[number]["slug"];
+export const SNAPSHOT_SLUGS: readonly SnapshotSlug[] = SNAPSHOT_LOCATIONS.map((l) => l.slug);
+
+/** The snapshot folder for a spec; throws SNAPSHOT_MISSING for any location the app has no saved data for. */
+export function snapshotSlug(spec: ClimateSpec): SnapshotSlug {
+  const hit = SNAPSHOT_LOCATIONS.find(
+    (l) => l.latitude === spec.location.latitude && l.longitude === spec.location.longitude && l.timezone === spec.source.timezone,
+  );
+  if (!hit) {
+    throw new ClimateError("SNAPSHOT_MISSING", `no saved snapshots for ${spec.location.latitude},${spec.location.longitude} (${spec.source.timezone})`);
+  }
+  return hit.slug;
+}

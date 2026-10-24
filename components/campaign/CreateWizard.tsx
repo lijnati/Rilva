@@ -14,7 +14,8 @@ import { MAX_DEADLINE_SECONDS, MIN_DEADLINE_SECONDS, validateCreateForm, type Cr
 import { formatDuration, formatEth, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
 import { pinChain } from "@/lib/app/walletRequest";
-import { canonicalSpec, SCENARIOS, type ScenarioId } from "@/lib/climate";
+import { canonicalSpec } from "@/lib/climate";
+import { ALL_SCENARIOS, isAnyScenarioId, type AnyScenarioId } from "@/lib/climate/scenarios";
 import { campaignIdFromReceipt, campaignTermsFromSpec, prepareCreateCampaign } from "@/lib/contracts";
 import { cn } from "@/lib/utils";
 
@@ -65,7 +66,7 @@ export function CreateWizard() {
   const stepFields: Array<Array<keyof CreateFormInput>> = [["scenarioId"], ["beneficiary", "attestor"], ["amountEth", "deadlineSeconds"], []];
   const stepValid = (i: number) => stepFields[i]!.every((f) => !errors[f]);
   const set = (patch: Partial<CreateFormInput>) => setInput((v) => ({ ...v, ...patch }));
-  const spec = SCENARIOS[(input.scenarioId as ScenarioId) in SCENARIOS ? (input.scenarioId as ScenarioId) : "yabelo-ond-2021"].spec;
+  const spec = ALL_SCENARIOS[isAnyScenarioId(input.scenarioId) ? input.scenarioId : "yabelo-ond-2021"].spec;
   const terms = campaignTermsFromSpec(spec);
   const busy = tx.step === "simulating" || tx.step === "wallet" || tx.step === "pending";
 
@@ -131,11 +132,11 @@ export function CreateWizard() {
             <fieldset className="grid gap-3">
               <legend className="h3 mb-1">Which season should decide?</legend>
               <p className="mb-2 text-[13px] text-ink-2">
-                Location, data source (ERA5, pinned), baseline (1991–2020) and the illustrative {formatPct(spec.thresholdBps)} % threshold are fixed for this demo.
-                Only verified Yabelo replay seasons are available.
+                Each season fixes its location, data source (ERA5, pinned), baseline and the illustrative {formatPct(spec.thresholdBps)} % threshold.
+                Only replay seasons with saved, hash-pinned ERA5 snapshots are available.
               </p>
-              {(Object.keys(SCENARIOS) as ScenarioId[]).map((id) => {
-                const s = SCENARIOS[id].spec;
+              {(Object.keys(ALL_SCENARIOS) as AnyScenarioId[]).map((id) => {
+                const s = ALL_SCENARIOS[id].spec;
                 const t = campaignTermsFromSpec(s);
                 return (
                   <label key={id} className={cn("flex cursor-pointer items-start gap-3 rounded-[14px] p-4 ring-1 transition-colors", input.scenarioId === id ? "bg-mint ring-accent" : "bg-surface ring-rule hover:ring-rule-strong")}>
@@ -143,7 +144,7 @@ export function CreateWizard() {
                     <span>
                       <span className="block text-[15px] font-semibold">{seasonLabel(t.observationStart, t.observationEnd)} · {s.location.label}</span>
                       <span className="block text-[12.5px] text-ink-2">
-                        {s.period.start} → {s.period.end} · retrospective replay · vs {s.baseline.startYear}–{s.baseline.endYear} normal
+                        {s.period.start} → {s.period.end} · retrospective replay · vs {s.baseline.startYear}–{s.baseline.endYear} normal · days in {s.source.timezone}
                       </span>
                     </span>
                   </label>

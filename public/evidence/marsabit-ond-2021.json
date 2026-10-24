@@ -1,0 +1,253 @@
+{
+  "schema": "rilva.evidence-file.v1",
+  "scenario": "marsabit-ond-2021",
+  "title": "Marsabit OND 2021 — northern Kenya short rains",
+  "notice": "Retrospective replay of a past season, not a live drought alert. ERA5 reanalysis estimate for one ~28 km grid cell; it does not measure drought impact or financial loss. The 60 % threshold is an illustrative hackathon rule.",
+  "artifact": {
+    "core": {
+      "schema": "rilva.evidence.v1",
+      "algorithm": "SRPN-v1",
+      "specHash": "0xcc849de042a081b4681a3553ab2421862363d36556fe4dc00ae95dd29958ce18",
+      "spec": {
+        "schema": "rilva.spec.v1",
+        "method": "SRPN-v1",
+        "replay": true,
+        "location": {
+          "label": "Marsabit, Marsabit County, Kenya",
+          "latitude": 2.33,
+          "longitude": 37.99
+        },
+        "source": {
+          "provider": "open-meteo",
+          "model": "era5",
+          "variable": "precipitation_sum",
+          "timezone": "Africa/Nairobi"
+        },
+        "period": {
+          "start": "2021-10-01",
+          "end": "2021-12-31"
+        },
+        "baseline": {
+          "startYear": 1991,
+          "endYear": 2020
+        },
+        "thresholdBps": 6000
+      },
+      "source": {
+        "provider": "open-meteo",
+        "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+        "model": "era5",
+        "variable": "precipitation_sum",
+        "unit": "mm",
+        "normalizedUnit": "dmm",
+        "timezone": "Africa/Nairobi"
+      },
+      "location": {
+        "requested": {
+          "latitude": 2.33,
+          "longitude": 37.99
+        },
+        "resolved": {
+          "latitude": 2.25,
+          "longitude": 38,
+          "elevation": 1362,
+          "utcOffsetSeconds": 10800
+        }
+      },
+      "periods": {
+        "observed": {
+          "start": "2021-10-01",
+          "end": "2021-12-31",
+          "days": 92
+        },
+        "baseline": {
+          "startYear": 1991,
+          "endYear": 2020,
+          "years": 30,
+          "daysPerSeason": 92
+        }
+      },
+      "data": {
+        "seriesDigest": "0xf904e211f0529fda767d562f4b1eedb410a0d10028fd9ed2c1d135fd2d3ce4ef",
+        "observedDailyDmm": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          2,
+          6,
+          0,
+          0,
+          0,
+          2,
+          8,
+          3,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          6,
+          2,
+          1,
+          2,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          6,
+          26,
+          177,
+          13,
+          15,
+          0,
+          2,
+          0,
+          13,
+          6,
+          0,
+          5,
+          3,
+          3,
+          0,
+          0,
+          0,
+          0,
+          11,
+          15,
+          8,
+          1,
+          5,
+          9,
+          11,
+          5,
+          41,
+          11,
+          17,
+          4,
+          9,
+          9,
+          4,
+          0,
+          0,
+          0
+        ],
+        "baselineSeasonTotalsDmm": [
+          983,
+          2280,
+          1285,
+          2204,
+          980,
+          1013,
+          4683,
+          588,
+          1088,
+          958,
+          1989,
+          1832,
+          1659,
+          2409,
+          603,
+          3136,
+          1410,
+          1585,
+          1499,
+          526,
+          2769,
+          1939,
+          1170,
+          1149,
+          2582,
+          877,
+          1217,
+          1842,
+          3822,
+          1128
+        ]
+      },
+      "result": {
+        "observedTotalDmm": 476,
+        "baselineSumDmm": 51205,
+        "baselineYears": 30,
+        "indexBps": 2788,
+        "deficitBps": 7212,
+        "thresholdBps": 6000,
+        "triggered": true
+      }
+    },
+    "evidenceDigest": "0x2c6a3f4ff5407b32301edfcca4f16b41c92dd7083a7792a119aefc0745c2c219"
+  },
+  "provenance": {
+    "mode": "snapshot",
+    "fellBackFromLive": false,
+    "documents": [
+      {
+        "id": "1991-01-01_2000-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+        "retrievedAt": "2026-10-24T10:37:36.743Z",
+        "sha256": "0x00f2e65a12db0553950e8fba8cafbf6c7464cd2ce5dfdd5920b438cec0d333cf",
+        "bytes": 66096
+      },
+      {
+        "id": "2001-01-01_2010-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+        "retrievedAt": "2026-10-24T10:37:37.029Z",
+        "sha256": "0x82ac0c57c3169d1b158482d324612a1af8076cdd0e75c2cb3ed54d97a5778df8",
+        "bytes": 66076
+      },
+      {
+        "id": "2011-01-01_2020-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2011-01-01&end_date=2020-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+        "retrievedAt": "2026-10-24T10:37:37.185Z",
+        "sha256": "0x9194f6289b7b5273543ec142fab842b58654c56a049c1b3131aa65c9e9b087f7",
+        "bytes": 66116
+      },
+      {
+        "id": "2021-10-01_2021-12-31",
+        "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2021-10-01&end_date=2021-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+        "retrievedAt": "2026-10-24T10:37:37.665Z",
+        "sha256": "0x99d7d8dcaad57c1e1dd1797978b0807baa54f0d27be994410f89e39d207b2967",
+        "bytes": 1935
+      }
+    ],
+    "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information."
+  },
+  "presentation": {
+    "observedTotalMm": "47.6",
+    "baselineMeanMm": "170.7",
+    "percentOfNormal": "27.88",
+    "thresholdPercent": "60.00",
+    "zScoreInformational": -1.27
+  }
+}

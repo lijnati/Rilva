@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { cardPlace, meterPosition, specForHash } from "@/lib/app/campaignCatalog";
 import { SCENARIOS, specHash } from "@/lib/climate";
+import { REGIONAL_SCENARIOS } from "@/lib/climate/scenarios";
 
 describe("campaign catalogue", () => {
   it("finds a known scenario spec by its on-chain hash", () => {
     const spec = SCENARIOS["yabelo-ond-2021"].spec;
     expect(specForHash(specHash(spec))).toEqual(spec);
     expect(specForHash(specHash(SCENARIOS["yabelo-ond-2023"].spec))?.period.start).toBe("2023-10-01");
+    expect(specForHash(specHash(REGIONAL_SCENARIOS["petrolina-mam-2012"].spec))?.location.label).toBe("Petrolina, Pernambuco, Brazil");
   });
 
   it("returns null for a hash it does not know, so the UI never guesses a location", () => {

@@ -13,6 +13,11 @@ export function seasonLabel(start: number, end: number): string {
   return `${iso(s)} → ${iso(e)}`;
 }
 
+/** "4.88° N, 38.08° E" / "9.39° S, 40.5° W". */
+export function formatLatLon(latitude: number, longitude: number): string {
+  return `${Math.abs(latitude)}° ${latitude < 0 ? "S" : "N"}, ${Math.abs(longitude)}° ${longitude < 0 ? "W" : "E"}`;
+}
+
 export function formatEth(wei: bigint): string {
   return `${formatEther(wei)} ETH`;
 }
