@@ -41,7 +41,8 @@ Rilva turns a drought-trigger rule into a public, reproducible, and enforceable 
 ## 5. Scope (MVP)
 
 In scope:
-- One study location: Yabelo, Borena, Oromia, Ethiopia (4.88° N, 38.08° E).
+- One study location: Yabelo, Borena, Oromia, Ethiopia (4.88° N, 38.08° E), with its explorer and case study.
+- **Decision 2026-10-24 (scope change requested by the founder):** three regional replay seasons for campaigns only — Marsabit, Kenya (OND 2021), Petrolina, Brazil (MAM 2012) and Beed, India (JJAS 2015, a non-trigger). Same method and rule; see CLIMATE_DATA.md §3.4. The explorer stays Yabelo-only.
 - One method (SRPN-v1) and one source (Open-Meteo ERA5), with CHIRPS v3 shown as an informational cross-check.
 - Campaign creation and funding with Base Sepolia testnet ETH.
 - Evidence computation and attestation by the attestor's wallet in the browser.
@@ -55,7 +56,7 @@ In scope:
 
 - Tokens, DAOs, NFTs, governance, staking, or any speculative crypto mechanics.
 - Mainnet, real money, insurance products, or claims of actual relief delivery or humanitarian impact.
-- Multiple regions or seasons beyond the Yabelo OND replays (and no MAM toggle), polygons, multiple indicators, SPI, or ML forecasting. These appear only as roadmap items in "From replay to real use".
+- Regions or seasons beyond the Yabelo OND replays and the three regional replays above (and no MAM toggle in the explorer), polygons, multiple indicators, SPI, or ML forecasting. These appear only as roadmap items in "From replay to real use".
 - Accounts, enterprise auth, a database, or notifications.
 - Live drought alerts. Every demo season is a labelled retrospective replay.
 - Any AI: no AI deciding eligibility or payouts, and no AI summaries (removed from scope 2026-10-22).

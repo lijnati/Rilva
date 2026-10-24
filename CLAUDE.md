@@ -48,7 +48,7 @@ If a change touches `lib/climate` or `public/snapshots`, `pnpm climate:verify al
 
 ## Climate data rules
 
-- Always request Open-Meteo with `models=era5`, `daily=precipitation_sum`, `timezone=Africa/Addis_Ababa`. **Never use `best_match`.** It switches models in 2017 (CLIMATE_DATA.md §2.1).
+- Always request Open-Meteo with `models=era5`, `daily=precipitation_sum` and the spec's timezone: `Africa/Addis_Ababa` for Yabelo, the local timezone for the regional replays (Decision 2026-10-24, CLIMATE_DATA.md §3.4). **Never use `best_match`.** It switches models in 2017 (CLIMATE_DATA.md §2.1).
 - Integer math only (BigInt) for the index. No floats in the decision path.
 - Any null, missing day or API error → `INVALID`. Never gap-fill.
 - CHIRPS is informational only and never feeds eligibility.
