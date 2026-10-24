@@ -21,7 +21,7 @@ Rilva turns a drought-trigger rule into a public, reproducible, and enforceable 
 2. A **deterministic indicator** (SRPN-v1, seasonal rainfall percent of normal) is computed from public ERA5 data via Open-Meteo. The computation is integer-only and unit-tested.
 3. A designated **attestor** signs an EIP-712 statement of the result and the evidence hash.
 4. A **smart contract** checks the signature, applies the threshold itself, and releases the fixed amount to the fixed beneficiary **once**. Otherwise the funder can recover the funds.
-5. **Anyone can verify** each step from a browser: they re-fetch the data, recompute the index and the hash, and compare with the on-chain record.
+5. **Anyone can verify** each step from a browser: they re-download the SHA-256-pinned ERA5 data, recompute the index and the hash, and compare with the on-chain record. A live re-fetch is shown alongside as information (CLIMATE_DATA.md §2.4).
 
 ## 3. Users
 
