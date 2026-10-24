@@ -2,7 +2,7 @@
 
 import type { CampaignHistory } from "@/lib/app/chainHistory";
 import type { CampaignView } from "@/lib/app/campaignView";
-import { formatEth, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
+import { formatEth, formatLatLon, formatUtc, seasonLabel, formatPct } from "@/lib/app/format";
 import { formatBpsAsPercent, type ClimateSpec } from "@/lib/climate";
 import type { Campaign } from "@/lib/contracts";
 import { AddressField, TxLink } from "@/components/chain/AddressField";
@@ -53,7 +53,7 @@ export function CampaignFacts({ c, spec }: { c: Campaign; spec: ClimateSpec | nu
       <div><dt className="meta mb-1">Settlement deadline</dt><dd className="text-[14px] font-medium tnum">{formatUtc(c.settlementDeadline)}</dd></div>
       <div>
         <dt className="meta mb-1">Data</dt>
-        <dd className="text-[14px] font-medium">{spec ? `ERA5 (${spec.source.model}) via Open-Meteo · ${spec.location.latitude}° N, ${spec.location.longitude}° E` : "Spec unavailable"}</dd>
+        <dd className="text-[14px] font-medium">{spec ? `ERA5 (${spec.source.model}) via Open-Meteo · ${formatLatLon(spec.location.latitude, spec.location.longitude)} · days in ${spec.source.timezone}` : "Spec unavailable"}</dd>
       </div>
       <div className="sm:col-span-2"><HashField label="Spec hash" value={c.specHash} /></div>
     </dl>

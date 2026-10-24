@@ -1,8 +1,9 @@
 /** Card-level lookups for the campaign list. Display only — never used for decisions. */
 import type { Hex } from "viem";
-import { SCENARIOS, specHash, type ClimateSpec } from "../climate";
+import { specHash, type ClimateSpec } from "../climate";
+import { ALL_SCENARIOS } from "../climate/scenarios";
 
-const BY_HASH: ReadonlyMap<string, ClimateSpec> = new Map(Object.values(SCENARIOS).map(({ spec }) => [specHash(spec).toLowerCase(), spec]));
+const BY_HASH: ReadonlyMap<string, ClimateSpec> = new Map(Object.values(ALL_SCENARIOS).map(({ spec }) => [specHash(spec).toLowerCase(), spec]));
 
 /** The app's own scenario spec whose hash equals the on-chain `specHash`, or null (the UI then reads the spec from the event log). */
 export function specForHash(hash: Hex): ClimateSpec | null {

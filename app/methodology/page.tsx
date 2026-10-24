@@ -73,6 +73,11 @@ export default async function MethodologyPage() {
             {series.location.resolved.latitude}° N, {series.location.resolved.longitude}° E ({series.location.resolved.elevation} m). Days follow Africa/Addis_Ababa.
           </p>
           <p>
+            Three regional replays use the same method at their own ERA5 cells, with days in their local timezone: Marsabit, Kenya (OND 2021, 1991–2020 normal),
+            Petrolina, Brazil (MAM 2012) and Beed, India (JJAS 2015). The last two use the 1981–2010 normal, because a season may not sit inside its own baseline.
+            The baseline is part of the hashed spec, so it is fixed before any money moves.
+          </p>
+          <p>
             The default <code className="font-mono text-[13px]">best_match</code> model is never used: it switches to a different model from 2017, which would mix two series inside one baseline.
             Raw responses for the demo seasons are committed byte-for-byte with SHA-256 hashes, so the site still works if the API is down — and says so when it falls back.
           </p>

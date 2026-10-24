@@ -66,8 +66,10 @@ describe("validateCreateForm", () => {
     expect(MAX_DEADLINE_SECONDS).toBeLessThan(366 * 86400);
   });
 
-  it("only allows the verified Yabelo replay specs", () => {
+  it("only allows the verified replay specs (Yabelo and the regional snapshots)", () => {
     const r = validateCreateForm({ ...base, scenarioId: "nairobi-mam-2022" }, ctx);
     expect(!r.ok && r.errors.scenarioId).toBeTruthy();
+    const k = validateCreateForm({ ...base, scenarioId: "marsabit-ond-2021" }, ctx);
+    expect(k.ok && k.value.spec.location.label).toBe("Marsabit, Marsabit County, Kenya");
   });
 });

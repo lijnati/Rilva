@@ -23,7 +23,7 @@ function parseSpec(raw: string | undefined): ClimateSpec | null {
 /** Decorative only: the landscape follows the spec's country, the sky follows the contract status. */
 function sceneFor(spec: ClimateSpec | null, status: CampaignView["status"]): { preset: ScenePreset; sky?: string[] } {
   const country = spec?.location.label.split(",").at(-1)?.trim() ?? "";
-  const preset: ScenePreset = ["Ethiopia", "Kenya"].includes(country) || !spec ? "highland" : "meadow";
+  const preset: ScenePreset = country === "Brazil" ? "dusk" : country === "India" ? "meadow" : "highland";
   if (status === "Released") return { preset, sky: ["#f2b88f", "#f7d7ae", "#cfe1ea"] };
   if (status === "Refunded") return { preset, sky: ["#8fa8c9", "#c7d3e3", "#e9eef2"] };
   return { preset };
