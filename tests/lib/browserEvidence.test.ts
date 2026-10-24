@@ -5,9 +5,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { checkUpstream, loadBrowserEvidence, SNAPSHOT_BASE_PATH } from "@/lib/app/browserEvidence";
+import { checkUpstream, loadBrowserEvidence, SNAPSHOT_BASE_PATH, snapshotBasePath } from "@/lib/app/browserEvidence";
 import { deficitVsNormal } from "@/lib/app/explorerSeries";
 import { SCENARIOS } from "@/lib/climate";
+import { REGIONAL_SCENARIOS } from "@/lib/climate/scenarios";
 
 const PUBLIC = path.join(process.cwd(), "public");
 
@@ -19,7 +20,7 @@ function diskFetch(opts: { liveFails?: boolean; tamper?: boolean } = {}) {
       if (opts.liveFails) throw new TypeError("Failed to fetch");
       throw new Error("unexpected live call");
     }
-    if (!url.startsWith(SNAPSHOT_BASE_PATH)) return new Response("not found", { status: 404 });
+    if (!url.startsWith("/snapshots/open-meteo/era5/")) return new Response("not found", { status: 404 });
     let bytes = new Uint8Array(await readFile(path.join(PUBLIC, decodeURIComponent(url))));
     if (opts.tamper && url.endsWith("2021-10-01_2021-12-31.json")) {
       bytes = new Uint8Array(bytes);
@@ -31,6 +32,14 @@ function diskFetch(opts: { liveFails?: boolean; tamper?: boolean } = {}) {
 }
 
 describe("loadBrowserEvidence", () => {
+  it("keeps Yabelo at its original path and reads other locations from their own folder", async () => {
+    expect(snapshotBasePath(SCENARIOS["yabelo-ond-2021"].spec)).toBe(SNAPSHOT_BASE_PATH);
+    const { impl, calls } = diskFetch();
+    const r = await loadBrowserEvidence(REGIONAL_SCENARIOS["marsabit-ond-2021"].spec, { mode: "snapshot", fetchImpl: impl });
+    expect(r.artifact.core.result.indexBps).toBe(2788);
+    expect(calls.every((u) => u.startsWith("/snapshots/open-meteo/era5/marsabit/"))).toBe(true);
+  });
+
   it("snapshot mode reproduces OND 2021 = 3363 bps with verified snapshot hashes", async () => {
     const { impl } = diskFetch();
     const r = await loadBrowserEvidence(SCENARIOS["yabelo-ond-2021"].spec, { mode: "snapshot", fetchImpl: impl });

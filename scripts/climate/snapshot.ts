@@ -9,8 +9,8 @@
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { readSnapshotFileFromDisk, SNAPSHOT_DIR } from "@/lib/climate/node";
-import { REFERENCE_CASES, SCENARIOS } from "@/lib/climate/scenarios";
+import { snapshotDirFor, snapshotReaderFor } from "@/lib/climate/node";
+import { ALL_SCENARIOS, REFERENCE_CASES, snapshotSlug, type SnapshotSlug } from "@/lib/climate/scenarios";
 import {
   loadSnapshotDocuments,
   SNAPSHOT_MANIFEST_SCHEMA,
@@ -28,22 +28,31 @@ import { parseOpenMeteoDaily } from "@/lib/climate/validate";
 
 const refresh = process.argv.includes("--refresh");
 
-async function readExisting(): Promise<SnapshotManifest | null> {
+async function readExisting(dir: string): Promise<SnapshotManifest | null> {
   try {
-    return JSON.parse(await readFile(path.join(SNAPSHOT_DIR, "manifest.json"), "utf8")) as SnapshotManifest;
+    return JSON.parse(await readFile(path.join(dir, "manifest.json"), "utf8")) as SnapshotManifest;
   } catch {
     return null;
   }
 }
 
 async function main() {
-  const unique = new Map<string, ArchiveRequest>();
-  for (const s of [...Object.values(SCENARIOS), ...Object.values(REFERENCE_CASES)]) {
+  // One folder (and manifest) per location; document ids are dates, unique within a folder.
+  const bySlug = new Map<SnapshotSlug, Map<string, ArchiveRequest>>();
+  for (const s of [...Object.values(ALL_SCENARIOS), ...Object.values(REFERENCE_CASES)]) {
+    const slug = snapshotSlug(s.spec);
+    const unique = bySlug.get(slug) ?? new Map<string, ArchiveRequest>();
     for (const r of planRequests(s.spec)) unique.set(`${r.latitude},${r.longitude},${r.start},${r.end},${r.timezone}`, r);
+    bySlug.set(slug, unique);
   }
+  for (const [slug, unique] of bySlug) await snapshotLocation(slug, unique);
+}
 
+async function snapshotLocation(slug: SnapshotSlug, unique: Map<string, ArchiveRequest>) {
+  const SNAPSHOT_DIR = snapshotDirFor(slug);
+  const readSnapshotFileFromDisk = snapshotReaderFor(slug);
   await mkdir(SNAPSHOT_DIR, { recursive: true });
-  const existing = refresh ? null : await readExisting();
+  const existing = refresh ? null : await readExisting(SNAPSHOT_DIR);
   const documents: SnapshotDocument[] = [];
   for (const req of unique.values()) {
     const id = `${req.start}_${req.end}`;

@@ -1,0 +1,71 @@
+{
+  "schema": "rilva.snapshot-manifest.v1",
+  "provider": "open-meteo",
+  "model": "era5",
+  "variable": "precipitation_sum",
+  "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "documents": [
+    {
+      "id": "1981-01-01_1990-12-31",
+      "file": "1981-01-01_1990-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=1981-01-01&end_date=1990-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+      "request": {
+        "latitude": -9.39,
+        "longitude": -40.5,
+        "timezone": "America/Bahia",
+        "start": "1981-01-01",
+        "end": "1990-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:39.165Z",
+      "bytes": 66137,
+      "sha256": "0x84df9a1b2d343b2daf7ac6aa8d4ffa6642e0c39090d2dc77ab1702a4d5c6ca04"
+    },
+    {
+      "id": "1991-01-01_2000-12-31",
+      "file": "1991-01-01_2000-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+      "request": {
+        "latitude": -9.39,
+        "longitude": -40.5,
+        "timezone": "America/Bahia",
+        "start": "1991-01-01",
+        "end": "2000-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:40.106Z",
+      "bytes": 66156,
+      "sha256": "0xd133fafac5c2abcd10644aae04ea35557e72d84c6bab3b8d92425409082a3d9d"
+    },
+    {
+      "id": "2001-01-01_2010-12-31",
+      "file": "2001-01-01_2010-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+      "request": {
+        "latitude": -9.39,
+        "longitude": -40.5,
+        "timezone": "America/Bahia",
+        "start": "2001-01-01",
+        "end": "2010-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:40.711Z",
+      "bytes": 66131,
+      "sha256": "0xa9fa03760669c010fd8e0d38eb806f1d312ac53942d00d40c7f62b37871dd2bd"
+    },
+    {
+      "id": "2012-03-01_2012-05-31",
+      "file": "2012-03-01_2012-05-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.39&longitude=-40.5&start_date=2012-03-01&end_date=2012-05-31&daily=precipitation_sum&timezone=America%2FBahia&models=era5",
+      "request": {
+        "latitude": -9.39,
+        "longitude": -40.5,
+        "timezone": "America/Bahia",
+        "start": "2012-03-01",
+        "end": "2012-05-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:40.873Z",
+      "bytes": 1935,
+      "sha256": "0xb3172aceb6deafcc26b3bdaa192c875b2f71325de35681a46adb35f49d971690"
+    }
+  ]
+}

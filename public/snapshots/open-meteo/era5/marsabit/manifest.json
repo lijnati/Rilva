@@ -1,0 +1,71 @@
+{
+  "schema": "rilva.snapshot-manifest.v1",
+  "provider": "open-meteo",
+  "model": "era5",
+  "variable": "precipitation_sum",
+  "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "documents": [
+    {
+      "id": "1991-01-01_2000-12-31",
+      "file": "1991-01-01_2000-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+      "request": {
+        "latitude": 2.33,
+        "longitude": 37.99,
+        "timezone": "Africa/Nairobi",
+        "start": "1991-01-01",
+        "end": "2000-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:36.743Z",
+      "bytes": 66096,
+      "sha256": "0x00f2e65a12db0553950e8fba8cafbf6c7464cd2ce5dfdd5920b438cec0d333cf"
+    },
+    {
+      "id": "2001-01-01_2010-12-31",
+      "file": "2001-01-01_2010-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+      "request": {
+        "latitude": 2.33,
+        "longitude": 37.99,
+        "timezone": "Africa/Nairobi",
+        "start": "2001-01-01",
+        "end": "2010-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:37.029Z",
+      "bytes": 66076,
+      "sha256": "0x82ac0c57c3169d1b158482d324612a1af8076cdd0e75c2cb3ed54d97a5778df8"
+    },
+    {
+      "id": "2011-01-01_2020-12-31",
+      "file": "2011-01-01_2020-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2011-01-01&end_date=2020-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+      "request": {
+        "latitude": 2.33,
+        "longitude": 37.99,
+        "timezone": "Africa/Nairobi",
+        "start": "2011-01-01",
+        "end": "2020-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:37.185Z",
+      "bytes": 66116,
+      "sha256": "0x9194f6289b7b5273543ec142fab842b58654c56a049c1b3131aa65c9e9b087f7"
+    },
+    {
+      "id": "2021-10-01_2021-12-31",
+      "file": "2021-10-01_2021-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=2.33&longitude=37.99&start_date=2021-10-01&end_date=2021-12-31&daily=precipitation_sum&timezone=Africa%2FNairobi&models=era5",
+      "request": {
+        "latitude": 2.33,
+        "longitude": 37.99,
+        "timezone": "Africa/Nairobi",
+        "start": "2021-10-01",
+        "end": "2021-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:37.665Z",
+      "bytes": 1935,
+      "sha256": "0x99d7d8dcaad57c1e1dd1797978b0807baa54f0d27be994410f89e39d207b2967"
+    }
+  ]
+}

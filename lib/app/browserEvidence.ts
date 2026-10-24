@@ -4,11 +4,17 @@
  * CLIMATE_DATA.md §2.1) with models=era5 pinned by planRequests/buildArchiveUrl.
  */
 import { getClimateEvidence, type ClimateEvidenceResult, type EvidenceMode } from "../climate";
+import { snapshotSlug } from "../climate/scenarios";
 import type { FetchLike, FetchOptions } from "../climate/source";
 import type { SnapshotManifest } from "../climate/snapshots";
 import type { ClimateSpec } from "../climate/types";
 
 export const SNAPSHOT_BASE_PATH = "/snapshots/open-meteo/era5/yabelo/";
+
+/** Each location's snapshots live in their own folder; Yabelo keeps SNAPSHOT_BASE_PATH. */
+export function snapshotBasePath(spec: ClimateSpec): string {
+  return `/snapshots/open-meteo/era5/${snapshotSlug(spec)}/`;
+}
 
 export interface BrowserEvidenceOptions extends Omit<FetchOptions, "fetchImpl"> {
   mode: EvidenceMode;
@@ -55,12 +61,13 @@ export async function checkUpstream(
 
 export async function loadBrowserEvidence(spec: ClimateSpec, opts: BrowserEvidenceOptions): Promise<ClimateEvidenceResult> {
   const fetchImpl: FetchLike = opts.fetchImpl ?? ((url, init) => fetch(url, init));
-  const manifestBytes = await getBytes(fetchImpl, `${SNAPSHOT_BASE_PATH}manifest.json`);
+  const base = snapshotBasePath(spec);
+  const manifestBytes = await getBytes(fetchImpl, `${base}manifest.json`);
   const manifest = JSON.parse(new TextDecoder().decode(manifestBytes)) as SnapshotManifest;
   return getClimateEvidence(spec, {
     ...opts,
     fetchImpl,
     manifest,
-    readSnapshotFile: (file) => getBytes(fetchImpl, `${SNAPSHOT_BASE_PATH}${encodeURIComponent(file)}`),
+    readSnapshotFile: (file) => getBytes(fetchImpl, `${base}${encodeURIComponent(file)}`),
   });
 }

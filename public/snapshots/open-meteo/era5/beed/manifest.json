@@ -1,0 +1,71 @@
+{
+  "schema": "rilva.snapshot-manifest.v1",
+  "provider": "open-meteo",
+  "model": "era5",
+  "variable": "precipitation_sum",
+  "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "documents": [
+    {
+      "id": "1981-01-01_1990-12-31",
+      "file": "1981-01-01_1990-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.99&longitude=75.76&start_date=1981-01-01&end_date=1990-12-31&daily=precipitation_sum&timezone=Asia%2FKolkata&models=era5",
+      "request": {
+        "latitude": 18.99,
+        "longitude": 75.76,
+        "timezone": "Asia/Kolkata",
+        "start": "1981-01-01",
+        "end": "1990-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:41.657Z",
+      "bytes": 66209,
+      "sha256": "0x71d5d4b27b019d61de38224996276d45ec9c1fff6ea304388656dfe234f2115d"
+    },
+    {
+      "id": "1991-01-01_2000-12-31",
+      "file": "1991-01-01_2000-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.99&longitude=75.76&start_date=1991-01-01&end_date=2000-12-31&daily=precipitation_sum&timezone=Asia%2FKolkata&models=era5",
+      "request": {
+        "latitude": 18.99,
+        "longitude": 75.76,
+        "timezone": "Asia/Kolkata",
+        "start": "1991-01-01",
+        "end": "2000-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:42.035Z",
+      "bytes": 66255,
+      "sha256": "0xe763ed5167e9cff44dc902555380179bfdd60847bcb1b53b5e6984088d3f2ae7"
+    },
+    {
+      "id": "2001-01-01_2010-12-31",
+      "file": "2001-01-01_2010-12-31.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.99&longitude=75.76&start_date=2001-01-01&end_date=2010-12-31&daily=precipitation_sum&timezone=Asia%2FKolkata&models=era5",
+      "request": {
+        "latitude": 18.99,
+        "longitude": 75.76,
+        "timezone": "Asia/Kolkata",
+        "start": "2001-01-01",
+        "end": "2010-12-31"
+      },
+      "retrievedAt": "2026-10-24T10:37:42.313Z",
+      "bytes": 66264,
+      "sha256": "0xd8cc72c75b85c155298ed16eca54446f53f65272f0e3ef2112a4cb1741ea5f3a"
+    },
+    {
+      "id": "2015-06-01_2015-09-30",
+      "file": "2015-06-01_2015-09-30.json",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.99&longitude=75.76&start_date=2015-06-01&end_date=2015-09-30&daily=precipitation_sum&timezone=Asia%2FKolkata&models=era5",
+      "request": {
+        "latitude": 18.99,
+        "longitude": 75.76,
+        "timezone": "Asia/Kolkata",
+        "start": "2015-06-01",
+        "end": "2015-09-30"
+      },
+      "retrievedAt": "2026-10-24T10:37:42.464Z",
+      "bytes": 2491,
+      "sha256": "0xb25181a82c2c007c2219865e296499cb3fbaa28baaae7acdc5bae87f14753efe"
+    }
+  ]
+}

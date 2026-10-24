@@ -9,8 +9,8 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getClimateEvidence, type ClimateEvidenceResult } from "@/lib/climate";
-import { EVIDENCE_DIR, readManifestFromDisk, readSnapshotFileFromDisk } from "@/lib/climate/node";
-import { SCENARIOS, isScenarioId, type ScenarioId } from "@/lib/climate/scenarios";
+import { EVIDENCE_DIR, readManifestFromDiskFor, snapshotReaderFor } from "@/lib/climate/node";
+import { ALL_SCENARIOS, isAnyScenarioId, SNAPSHOT_SLUGS, snapshotSlug, type AnyScenarioId } from "@/lib/climate/scenarios";
 import { loadSnapshotDocuments } from "@/lib/climate/snapshots";
 import { baselineMeanDmmRounded, formatBpsAsPercent, formatDmmAsMm } from "@/lib/climate/srpn";
 
@@ -22,9 +22,11 @@ function line(label: string, value: string) {
   console.log(`  ${label.padEnd(22)} ${value}`);
 }
 
-async function verifyScenario(id: ScenarioId): Promise<boolean> {
-  const { spec, title } = SCENARIOS[id];
-  const manifest = await readManifestFromDisk();
+async function verifyScenario(id: AnyScenarioId): Promise<boolean> {
+  const { spec, title } = ALL_SCENARIOS[id];
+  const slug = snapshotSlug(spec);
+  const manifest = await readManifestFromDiskFor(slug);
+  const readSnapshotFileFromDisk = snapshotReaderFor(slug);
   const checks: Array<[string, boolean]> = [];
 
   let r: ClimateEvidenceResult;
@@ -92,20 +94,22 @@ async function verifyScenario(id: ScenarioId): Promise<boolean> {
 }
 
 async function main() {
-  const manifest = await readManifestFromDisk();
-  // Verify every snapshot file in the manifest, not only those a scenario touches.
-  await loadSnapshotDocuments(
-    manifest,
-    manifest.documents.map((d) => d.request),
-    readSnapshotFileFromDisk,
-  );
-  console.log(`Snapshot set: ${manifest.documents.length} files verified against manifest.json (SHA-256).`);
-  console.log(manifest.attribution);
+  // Verify every snapshot file in every location's manifest, not only those a scenario touches.
+  for (const slug of SNAPSHOT_SLUGS) {
+    const manifest = await readManifestFromDiskFor(slug);
+    await loadSnapshotDocuments(
+      manifest,
+      manifest.documents.map((d) => d.request),
+      snapshotReaderFor(slug),
+    );
+    console.log(`Snapshot set ${slug}: ${manifest.documents.length} files verified against manifest.json (SHA-256).`);
+  }
+  console.log((await readManifestFromDiskFor("yabelo")).attribution);
 
-  const ids: ScenarioId[] =
-    target === "all" ? (Object.keys(SCENARIOS) as ScenarioId[]) : isScenarioId(target) ? [target] : [];
+  const ids: AnyScenarioId[] =
+    target === "all" ? (Object.keys(ALL_SCENARIOS) as AnyScenarioId[]) : isAnyScenarioId(target) ? [target] : [];
   if (ids.length === 0) {
-    console.error(`unknown scenario "${target}". Use one of: all, ${Object.keys(SCENARIOS).join(", ")}`);
+    console.error(`unknown scenario "${target}". Use one of: all, ${Object.keys(ALL_SCENARIOS).join(", ")}`);
     process.exit(2);
   }
   let ok = true;
