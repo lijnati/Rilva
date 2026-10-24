@@ -2,7 +2,7 @@
 
 **Climate evidence. Verifiable relief.** Rilva turns a rainfall-based funding rule into evidence anyone can recompute, an attestation anyone can check, and a payment only that rule can trigger.
 
-[Live app](https://rilva.xylolabs.space) · [Verify a real campaign, no wallet](https://rilva.xylolabs.space/verify/1) · [5-minute judge guide](JUDGE_GUIDE.md) · Demo video: `[VIDEO URL — pending upload]`
+[Live app](https://rilva.xylolabs.space) · [Verify a real campaign, no wallet](https://rilva.xylolabs.space/verify/1) · [5-minute judge guide](JUDGE_GUIDE.md) · [Demo video (4:32)](https://youtu.be/S7MvRFR8yL0)
 
 Built for the **IEEE ClimateChain Global Hackathon 2026**, track **Climate Data & Environmental Monitoring**.
 
