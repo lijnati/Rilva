@@ -1,210 +1,156 @@
 # Rilva
 
-**Climate evidence. Verifiable relief.** A hackathon demo (IEEE ClimateChain Global Hackathon, Climate Data & Environmental Monitoring track):
-- a reproducible rainfall index from public ERA5 data;
-- cryptographic evidence digests;
-- in Phase 2, a testnet-only escrow on Base Sepolia.
+**Climate evidence. Verifiable relief.** Rilva turns a rainfall-based funding rule into evidence anyone can recompute, an attestation anyone can check, and a payment only that rule can trigger.
 
-All scenarios are **retrospective replays**, not live drought alerts. Specs and research: [PRODUCT.md](PRODUCT.md), [CLIMATE_DATA.md](CLIMATE_DATA.md), [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRACTS.md](CONTRACTS.md), [DESIGN.md](DESIGN.md), [ROADMAP.md](ROADMAP.md), [CLAUDE.md](CLAUDE.md).
+[Live app](https://rilva-six.vercel.app) · [Verify a real campaign, no wallet](https://rilva-six.vercel.app/verify/1) · [5-minute judge guide](JUDGE_GUIDE.md) · Demo video: `[VIDEO URL — pending upload]`
 
-## Status
+Built for the **IEEE ClimateChain Global Hackathon 2026**, track **Climate Data & Environmental Monitoring**.
 
-**Phase 1 is complete:**
-- Next.js foundation.
-- SRPN-v1 climate engine.
-- Authentic ERA5 snapshots.
-- Offline evidence verification.
+> **Testnet demonstration with historical data.** Base Sepolia test ETH only, no real funds, no insurance and no relief delivered. Every season is a labelled **retrospective replay**, and the 60 % threshold is **illustrative**.
 
-**Phase 2 is complete, except the Base Sepolia broadcast:**
-- `RilvaEscrow` is implemented and tested with Hardhat 3 (CONTRACTS.md).
-- The `lib/contracts` integration surface is ready.
-- Deployed to **Base Sepolia** (testnet) at `0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E` (DEPLOYMENT.md).
+![Rilva cover](docs/media/devpost-cover.png)
 
-Not yet built: wallet UI flows and the full UI (Phase 3).
+## The problem
 
-## Setup
+Anticipatory climate finance often pre-agrees a trigger: *if the rains fail, release the funds.* From outside, three things are hard to check:
+- **which data** was used;
+- **how** the number was computed;
+- **who decided**, and whether the money went where it was promised.
 
-Requirements: Node ≥ 24 and pnpm 11.13.1 (pinned in `package.json` → `packageManager`).
+The data sources disagree, the maths lives in spreadsheets, and the audit trail is an email.
 
-```bash
-pnpm install          # pnpm-workspace.yaml allow-lists build scripts for esbuild + unrs-resolver only
-pnpm dev              # http://localhost:3000
-```
+## The solution
 
-No environment variables are needed in Phase 1 (see `.env.example`).
-
-## Commands
-
-| Command | What it does |
-|---|---|
-| `pnpm lint` | ESLint (flat config, `eslint-config-next` core-web-vitals + typescript) |
-| `pnpm typecheck` | `tsc --noEmit`, strict + `noUncheckedIndexedAccess` |
-| `pnpm test` | Vitest. Offline and deterministic; golden tests read committed snapshots. |
-| `pnpm build` / `pnpm start` | Production build / server |
-| `pnpm climate:verify [all\|yabelo-ond-2021\|yabelo-ond-2022\|yabelo-ond-2023] [--live]` | Offline verification of snapshots, SRPN-v1, digests and committed evidence. `--live` also re-fetches from Open-Meteo and checks the digest is identical. |
-| `pnpm climate:evidence` | Regenerates `public/evidence/*.json` from the snapshots (offline) |
-| `pnpm climate:snapshot` | **Network.** Re-downloads the raw ERA5 responses and rewrites `manifest.json` |
-| `pnpm contracts:compile` | Hardhat 3 compile (solc 0.8.37, optimizer off) |
-| `pnpm contracts:test` | Hardhat node:test suites in `tests/contracts/` (62 tests, incl. real-evidence integration) |
-| `pnpm contracts:gas` / `pnpm contracts:coverage` | Gas statistics / coverage report (`coverage/html`) |
-| `pnpm contracts:abi` | Regenerates `lib/contracts/abi.ts` from the artifact |
-| `pnpm contracts:deploy:local` | Ignition deployment to the in-process Hardhat network |
-| `pnpm contracts:deploy:base-sepolia` | **Broadcasts.** Requires a keystore key and human approval (DEPLOYMENT.md) |
-
-## Pinned versions (exact; no ranges)
-
-| Package | Version | Note |
+| Step | What happens | Who or what enforces it |
 |---|---|---|
-| next | 16.4.2 | |
-| react, react-dom | 19.3.1 | |
-| typescript | 5.9.3 | Latest 5.x. TypeScript 7 exists but the brief requires 5.x. |
-| tailwindcss, @tailwindcss/postcss | 4.3.3 | |
-| geist | 1.8.1 | |
-| clsx | 2.1.1 | |
-| tailwind-merge | 3.7.0 | shadcn/ui `cn()` infrastructure (`components.json`, `lib/utils.ts`) |
-| viem | 2.57.7 | keccak256/sha256 now; chain client in Phase 2 |
-| eslint | 10.12.0 | ESLint 9 is end-of-life. `eslint-config-next`'s bundled plugins declare peers up to ^9; they run correctly on 10 (verified), but `pnpm install` prints a peer warning. |
-| eslint-config-next | 16.4.2 | |
-| vitest | 4.1.12 | Mature line; 5.x is very new |
-| hardhat | 3.19.0 | With toolbox-viem 5.0.7, hardhat-viem 3.0.10, ignition 3.1.9 (+ ignition-core 3.1.8, ignition-viem 3.1.6), node-test-runner 3.1.1, network-helpers 3.0.12, viem-assertions 3.1.4, verify 3.1.3, keystore 3.1.2 |
-| @openzeppelin/contracts | 5.6.1 | EIP712, ECDSA, ReentrancyGuard |
-| solc | 0.8.37 | Downloaded by Hardhat; optimizer disabled |
-| tsx | 4.23.15 | Runs the TypeScript scripts |
-| @types/node | 24.19.2 | |
-| @types/react, @types/react-dom | 19.3.0 | |
+| 1. Rule | Place, data source and model, season, baseline and threshold are canonicalised and hashed on-chain with the locked funds | `RilvaEscrow` stores the `specHash` |
+| 2. Evidence | SRPN-v1 rainfall index from ERA5 (Open-Meteo) in integer maths, plus a keccak256 evidence digest | Deterministic code, SHA-256-pinned inputs |
+| 3. Attestation | A designated attestor reviews and signs an EIP-712 message in their own wallet | The signature recovers to the attestor |
+| 4. Settlement | The contract checks signer, spec, period and expiry, applies `index ≤ threshold` itself, and pays the fixed beneficiary once or refunds | Smart contract |
+| 5. Verification | `/verify/[id]` recomputes everything in a stranger's browser, with no wallet | Anyone |
 
-No database, no zod, no canonicalization library. JCS is implemented in `lib/climate/canonical.ts` and tested against the RFC 8785 examples.
+| Explorer | Campaign | Verification | Refund case |
+|---|---|---|---|
+| ![Explorer](docs/media/gallery-1-explore.png) | ![Campaign](docs/media/gallery-2-campaign.png) | ![Verify](docs/media/gallery-3-verify.png) | ![Refund](docs/media/gallery-4-refund.png) |
 
-## Climate engine (`lib/climate/`)
+## Key capabilities
+- **Climate explorer:** 33 OND seasons at Yabelo vs the 1991–2020 normal, the ERA5 vs CHIRPS disagreement shown openly, and in-browser recompute.
+- **Guided campaign creation:** the rule is shown in plain words and the exact spec JSON before signing.
+- **Attest and settle:** recompute → readable EIP-712 field table → wallet signature → submit. Timeout refund after the deadline.
+- **Public verification:** seven labelled checks (authentic, reproducible, attested, contract), a shareable report and JSON download, and an explicit "not checked, not claimed" list.
+- **Try to break it:** a forged signature, settling twice and an early refund, simulated against the deployed contract with `eth_call`.
 
+## Case study: Yabelo, Borena Zone, Ethiopia
+
+ERA5 grid cell 5.0° N, 38.0° E (requested 4.88° N, 38.08° E). October–December rainfall against the 1991–2020 normal of 234.0 mm (S = 70193 dmm, N = 30). Computed offline from the committed snapshots:
+
+| Season | Rainfall | % of normal | indexBps | Rule ≤ 6000 | evidenceDigest | On Base Sepolia |
+|---|---|---|---|---|---|---|
+| OND 2021 | 78.7 mm | 33.63 % | 3363 | Trigger | `0xde7fdf48…3be94f50` | [#1 Released](https://rilva-six.vercel.app/verify/1) |
+| OND 2022 | 104.4 mm | 44.61 % | 4461 | Trigger | `0x8f4751b9…1599d19a` | [#3 Active](https://rilva-six.vercel.app/campaigns/3) |
+| OND 2023 | 498.9 mm | 213.22 % | 21322 | No trigger | `0x5c28852c…6b253e` | [#2 Refunded](https://rilva-six.vercel.app/verify/2) |
+
+Context, not computed by Rilva: FEWS NET reported OND 2021 deyr/hagaya rainfall at 45–75 % of average in southern pastoral areas, including Borena ([Dec 2021](https://fews.net/east-africa/seasonal-monitor/december-2021), accessed 2026-10-19). ERA5 (33.6 %) is drier than that range, and CHIRPS v3 gives 52.5 %. See [CLIMATE_DATA.md](CLIMATE_DATA.md) §3.
+
+## Architecture
+
+![Architecture](docs/media/gallery-5-architecture.png)
+
+```mermaid
+flowchart LR
+  OM[Open-Meteo ERA5<br/>models=era5] -->|raw bytes, SHA-256| SNAP[Committed snapshots<br/>public/snapshots]
+  SNAP --> SRPN[SRPN-v1 BigInt<br/>lib/climate]
+  SRPN --> EV[Evidence digest<br/>keccak256 · RFC 8785 JCS]
+  EV --> ATT[Attestor wallet<br/>EIP-712 signature]
+  ATT --> ESC[RilvaEscrow<br/>Base Sepolia]
+  F[Funder] -->|spec hash + test ETH| ESC
+  ESC -->|index ≤ threshold| BEN[Fixed beneficiary]
+  ESC -->|otherwise / timeout| F
+  V[Anyone, no wallet<br/>/verify/id] -.reads.-> ESC
+  V -.recomputes.-> SNAP
 ```
-types.ts      units glossary, ClimateError codes, spec / result / provenance types
-dates.ts      civil dates in UTC only; inclusive ranges; season windows (no year crossing, no 29 Feb)
-validate.ts   untrusted Open-Meteo JSON → DailySeries (unit, tz, dup/missing/unexpected dates, null, negative, precision)
-srpn.ts       pure SRPN-v1 in BigInt + display-only formatters
-canonical.ts  RFC 8785 JCS
-evidence.ts   specHash, seriesDigest, evidenceDigest, buildEvidence, verifyEvidenceArtifact
-source.ts     the only network code: pinned URL, timeout, retry/backoff, 4xx vs 5xx handling
-snapshots.ts  manifest + SHA-256 verification of saved raw responses
-scenarios.ts  the three Yabelo OND demo specs + the MAM 2021 reference case (inputs only, never expected outputs)
-index.ts      app-facing API: getClimateEvidence(spec, { mode })
-node.ts       disk readers for scripts, tests and server components
-```
 
-### Algorithm and precision (SRPN-v1)
+There is no backend database: the app reads campaign history from the contract (binary search over state, because the public RPC caps log ranges at 200 blocks). Details are in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-| Stage | Representation |
-|---|---|
-| Raw | Open-Meteo `precipitation_sum`, mm, reported at 0.1 mm resolution |
-| Normalized | `dmm = round(mm × 10)`. A value finer than 0.1 mm is rejected (`PRECISION_EXCEEDED`), never rounded silently. |
-| Intermediate | `T` = Σ observed dmm. `B_y` = Σ dmm for each baseline season, 1991–2020. `S` = Σ `B_y`. `N` = 30. Integers / BigInt. |
-| Index | **`indexBps = floor(T × 10000 × N / S)`**. 10000 = 100 % of normal and 6000 = 60 %. The mean `S/N` is never rounded. |
-| Decision | **`triggered = indexBps ≤ thresholdBps`**. Equality triggers. Floor rounding can trigger a true ratio up to < 1 bps above the threshold; the contract will apply the same `<=`. |
-| Deficit | `deficitBps = 10000 − indexBps` (negative means surplus) |
-| Presentation only | Percent `indexBps/100` (2 dp), mm (1 dp), baseline mean rounded half-up, z-score (float, informational) |
+## Tech stack (exact pinned versions in `package.json`)
+Next.js 16 · React 19 · TypeScript 5.9 · Tailwind CSS 4 · viem 2 · wagmi 3 · TanStack Query · Recharts · Solidity 0.8.37 · Hardhat 3 · OpenZeppelin Contracts 5.6 (EIP712, ECDSA, ReentrancyGuard) · Vitest · Playwright · Vercel · Base Sepolia · Open-Meteo (ERA5).
 
-Inputs are validated as follows:
-- Every expected day must be present exactly once and be non-null and non-negative.
-- All chunks must resolve to the same grid cell.
-- `S = 0`, invalid thresholds, observed years inside the baseline, and any model other than `era5` are rejected.
-- The `best_match` model is never requested.
-
-### Evidence and hashes
-
-There are three kinds of hash, and they are never interchangeable:
-
-1. **Raw snapshot integrity:** `sha256(raw bytes)` of each Open-Meteo response, kept in `manifest.json` and in provenance. Live bytes differ on every call (`generationtime_ms`), so this hash is **not** part of the evidence digest.
-2. **`seriesDigest`:** `keccak256(JCS({schema:"rilva.series.v1", grid, variable, unit:"dmm", days:[[date,dmm],…]}))` over exactly the observed and baseline days used.
-3. **`evidenceDigest`:** `keccak256(UTF-8(JCS(core)))`. The core contains:
-   - schema, algorithm, `specHash`, spec;
-   - source (provider, endpoint, model, variable, units, timezone);
-   - requested and resolved location;
-   - periods;
-   - `seriesDigest`, observed daily dmm, baseline season totals;
-   - the integer result, threshold and decision.
-
-   This is the `bytes32` the Phase 2 EIP-712 attestation will sign. Solidity `keccak256(bytes(canonicalJson))` over the same UTF-8 bytes yields the same value.
-
-Also, `specHash = keccak256(UTF-8(JCS(spec)))`, which matches CONTRACTS.md (`keccak256(bytes(spec))`).
+## How the rainfall evidence is computed
+- **Request:** `latitude=4.88&longitude=38.08&daily=precipitation_sum&timezone=Africa/Addis_Ababa&models=era5`. The `best_match` model is never used: it switches models in 2017 (CLIMATE_DATA.md §2.1).
+- **Validate:** every expected day must be present exactly once, with no null and no negative values, all in the same grid cell. Anything else makes the result `INVALID`, and nothing is gap-filled.
+- **Normalise:** `dmm = round(mm × 10)`. Precision finer than 0.1 mm is rejected.
+- **Index:** `indexBps = floor(T × 10000 × N / S)`, with T the observed season total and S the sum of the 30 baseline season totals. The decision is `indexBps ≤ thresholdBps`, the same `≤` as the contract.
+- **Hashes:**
+  - `specHash = keccak256(JCS(spec))`.
+  - `evidenceDigest = keccak256(JCS(core))`, where the core holds the source, location, periods, series digest, daily values, baseline totals and result.
+  - The raw-response SHA-256 values in `manifest.json` pin the inputs.
+- **Pinned to snapshots:** on 2026-10-24 Open-Meteo returned revised ERA5 values for the same URLs: OND 2021 is now 3362 bps live, and every decision is unchanged. Attestations and `/verify` use the SHA-256-pinned snapshot, and the live value is shown next to it as "Upstream revised" (CLIMATE_DATA.md §2.4).
 
 A matching digest proves **integrity and reproducibility**. It does not prove that ERA5 is ground truth, that drought impact occurred, or that anyone suffered loss.
 
-**Canonicalization rules (RFC 8785):**
-- UTF-8 output with no whitespace.
-- Object keys sorted by UTF-16 code units.
-- Strings and numbers serialized as in ECMAScript JSON (e.g. `5.0 → 5`, `1e21 → 1e+21`).
-- `undefined`, NaN/Infinity, BigInt, non-plain objects and lone surrogates throw an error.
+## Smart contract security model
+`RilvaEscrow` ([CONTRACTS.md](CONTRACTS.md)):
+- Ownerless and non-upgradeable, with no arbitrary calls or admin keys.
+- Funds can only go to the beneficiary fixed at creation, **once**, and only with the designated attestor's EIP-712 signature over the exact campaign, spec, evidence, index, period and expiry.
+- The contract applies the threshold itself. If the rule is not met, the funder is refunded in the same transaction. After the deadline, anyone can trigger a timeout refund to the funder.
+- Checks-effects-interactions plus `nonReentrant` on every function that moves value. Custom errors for every revert path.
+- **Trust assumption:** the attestor is trusted to sign honestly. Rilva makes every attestation public, attributable and recomputable, not automatically true. Not professionally audited.
 
-## Snapshots (`public/snapshots/open-meteo/era5/yabelo/`)
-
-These are genuine responses fetched by `pnpm climate:snapshot` on **2026-10-19 (08:14 UTC)**:
-
-| File | Request |
-|---|---|
-| `1991-01-01_2000-12-31.json`, `2001-01-01_2010-12-31.json`, `2011-01-01_2020-12-31.json` | Baseline |
-| `2021-10-01_2021-12-31.json`, `2022-…`, `2023-…` | Observed seasons |
-| `2021-03-01_2021-05-31.json` | MAM 2021 reference case, fetched 2026-10-19 08:29 UTC |
-
-All requests use `latitude=4.88&longitude=38.08&daily=precipitation_sum&timezone=Africa/Addis_Ababa&models=era5`.
-
-How they were validated:
-- Each file is the exact byte stream received. `manifest.json` records the canonical URL, `retrievedAt`, byte length and SHA-256.
-- `.gitattributes` marks the directory `-text`, so git never rewrites line endings.
-- All 11,234 overlapping days were cross-checked against independent `curl` downloads made during Phase 0: there were **0 differences**.
-- `pnpm climate:verify --live` re-fetched all requests on 2026-10-19 and reproduced all three evidence digests exactly.
-- Running `climate:verify` with `fetch` disabled passes, which shows it is truly offline.
-
-Attribution, as required by CC BY 4.0: *Weather data by Open-Meteo.com (CC BY 4.0), based on ERA5 — Copernicus Climate Change Service information.* The app footer carries the same credit.
-
-CHIRPS data is **not** committed or redistributed: its licence is unconfirmed, and it is a research cross-check only.
-
-To regenerate:
-1. `pnpm climate:snapshot`. This is incremental: verified files are kept and only missing ones are fetched. `--refresh` re-downloads everything.
-2. `pnpm climate:evidence`
-3. `pnpm climate:verify all`
-
-Review the diff afterwards. Only `retrievedAt`, the SHA-256 values and `generationtime_ms` should change, while the evidence digests stay the same. If the digests change, upstream data changed, and that must be investigated before committing.
-
-## Verified results (offline, from the committed snapshots)
-
-Grid cell 5.0° N, 38.0° E (elevation 1891 m); baseline mean 234.0 mm (S = 70193 dmm, N = 30).
-
-| Scenario | Rainfall | % of normal | indexBps | Rule ≤ 6000 | evidenceDigest |
-|---|---|---|---|---|---|
-| OND 2021 | 78.7 mm | 33.63 % | 3363 | Trigger | `0xde7fdf48a6a608f3702848d95643440ceac87c4f411ccd64fc7776653be94f50` |
-| OND 2022 | 104.4 mm | 44.61 % | 4461 | Trigger | `0x8f4751b9ad2039b4b3544dafc8d29d2d45c3f29aba898a37994c11911599d19a` |
-| OND 2023 | 498.9 mm | 213.22 % | 21322 | No trigger | `0x5c28852cf7b8533214308ad12ce4b04a32f8d429b65484d56364f6b8169b253e` |
-
-These match the Phase 0 values exactly.
-
-Reference case (golden test only, not a demo campaign): **MAM 2021 = 5468 bps (54.68 %)**, T = 2265 dmm, S = 124257 dmm. This is the season where ERA5 and CHIRPS v3 disagree (CLIMATE_DATA.md §3).
-
-## Phase 2 handoff
-
-```ts
-import { getClimateEvidence, SCENARIOS } from "@/lib/climate";
-const r = await getClimateEvidence(SCENARIOS["yabelo-ond-2021"].spec, {
-  mode: "live-with-snapshot-fallback",   // or "live" | "snapshot"
-  manifest, readSnapshotFile,            // required for snapshot / fallback
-});
-r.artifact.evidenceDigest       // bytes32 → Attestation.evidenceHash
-r.artifact.core.specHash        // bytes32 → Campaign.specHash / Attestation.specHash
-r.artifact.core.result.indexBps // uint32 → Attestation.indexBps
-r.provenance.mode               // "live" | "snapshot"; show it, never hide a fallback
+## Run it locally
+Requirements: Node ≥ 24 and pnpm 11.13.1.
+```bash
+pnpm install
+pnpm dev                       # http://localhost:3000, reads Base Sepolia (see .env.example)
+pnpm climate:verify all        # offline: snapshots, SRPN-v1, digests → ALL CHECKS PASSED
 ```
+`.env.example` lists the public variables: `NEXT_PUBLIC_RILVA_CHAIN`, `NEXT_PUBLIC_RILVA_ESCROW_ADDRESS` and `NEXT_PUBLIC_RILVA_DEPLOY_BLOCK`. No secrets are needed to run the app.
 
-Notes:
-- `canonicalSpec(spec)` gives the exact string to pass as `spec` to `createCampaign`.
-- `periodStart` / `periodEnd` are `YYYYMMDD` integers derived from `spec.period`.
-- A browser snapshot reader can `fetch("/snapshots/open-meteo/era5/yabelo/<file>")`, since the files are served from `public/`.
+Local chain, no credentials: `pnpm chain:node`, then `pnpm chain:deploy:local` and `pnpm chain:seed:local` (DEPLOYMENT.md).
 
-**Phase 2 (done):** `RilvaEscrow` (Hardhat 3) consumes these values through `lib/contracts`: `campaignTermsFromSpec(spec)` and `buildAttestation({ evidence, campaignId, expiresAt })`. See CONTRACTS.md and DEPLOYMENT.md.
+## Tests and results (run 2026-10-24)
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm climate:verify all && pnpm build
+pnpm contracts:compile && pnpm contracts:test && pnpm contracts:coverage
+pnpm test:e2e
+```
+| Suite | Result |
+|---|---|
+| ESLint, `tsc --noEmit` | pass |
+| Vitest (climate engine, golden values, evidence, chain history, verification, copy audit) | **238 / 238 passed** (26 files) |
+| `climate:verify all` (offline) | **ALL CHECKS PASSED** (3363 / 4461 / 21322 bps; committed evidence matches) |
+| `climate:verify all --live` | Fails by design: live digests differ since the upstream ERA5 revision (CLIMATE_DATA.md §2.4) |
+| Hardhat (`node:test`): every revert path, attacks, invariant, EIP-712 parity, real-evidence journeys | **79 passing** |
+| Coverage, `RilvaEscrow.sol` | **100 % lines, 100 % statements** |
+| `next build` | compiled successfully |
+| Production: 1440 / 390 / 360 px, light + dark, 7 routes | no horizontal overflow, no page errors |
+
+## Deployment
+| | |
+|---|---|
+| Network | Base Sepolia (chain 84532), **testnet only** |
+| `RilvaEscrow` | [`0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`](https://sepolia.basescan.org/address/0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E) |
+| Released (#1, OND 2021) | [`0xd5e77248…d95c`](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c) |
+| Refunded, rule not met (#2, OND 2023) | [`0xb5d6d551…b019`](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019) |
+| App | https://rilva-six.vercel.app (Vercel, production build of `main`) |
+
+The full record, including creation transactions and the source-verification status, is in [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Limitations
+- ERA5 is a reanalysis model estimate for a ~28 km cell: not a rain gauge, and not regional.
+- ERA5 and CHIRPS v3 disagree materially in some seasons, and providers revise archives (CLIMATE_DATA.md §2.4, §3).
+- SRPN-v1 measures meteorological rainfall only. It does not measure drought impact, crop loss or financial loss.
+- The 60 % threshold is illustrative and not calibrated with any programme.
+- A single trusted attestor; no multi-attestor or dispute process yet.
+- One location and one method. Seasons must lie within one calendar year and must not contain 29 February.
+- Testnet only and not audited. No partnerships or pilots exist.
 
-- ERA5 is a reanalysis model estimate for a ~28 km cell. It is not a rain gauge and not regional.
-- ERA5 and CHIRPS v3 disagree materially in some seasons (CLIMATE_DATA.md §3).
-- The 60 % threshold is illustrative.
-- SRPN-v1 measures meteorological rainfall only: not drought impact, crop loss, or financial loss.
-- The attestor remains a trusted oracle and could equivocate (CONTRACTS.md §8). Reproducibility makes its claims auditable, not automatically true.
-- MVP seasons must lie within one calendar year and must not contain 29 February.
+## Project documents
+[PRODUCT.md](PRODUCT.md) · [CLIMATE_DATA.md](CLIMATE_DATA.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRACTS.md](CONTRACTS.md) · [DESIGN.md](DESIGN.md) · [DEPLOYMENT.md](DEPLOYMENT.md) · [ROADMAP.md](ROADMAP.md) · [JUDGE_GUIDE.md](JUDGE_GUIDE.md)
+
+## Credits and data attribution
+- Weather data by [Open-Meteo.com](https://open-meteo.com/) ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)), based on ERA5: Copernicus Climate Change Service information. The app footer carries the same credit.
+- CHIRPS v3.0 values are cited from Funk et al., Climate Hazards Center, UCSB, and shown for comparison only. CHIRPS data is not redistributed.
+- Ethiopia outline: Natural Earth (public domain).
+- Pixel-art scenes are generated procedurally in the browser.
+
+Code: [MIT](LICENSE).
