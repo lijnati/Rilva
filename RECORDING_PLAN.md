@@ -4,7 +4,7 @@
 
 | Item | Value |
 |---|---|
-| App | https://rilva-six.vercel.app (production build of `main`) |
+| App | https://rilva.xylolabs.space (production build of `main`) |
 | Released campaign | `/campaigns/1`, `/verify/1` — OND 2021, settle tx [`0xd5e77248…d95c`](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c) |
 | Refunded campaign | `/campaigns/2`, `/verify/2` — OND 2023, settle tx [`0xb5d6d551…b019`](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019) |
 | Active campaign | `/campaigns/3` — OND 2022, open until 2026-11-23 04:47 UTC; "Try to break it" target |

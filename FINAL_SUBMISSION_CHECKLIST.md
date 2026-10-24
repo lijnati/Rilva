@@ -4,7 +4,7 @@ Official deadline **Sun 2026-10-25 17:00 EAT** (Devpost form: "Oct 25, 2026 @ 5:
 Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 
 ## Product and evidence
-- ✅ Production app https://rilva-six.vercel.app serves the build of `main` (Vercel READY). 7 routes have no horizontal overflow at 1440/390/360 px, light and dark, with no page errors (2026-10-24).
+- ✅ Production app https://rilva.xylolabs.space serves the build of `main` (Vercel READY). 7 routes have no horizontal overflow at 1440/390/360 px, light and dark, with no page errors (2026-10-24).
 - ✅ `RilvaEscrow` `0x8c27…DB0E` has bytecode on Base Sepolia.
 - ✅ Campaign #1 Released, #2 Refunded (rule not met), #3 Active. Receipts have status `0x1` (DEPLOYMENT.md).
 - ✅ `/verify/1` and `/verify/2`: every applicable check passed in a no-wallet browser; `/verify/3`: 2/2 applicable.
@@ -22,7 +22,7 @@ Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 - ✅ Secret audit of tracked files and full history: no keys, mnemonics or `.env` files ever committed. Every 64-hex value is a digest, hash or constant.
 - ✅ MIT licence; data attribution in README and app footer.
 - ✅ README, JUDGE_GUIDE, JUDGING_STRATEGY, DEVPOST_SUBMISSION, VIDEO_SCRIPT, STORYBOARD, RECORDING_PLAN.
-- 👤 Optional: set the repo description and website (`gh repo edit --description … --homepage https://rilva-six.vercel.app`).
+- 👤 Optional: set the repo description and website (`gh repo edit --description … --homepage https://rilva.xylolabs.space`).
 
 ## Video
 - ✅ Silent picture lock: 4:15, 1920×1080, H.264 at 30 fps, captions burned in, real production footage only. QA'd with a frame every 10 s.

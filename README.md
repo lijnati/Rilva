@@ -2,7 +2,7 @@
 
 **Climate evidence. Verifiable relief.** Rilva turns a rainfall-based funding rule into evidence anyone can recompute, an attestation anyone can check, and a payment only that rule can trigger.
 
-[Live app](https://rilva-six.vercel.app) · [Verify a real campaign, no wallet](https://rilva-six.vercel.app/verify/1) · [5-minute judge guide](JUDGE_GUIDE.md) · Demo video: `[VIDEO URL — pending upload]`
+[Live app](https://rilva.xylolabs.space) · [Verify a real campaign, no wallet](https://rilva.xylolabs.space/verify/1) · [5-minute judge guide](JUDGE_GUIDE.md) · Demo video: `[VIDEO URL — pending upload]`
 
 Built for the **IEEE ClimateChain Global Hackathon 2026**, track **Climate Data & Environmental Monitoring**.
 
@@ -46,9 +46,9 @@ ERA5 grid cell 5.0° N, 38.0° E (requested 4.88° N, 38.08° E). October–Dece
 
 | Season | Rainfall | % of normal | indexBps | Rule ≤ 6000 | evidenceDigest | On Base Sepolia |
 |---|---|---|---|---|---|---|
-| OND 2021 | 78.7 mm | 33.63 % | 3363 | Trigger | `0xde7fdf48…3be94f50` | [#1 Released](https://rilva-six.vercel.app/verify/1) |
-| OND 2022 | 104.4 mm | 44.61 % | 4461 | Trigger | `0x8f4751b9…1599d19a` | [#3 Active](https://rilva-six.vercel.app/campaigns/3) |
-| OND 2023 | 498.9 mm | 213.22 % | 21322 | No trigger | `0x5c28852c…6b253e` | [#2 Refunded](https://rilva-six.vercel.app/verify/2) |
+| OND 2021 | 78.7 mm | 33.63 % | 3363 | Trigger | `0xde7fdf48…3be94f50` | [#1 Released](https://rilva.xylolabs.space/verify/1) |
+| OND 2022 | 104.4 mm | 44.61 % | 4461 | Trigger | `0x8f4751b9…1599d19a` | [#3 Active](https://rilva.xylolabs.space/campaigns/3) |
+| OND 2023 | 498.9 mm | 213.22 % | 21322 | No trigger | `0x5c28852c…6b253e` | [#2 Refunded](https://rilva.xylolabs.space/verify/2) |
 
 Context, not computed by Rilva: FEWS NET reported OND 2021 deyr/hagaya rainfall at 45–75 % of average in southern pastoral areas, including Borena ([Dec 2021](https://fews.net/east-africa/seasonal-monitor/december-2021), accessed 2026-10-19). ERA5 (33.6 %) is drier than that range, and CHIRPS v3 gives 52.5 %. See [CLIMATE_DATA.md](CLIMATE_DATA.md) §3.
 
@@ -131,7 +131,7 @@ pnpm test:e2e
 | `RilvaEscrow` | [`0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`](https://sepolia.basescan.org/address/0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E) |
 | Released (#1, OND 2021) | [`0xd5e77248…d95c`](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c) |
 | Refunded, rule not met (#2, OND 2023) | [`0xb5d6d551…b019`](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019) |
-| App | https://rilva-six.vercel.app (Vercel, production build of `main`) |
+| App | https://rilva.xylolabs.space (Vercel, production build of `main`) |
 
 The full record, including creation transactions and the source-verification status, is in [DEPLOYMENT.md](DEPLOYMENT.md).
 

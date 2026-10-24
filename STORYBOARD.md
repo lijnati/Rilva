@@ -1,6 +1,6 @@
 # STORYBOARD.md — shot list for the 4:15 demo
 
-All footage is a real screen recording of the **deployed** app (https://rilva-six.vercel.app) or of Basescan. Nothing is mocked. Format: 1920×1080, 30 fps, light mode, 100 % zoom, no browser chrome (Playwright capture), no wallet extension visible. Timings match VIDEO_SCRIPT.md.
+All footage is a real screen recording of the **deployed** app (https://rilva.xylolabs.space) or of Basescan. Nothing is mocked. Format: 1920×1080, 30 fps, light mode, 100 % zoom, no browser chrome (Playwright capture), no wallet extension visible. Timings match VIDEO_SCRIPT.md.
 
 Transitions are hard cuts or 300 ms crossfades. There are no wipes or zoom-blurs. Zooms are slow 1.0 → 1.25 pushes on a static frame, used only where text must be read.
 

@@ -48,9 +48,9 @@ Rilva is a working demo for one place and one rule: **seasonal rainfall at Yabel
 5. **Anyone can verify, with no wallet.** `/verify/[id]` reads the chain and decodes the signed attestation. It recovers the signer, re-downloads the SHA-256-pinned ERA5 files, and recomputes the index and the hash. Seven checks each say what they prove, and the page says what it cannot prove.
 
 **Real on-chain runs (Base Sepolia):**
-- [Campaign #1](https://rilva-six.vercel.app/verify/1): OND 2021, 3363 bps ≤ 6000, **Released** ([tx](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c)).
-- [Campaign #2](https://rilva-six.vercel.app/verify/2): OND 2023, 21322 bps, **Refunded, rule not met** ([tx](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019)).
-- [Campaign #3](https://rilva-six.vercel.app/campaigns/3): OND 2022, active. Try to break it: forged signatures and early refunds are rejected by the deployed contract (simulated with `eth_call`, nothing sent).
+- [Campaign #1](https://rilva.xylolabs.space/verify/1): OND 2021, 3363 bps ≤ 6000, **Released** ([tx](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c)).
+- [Campaign #2](https://rilva.xylolabs.space/verify/2): OND 2023, 21322 bps, **Refunded, rule not met** ([tx](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019)).
+- [Campaign #3](https://rilva.xylolabs.space/campaigns/3): OND 2022, active. Try to break it: forged signatures and early refunds are rejected by the deployed contract (simulated with `eth_call`, nothing sent).
 
 ## How we built it
 
@@ -100,8 +100,8 @@ typescript, next.js, react, tailwindcss, solidity, hardhat, openzeppelin, eip-71
 
 **"Try it out" links**
 ```
-https://rilva-six.vercel.app
-https://rilva-six.vercel.app/verify/1
+https://rilva.xylolabs.space
+https://rilva.xylolabs.space/verify/1
 https://github.com/lijnati/Rilva
 ```
 

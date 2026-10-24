@@ -29,7 +29,7 @@ All receipts were checked with `eth_getTransactionReceipt` (status `0x1`) and th
 
 - The attested evidence digests equal the committed `public/evidence/*.json` (snapshot of 2026-10-19). See CLIMATE_DATA.md §2.4 for why attestations are pinned to the snapshot.
 - The wallet (MetaMask with EIP-7702 delegation) submitted these transactions through its delegation framework: a relayer called `redeemDelegations` on `DelegationManager` (`to` = `0xdb9b1e94…7db3`, as shown by Blockscout), which executed the call from the user's own address. RilvaEscrow saw the funder and attestor addresses as `msg.sender`. `/verify` therefore decodes the nested `settle()` call (`decodeSettleCalldata`).
-- Public reports: https://rilva-six.vercel.app/verify/1, /verify/2 and /verify/3.
+- Public reports: https://rilva.xylolabs.space/verify/1, /verify/2 and /verify/3.
 
 **Testnet only.**
 - Chain: Base Sepolia (chain ID **84532**).
