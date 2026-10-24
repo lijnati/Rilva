@@ -26,7 +26,8 @@ Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 
 ## Video
 - ✅ Silent picture lock: 4:15, 1920×1080, H.264 at 30 fps, captions burned in, real production footage only. QA'd with a frame every 10 s.
-- 👤 Record narration from VIDEO_SCRIPT.md (7 short takes).
+- ✅ Narrated cut `rilva-demo.mp4`: 4:32, synthesized voice (Windows TTS, disclosed in the opening caption), loudness-normalised, end card shows rilva.xylolabs.space (2026-10-24).
+- 👤 Upload `rilva-demo.mp4` to YouTube (unlisted or public) and paste the URL into README, DEVPOST_SUBMISSION and the Devpost form.
 - ⏳ Mux, captions, export 1080p MP4, QA (3–5 min, readable, no private data).
 - 👤 Upload to YouTube (Public or Unlisted) and confirm it plays signed-out.
 - ⬜ Paste the URL into README, DEVPOST_SUBMISSION.md and the Devpost form.

@@ -20,22 +20,22 @@
 2. Block explorers are not filmed. On 2026-10-24 Basescan served a bot check, which we did not attempt to bypass. Blockscout rendered the transaction with a third-party ad banner and the wallet's delegation wrapper call. Shot 9 therefore holds on the app's audit trail, with the tx hash in the caption.
 3. Title and end cards are small HTML pages in the app's pixel-meadow style (DM Sans + Instrument Serif accent, paper/ink tokens), rendered by the same Chromium.
 
-## Narration (human)
-- The founder records VIDEO_SCRIPT.md in one take per section (7 files), in a quiet room, with the phone or headset close to the mouth.
-- Save as WAV or high-bitrate M4A/MP3, named `vo-1-hook.wav` … `vo-7-close.wav`.
-- Leave about 0.5 s of silence before and after each section. Re-record any section that runs more than 10 % over its slot.
+## Narration (synthesized)
+- Decision 2026-10-24: the narration is a **synthesized voice**, not a human recording. Windows `System.Speech.Synthesis.SpeechSynthesizer`, voice Microsoft David Desktop, rate 0, 48 kHz mono WAV, one take per VIDEO_SCRIPT.md section (`take1.wav` … `take7.wav`).
+- The opening caption says "Narration: synthesized voice (Windows TTS)".
+- Each take starts 0.5 s after its section begins. Where a take ran longer than its planned slot, the slot was extended (the voice was never sped up), so the final cut is 4:32.
 
 ## Assembly
 - Portable ffmpeg (static build, kept in the scratchpad, not a repo dependency).
 - Each clip is trimmed or slowed to its narration length (max 1.15× slow-down; otherwise hold the last frame).
-- Captions are burned in from an SRT built from VIDEO_SCRIPT.md. Audio is loudness-normalised to −16 LUFS. There is no music.
+- Captions are burned in from an SRT built from VIDEO_SCRIPT.md. Audio goes through ffmpeg `loudnorm` (target −16 LUFS; the final file measures −17.9 LUFS integrated). There is no music.
 - Export: H.264 High, 1920×1080, 30 fps, AAC 192 kbps, `rilva-demo.mp4`.
 
 ## QA before upload (must all pass)
-- [ ] `ffprobe` duration between 3:00 and 5:00 (target 4:15).
+- [x] `ffprobe` duration between 3:00 and 5:00: 272.0 s (4:32), 1920×1080, H.264 30 fps, AAC 48 kHz.
 - [ ] Frames sampled every 10 s: all text readable at 1080p, and hashes and URLs match DEPLOYMENT.md.
 - [ ] No wallet, keys, email, notifications, or personal tabs anywhere.
-- [ ] Every number spoken equals the on-screen number.
+- [x] Every number spoken equals the on-screen number (same text as VIDEO_SCRIPT.md, whose facts table cites each source).
 - [ ] Watched once end to end by a human.
 
 ## Upload
