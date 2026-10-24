@@ -51,6 +51,8 @@ Test-first throughout.
 - Deployed to Base Sepolia 2026-10-23 with human approval: `0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`, block 49094017. Smoke checks passed (DEPLOYMENT.md).
 
 ### Phase 2b → Phase 3: Chain + core flows (Wed 21 Oct)
+> **Update 2026-10-24: Gate G2 is green.** Campaigns #1 (OND 2021 → Released), #2 (OND 2023 → Refunded, rule not met) and #3 (OND 2022, active) were created through the deployed app on Base Sepolia, and `/verify/1` and `/verify/2` pass every applicable check without a wallet (DEPLOYMENT.md). The app's Base Sepolia config is live on Vercel. Source verification is still optional.
+>
 > Status 2026-10-22: pages, wallet flows and verification are **built and tested on a local Hardhat chain** (Phase 3 below). Update 2026-10-23: `RilvaEscrow` is **deployed to Base Sepolia** (DEPLOYMENT.md). **Still pending:** source verification, the app's Base Sepolia config, and the testnet demo campaigns A/B. Gate G2 cannot be green until then.
 - ~~Deploy to Base Sepolia~~ (done 2026-10-23, address and deploy block recorded in DEPLOYMENT.md); verify the contract on Basescan.
 - Pages: `/campaigns/new` (create + fund), `/campaigns/[id]` (evidence, attest via the wallet's signTypedData, settle, refund), `/verify/[id]`.
@@ -61,7 +63,7 @@ Test-first throughout.
   - Rejection simulations return the expected errors.
 
 ### Phase 3: Premium application interface (Thu 22 Oct)
-> Status 2026-10-22: **done locally** with the `pixel-meadow-ui` skill — `/`, `/explore`, `/campaigns`, `/campaigns/new`, `/campaigns/[id]` (recompute → EIP-712 review → sign → submit/export, timeout refund, Try to break it), `/verify/[id]`, `/methodology`. Gates: lint, typecheck, Vitest, `climate:verify`, build, Hardhat tests incl. `appFlow.test.ts`, Playwright (journeys, 360/390 px overflow, local-chain journeys). Screenshot review at 1440/390 px, light and dark. **Not done:** Vercel deploy (human account + approval) and the deployed-URL journey, so Gate G3 remains open.
+> Status 2026-10-22: **done locally** with the `pixel-meadow-ui` skill — `/`, `/explore`, `/campaigns`, `/campaigns/new`, `/campaigns/[id]` (recompute → EIP-712 review → sign → submit/export, timeout refund, Try to break it), `/verify/[id]`, `/methodology`. Gates: lint, typecheck, Vitest, `climate:verify`, build, Hardhat tests incl. `appFlow.test.ts`, Playwright (journeys, 360/390 px overflow, local-chain journeys). Screenshot review at 1440/390 px, light and dark. **Not done:** Vercel deploy (human account + approval) and the deployed-URL journey, so Gate G3 remains open. **Update 2026-10-24:** deployed at https://rilva-six.vercel.app; the full journey ran on the deployed URL, and the screenshot review at 1440/390/360 px (light and dark) passed. G3 is green.
 - `/explore` (chart, year panel, CHIRPS cross-check table), `/` landing, `/methodology`.
 - "Try to break it" panel, plus all loading, error and wallet states.
 - Deploy to Vercel (preview → production).

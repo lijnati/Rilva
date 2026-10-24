@@ -13,6 +13,24 @@
 >
 > Record: `ignition/deployments/chain-84532/` (Ignition journal) and `deployments/base-sepolia.json` (smoke test output).
 
+## Demo campaigns on Base Sepolia (created 2026-10-24 through the deployed app)
+
+All receipts were checked with `eth_getTransactionReceipt` (status `0x1`) and the events decoded from the contract's own logs. Every campaign uses the same roles and 0.001 test ETH:
+- Funder: `0xdB3E14879897939cCFD0B22Da16f178463aE6020` (the testnet deployer wallet; it has no special rights in the contract).
+- Attestor: `0x9C9a7BF5A3502071e49AA6D586b3f43239fC18Bc`.
+- Beneficiary: `0x0aaFA86F39DA8AFe0CdB3Ae82f3B6Ba7Aea8CA8C`.
+- Threshold: 6000 bps (illustrative).
+
+| # | Season | Created (tx · block) | Settled (tx · block) | Attested index | Outcome |
+|---|---|---|---|---|---|
+| 1 | OND 2021 | [`0xbdb419fc…a110`](https://sepolia.basescan.org/tx/0xbdb419fc39b5469df19f86c674e95cc3607f725c305e148787b13e938d64a110) · 49473901 | [`0xd5e77248…d95c`](https://sepolia.basescan.org/tx/0xd5e77248c989878540c6c082b2b6c877c4aa5fb3c38eba3bc6c8f5d0e807d95c) · 49484594 | 3363 bps, evidence `0xde7fdf48…3be94f50` | **Released**: 0.001 ETH to the beneficiary |
+| 2 | OND 2023 | [`0x52703f5f…3bbd`](https://sepolia.basescan.org/tx/0x52703f5f335fb14e14cf12b66dd9af957b9c45f38d16b1b62866936885cc3bbd) · 49476672 | [`0xb5d6d551…b019`](https://sepolia.basescan.org/tx/0xb5d6d551bfc49b13a211fe5bdad028a153c75f916ccc47e50e1c4f0f62bab019) · 49485521 | 21322 bps, evidence `0x5c28852c…6b253e` | **Refunded (rule not met)**: 0.001 ETH back to the funder |
+| 3 | OND 2022 | [`0xdc95d02a…9a86`](https://sepolia.basescan.org/tx/0xdc95d02adb1fd85e1be685f4bb023734038045897933ef3b08745745b79c9a86) · 49477072 | — | — | **Active** until 2026-11-23 04:47 UTC; kept open for "Try to break it" |
+
+- The attested evidence digests equal the committed `public/evidence/*.json` (snapshot of 2026-10-19). See CLIMATE_DATA.md §2.4 for why attestations are pinned to the snapshot.
+- The wallet submitted these transactions through a relayer/smart-account contract (`to` = `0xdb9b1e94…7db3`). The escrow saw the funder and attestor addresses as `msg.sender` and signer. `/verify` therefore decodes the nested `settle()` call (`decodeSettleCalldata`).
+- Public reports: https://rilva-six.vercel.app/verify/1, /verify/2 and /verify/3.
+
 **Testnet only.**
 - Chain: Base Sepolia (chain ID **84532**).
 - Explorer: https://sepolia.basescan.org
