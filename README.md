@@ -54,11 +54,11 @@ ERA5 grid cell 5.0° N, 38.0° E (requested 4.88° N, 38.08° E). October–Dece
 
 Added 2026-10-24 to show the method is not tied to one place. Each uses its own ERA5 cell and local timezone; Brazil and India use the 1981–2010 normal because those seasons fall inside 1991–2020 ([CLIMATE_DATA.md](CLIMATE_DATA.md) §3.4).
 
-| Place and season | Rainfall | Normal | % of normal | indexBps | Rule ≤ 6000 | evidenceDigest |
-|---|---|---|---|---|---|---|
-| Marsabit, Kenya · OND 2021 | 47.6 mm | 170.7 mm (1991–2020) | 27.88 % | 2788 | Trigger | `0x2c6a3f4f…45c2c219` |
-| Petrolina, Brazil · MAM 2012 | 7.4 mm | 153.7 mm (1981–2010) | 4.81 % | 481 | Trigger | `0xf1e10ea8…7e89c4a9` |
-| Beed, India · JJAS 2015 | 513.2 mm | 597.7 mm (1981–2010) | 85.86 % | 8586 | No trigger | `0x48eb348f…f037a12d` |
+| Place and season | Rainfall | Normal | % of normal | indexBps | Rule ≤ 6000 | evidenceDigest | On Base Sepolia |
+|---|---|---|---|---|---|---|---|
+| Marsabit, Kenya · OND 2021 | 47.6 mm | 170.7 mm (1991–2020) | 27.88 % | 2788 | Trigger | `0x2c6a3f4f…45c2c219` | [#4 Released](https://rilva.xylolabs.space/verify/4) |
+| Petrolina, Brazil · MAM 2012 | 7.4 mm | 153.7 mm (1981–2010) | 4.81 % | 481 | Trigger | `0xf1e10ea8…7e89c4a9` | [#5 Released](https://rilva.xylolabs.space/verify/5) |
+| Beed, India · JJAS 2015 | 513.2 mm | 597.7 mm (1981–2010) | 85.86 % | 8586 | No trigger | `0x48eb348f…f037a12d` | [#6 Refunded](https://rilva.xylolabs.space/verify/6) |
 
 Beed is an honest non-trigger: IMD reported Beed's 2015 monsoon at 287.4 mm (−50 %, via [SANDRP](https://sandrp.in/2015/10/02/state-says-59-9-rainfall-imd-says-73-highlights-and-discrepancies-of-maharashtras-monsoon-2015/), accessed 2026-10-24), but the ERA5 cell does not show that deficit. Rilva reports the source's number and does not adjust it.
 
