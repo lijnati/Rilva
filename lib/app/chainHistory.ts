@@ -5,7 +5,7 @@
  * status only ever move forward — and then read logs for that single block. The settle() calldata is
  * decoded so anyone can recover exactly what the attestor signed.
  */
-import { BaseError, ContractFunctionZeroDataError, decodeFunctionData, type Address, type Hex, type PublicClient } from "viem";
+import { BaseError, ContractFunctionZeroDataError, decodeFunctionData, getAbiItem, toFunctionSelector, type Address, type Hex, type PublicClient } from "viem";
 import { CampaignStatus, RILVA_ESCROW_ABI, type Attestation } from "../contracts";
 
 /**
@@ -27,11 +27,36 @@ function isNoCode(e: unknown): boolean {
   return e instanceof BaseError && !!e.walk((x) => x instanceof ContractFunctionZeroDataError);
 }
 
-export function decodeSettleCalldata(input: Hex): { attestation: Attestation; signature: Hex } {
-  const decoded = decodeFunctionData({ abi: RILVA_ESCROW_ABI, data: input });
-  if (decoded.functionName !== "settle") throw new Error(`transaction calls ${decoded.functionName}, not settle`);
-  const [attestation, signature] = decoded.args;
-  return { attestation: { ...attestation }, signature };
+const SETTLE_SELECTOR = toFunctionSelector(getAbiItem({ abi: RILVA_ESCROW_ABI, name: "settle" })).slice(2);
+
+function decodeSettleAt(data: Hex): { attestation: Attestation; signature: Hex } | null {
+  try {
+    const decoded = decodeFunctionData({ abi: RILVA_ESCROW_ABI, data });
+    if (decoded.functionName !== "settle") return null;
+    const [attestation, signature] = decoded.args;
+    return { attestation: { ...attestation }, signature };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Recovers the attestation and signature a settle() call carried. Smart-account and relayer wallets
+ * wrap settle() inside their own call (execute, handleOps, …), so when the top level is not settle()
+ * the calldata is scanned at byte boundaries for the settle selector and the call for `campaignId` is
+ * returned. Safe by construction: callers still require the recovered signer to be the attestor and
+ * every field to equal the on-chain event.
+ */
+export function decodeSettleCalldata(input: Hex, campaignId?: bigint): { attestation: Attestation; signature: Hex } {
+  const top = decodeSettleAt(input);
+  if (top && (campaignId === undefined || top.attestation.campaignId === campaignId)) return top;
+  const hex = input.slice(2).toLowerCase();
+  for (let i = hex.indexOf(SETTLE_SELECTOR); i !== -1; i = hex.indexOf(SETTLE_SELECTOR, i + 1)) {
+    if (i % 2 !== 0) continue;
+    const found = decodeSettleAt(`0x${hex.slice(i)}`);
+    if (found && (campaignId === undefined || found.attestation.campaignId === campaignId)) return found;
+  }
+  throw new Error(campaignId === undefined ? "no settle call in this transaction" : `no settle call for campaign ${campaignId} in this transaction`);
 }
 
 export interface CampaignHistory {

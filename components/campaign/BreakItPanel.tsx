@@ -113,7 +113,7 @@ export function BreakItPanel({
       unavailable: "Needs a campaign that has already been settled by an attestation.",
       run: async () => {
         const tx = await client!.getTransaction({ hash: history.settled!.txHash });
-        const { attestation, signature } = decodeSettleCalldata(tx.input as Hex);
+        const { attestation, signature } = decodeSettleCalldata(tx.input as Hex, id);
         return { call: { escrow: escrow!, attestation, signature } };
       },
     },

@@ -1,4 +1,4 @@
-import { encodeFunctionData, keccak256, stringToBytes, type Hex } from "viem";
+import { concat, encodeAbiParameters, encodeFunctionData, keccak256, parseAbiParameters, stringToBytes, type Hex } from "viem";
 import { describe, expect, it } from "vitest";
 import { decodeSettleCalldata, findFirstBlock } from "@/lib/app/chainHistory";
 import { RILVA_ESCROW_ABI, type Attestation } from "@/lib/contracts";
@@ -47,5 +47,29 @@ describe("decodeSettleCalldata", () => {
   it("rejects calldata for any other function", () => {
     const data = encodeFunctionData({ abi: RILVA_ESCROW_ABI, functionName: "refundAfterDeadline", args: [7n] });
     expect(() => decodeSettleCalldata(data)).toThrow(/settle/);
+  });
+
+  // Smart-account and relayer wallets submit settle() as an inner call, e.g. execute(target, value, data).
+  const wrap = (inner: Hex) => concat(["0xb61d27f6", encodeAbiParameters(parseAbiParameters("address, uint256, bytes"), [ESCROW, 0n, inner])]);
+  const ESCROW = "0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E" as const;
+
+  it("finds settle() nested inside a smart-account call", () => {
+    const inner = encodeFunctionData({ abi: RILVA_ESCROW_ABI, functionName: "settle", args: [attestation, signature] });
+    expect(decodeSettleCalldata(wrap(inner), 7n)).toEqual({ attestation, signature });
+  });
+
+  it("picks the nested settle() for the requested campaign", () => {
+    const other = { ...attestation, campaignId: 8n, indexBps: 21322 };
+    const batch = concat([
+      wrap(encodeFunctionData({ abi: RILVA_ESCROW_ABI, functionName: "settle", args: [other, signature] })),
+      encodeFunctionData({ abi: RILVA_ESCROW_ABI, functionName: "settle", args: [attestation, signature] }),
+    ]);
+    expect(decodeSettleCalldata(batch, 7n).attestation.indexBps).toBe(3363);
+    expect(decodeSettleCalldata(batch, 8n).attestation.indexBps).toBe(21322);
+  });
+
+  it("throws when no settle() for that campaign is anywhere in the calldata", () => {
+    const inner = encodeFunctionData({ abi: RILVA_ESCROW_ABI, functionName: "settle", args: [attestation, signature] });
+    expect(() => decodeSettleCalldata(wrap(inner), 9n)).toThrow(/settle/);
   });
 });

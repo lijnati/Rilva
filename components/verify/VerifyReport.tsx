@@ -85,7 +85,7 @@ export function VerifyReport({ id }: { id: bigint }) {
     enabled: !!client && !!escrow && !!settledTx,
     queryFn: async () => {
       const tx = await client!.getTransaction({ hash: settledTx! });
-      const { attestation, signature } = decodeSettleCalldata(tx.input as Hex);
+      const { attestation, signature } = decodeSettleCalldata(tx.input as Hex, id);
       const signer = await recoverAttestationSigner(rilvaDomain(CHAIN.chain.id, escrow!), attestation, signature);
       return { attestation, signature, signer };
     },
