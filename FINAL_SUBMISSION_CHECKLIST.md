@@ -15,7 +15,7 @@ Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 ## Quality gates (2026-10-24)
 - ✅ lint, typecheck, Vitest 238/238, `climate:verify all` ALL CHECKS PASSED, build.
 - ✅ Hardhat 79 passing; `RilvaEscrow.sol` 100 % lines.
-- ⏳ Playwright e2e (`pnpm test:e2e`).
+- ✅ Playwright e2e: journeys, misconfigured and responsive specs, 18 passed. The local-chain journeys (`chain.spec.ts`) are skipped without `pnpm chain:node`. One earlier failure came from a stale second `next dev` server, not from the app.
 
 ## Repository
 - ✅ https://github.com/lijnati/Rilva is **public** (anonymous HTTP 200).
@@ -25,7 +25,7 @@ Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 - 👤 Optional: set the repo description and website (`gh repo edit --description … --homepage https://rilva-six.vercel.app`).
 
 ## Video
-- ⏳ Silent screen capture of the deployed app, plus title and end cards (RECORDING_PLAN.md).
+- ✅ Silent picture lock: 4:15, 1920×1080, H.264 at 30 fps, captions burned in, real production footage only. QA'd with a frame every 10 s.
 - 👤 Record narration from VIDEO_SCRIPT.md (7 short takes).
 - ⏳ Mux, captions, export 1080p MP4, QA (3–5 min, readable, no private data).
 - 👤 Upload to YouTube (Public or Unlisted) and confirm it plays signed-out.
@@ -34,7 +34,7 @@ Legend: ✅ done and verified · ⏳ in progress · 👤 human action.
 ## Devpost (draft 1238428)
 - ✅ Form fields read: name (60), pitch (200), thumbnail 3:2, About (Markdown), Built with (≤ 25), Try-it links, gallery (≤ 15, 3:2, 5 MB), video (YouTube/Vimeo, required), additional file (required, ≤ 35 MB). No track dropdown.
 - ✅ Copy ready in DEVPOST_SUBMISSION.md; images in `docs/media/`.
-- ⏳ Judge-pack zip (JUDGE_GUIDE + README as PDF) for "Upload a File".
+- ✅ Judge-pack zip (JUDGE_GUIDE.pdf + README.pdf, 2.7 MB) for "Upload a File" (scratchpad `pack/rilva-judge-pack.zip`).
 - ⬜ Fill the draft and preview (after the video URL exists).
 - 👤 **Final approval, then Submit.** Then confirm the status and project URL.
 

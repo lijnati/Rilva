@@ -11,13 +11,13 @@
 | Contract | [`0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E`](https://sepolia.basescan.org/address/0x8c277493004aC7Ef14d75bd0dD31ec4dbCd0DB0E) |
 
 ## Wallet-independent by design
-- Every shot is read-only: no wallet, no transaction, no signature during recording. The attestation and settlement happened for real on 2026-10-24 and are shown as recorded results (campaign page, audit trail, Basescan). They are never re-enacted.
+- Every shot is read-only: no wallet, no transaction, no signature during recording. The attestation and settlement happened for real on 2026-10-24 and are shown as recorded results (campaign page, audit trail, verification report). They are never re-enacted.
 - "Try to break it" uses `eth_call` simulations against the deployed contract. Nothing is broadcast.
 - If the public RPC (`sepolia.base.org`) is rate-limited during capture, wait and re-take the shot. Never use footage that shows an error state as if it were success.
 
 ## Capture (screen footage)
-1. Automated capture with Playwright (`recordVideo`), Chromium, viewport 1920×1080, light colour scheme, a fresh context with no extensions. Each storyboard shot is its own clip. The scripts live outside the repo (scratchpad); raw `.webm` clips are not committed.
-2. Basescan (shot 9) is captured the same way. If Basescan shows a bot-check page, **do not attempt to bypass it**. Instead, record the same transaction in a normal browser window (human), or use Blockscout: `https://base-sepolia.blockscout.com/tx/<hash>`.
+1. Automated capture with Playwright and Chromium's CDP screencast (`Page.startScreencast`, JPEG quality 92). Viewport 1536×864 at device scale 1.25 gives 1920×1080 frames, so text renders at 125 %. Each clip uses a light colour scheme and a fresh context with no extensions or wallet. Frames carry their real timestamps, and ffmpeg's concat demuxer turns them into a constant 30 fps clip with the true timing. Each storyboard shot is its own clip. The scripts and raw frames live outside the repo (scratchpad).
+2. Block explorers are not filmed. On 2026-10-24 Basescan served a bot check, which we did not attempt to bypass. Blockscout rendered the transaction with a third-party ad banner and the wallet's delegation wrapper call. Shot 9 therefore holds on the app's audit trail, with the tx hash in the caption.
 3. Title and end cards are small HTML pages in the app's pixel-meadow style (DM Sans + Instrument Serif accent, paper/ink tokens), rendered by the same Chromium.
 
 ## Narration (human)

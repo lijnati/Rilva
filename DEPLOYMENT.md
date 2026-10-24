@@ -28,7 +28,7 @@ All receipts were checked with `eth_getTransactionReceipt` (status `0x1`) and th
 | 3 | OND 2022 | [`0xdc95d02a…9a86`](https://sepolia.basescan.org/tx/0xdc95d02adb1fd85e1be685f4bb023734038045897933ef3b08745745b79c9a86) · 49477072 | — | — | **Active** until 2026-11-23 04:47 UTC; kept open for "Try to break it" |
 
 - The attested evidence digests equal the committed `public/evidence/*.json` (snapshot of 2026-10-19). See CLIMATE_DATA.md §2.4 for why attestations are pinned to the snapshot.
-- The wallet submitted these transactions through a relayer/smart-account contract (`to` = `0xdb9b1e94…7db3`). The escrow saw the funder and attestor addresses as `msg.sender` and signer. `/verify` therefore decodes the nested `settle()` call (`decodeSettleCalldata`).
+- The wallet (MetaMask with EIP-7702 delegation) submitted these transactions through its delegation framework: a relayer called `redeemDelegations` on `DelegationManager` (`to` = `0xdb9b1e94…7db3`, as shown by Blockscout), which executed the call from the user's own address. RilvaEscrow saw the funder and attestor addresses as `msg.sender`. `/verify` therefore decodes the nested `settle()` call (`decodeSettleCalldata`).
 - Public reports: https://rilva-six.vercel.app/verify/1, /verify/2 and /verify/3.
 
 **Testnet only.**
