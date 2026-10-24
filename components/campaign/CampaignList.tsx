@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { campaignView } from "@/lib/app/campaignView";
 import { CHAIN, ESCROW } from "@/lib/app/appConfig";
-import { formatEth, formatUtc, parseCampaignId, seasonLabel, formatPct } from "@/lib/app/format";
+import { parseCampaignId } from "@/lib/app/format";
 import { describeRevert } from "@/lib/app/revert";
 import { readCampaign } from "@/lib/contracts";
-import { CampaignStatusChip, EmptyState, NotConfigured, Skeleton } from "@/components/ui/States";
+import { EmptyState, NotConfigured, Skeleton } from "@/components/ui/States";
+import { CampaignCard } from "@/components/campaign/CampaignCard";
 import { truncateMiddle } from "@/components/chain/HashField";
 import { useCampaignCount, useChainTime, useEscrowClient } from "@/components/chain/useRilva";
 
@@ -103,9 +104,9 @@ export function CampaignList() {
           <p className="mt-1 text-[12.5px]">RPC: {CHAIN.rpcUrl}. Nothing is shown instead of real records.</p>
         </EmptyState>
       ) : count.isPending || (ids.length > 0 && rows.isPending) ? (
-        <div className="grid gap-3" aria-busy="true" aria-label="Loading campaigns">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true" aria-label="Loading campaigns">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-[76px]" />
+            <Skeleton key={i} className="h-[372px] rounded-[14px]" />
           ))}
         </div>
       ) : total === 0n ? (
@@ -114,31 +115,13 @@ export function CampaignList() {
         </EmptyState>
       ) : (
         <>
-          <ul className="grid gap-3" aria-label="Campaigns, newest first">
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-label="Campaigns, newest first">
             {rows.data!.map(({ id, c }) => {
               const v = campaignView(c, now.data ?? 0n);
               if (v.status === "NotFound") return null;
               return (
                 <li key={id.toString()}>
-                  <Link
-                    href={`/campaigns/${id}`}
-                    className="card grid gap-3 p-4 transition-shadow hover:shadow-[var(--shadow-card)] sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-6 sm:px-6"
-                  >
-                    <span className="font-display text-[22px] font-semibold tracking-[-0.03em] tnum">#{id.toString()}</span>
-                    <span className="grid min-w-0 gap-0.5">
-                      <span className="text-[14.5px] font-semibold">
-                        Yabelo · {seasonLabel(c.observationStart, c.observationEnd)} · {formatEth(c.amount)}
-                      </span>
-                      <span className="truncate text-[12.5px] text-ink-2">
-                        Rule ≤ {formatPct(c.thresholdBps)} % of normal · beneficiary {truncateMiddle(c.beneficiary, 6, 4)} · attestor{" "}
-                        {truncateMiddle(c.attestor, 6, 4)}
-                        {v.status === "Active" && <> · deadline {formatUtc(c.settlementDeadline)}</>}
-                      </span>
-                    </span>
-                    <span className="justify-self-start sm:justify-self-end">
-                      <CampaignStatusChip status={v.status} />
-                    </span>
-                  </Link>
+                  <CampaignCard id={id} c={c} status={v.status} seed={Number(id) * 13 + 5} />
                 </li>
               );
             })}

@@ -116,7 +116,7 @@ pnpm test:e2e
 | Suite | Result |
 |---|---|
 | ESLint, `tsc --noEmit` | pass |
-| Vitest (climate engine, golden values, evidence, chain history, verification, copy audit) | **238 / 238 passed** (26 files) |
+| Vitest (climate engine, golden values, evidence, chain history, verification, copy audit) | **242 / 242 passed** (27 files) |
 | `climate:verify all` (offline) | **ALL CHECKS PASSED** (3363 / 4461 / 21322 bps; committed evidence matches) |
 | `climate:verify all --live` | Fails by design: live digests differ since the upstream ERA5 revision (CLIMATE_DATA.md §2.4) |
 | Hardhat (`node:test`): every revert path, attacks, invariant, EIP-712 parity, real-evidence journeys | **79 passing** |
